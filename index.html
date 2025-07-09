@@ -3,851 +3,713 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberShield - Demo Test Page</title>
+    <title>Red Sus's | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --dark-bg-primary: #080415; /* Very dark */
-            --dark-bg-secondary: #1a0e35; /* Slightly lighter */
-            --purple-accent-light: #8e2de2;
-            --purple-accent-dark: #4a00e0;
-            --text-color-light: #e2d8f4; /* Light purple-ish text */
-            --text-color-muted: #a095b5; /* Muted purple-ish text */
-            --warning-color: #ffc107; /* Yellow for warning */
-        }
-
         body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        h1, h2, h3, .poppins-font {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-bg-primary);
-            color: var(--text-color-light);
-            overflow-x: hidden;
-            line-height: 1.7;
-            position: relative;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'Orbitron', sans-serif;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem; /* Default padding */
-        }
-        @media (min-width: 768px) { /* md breakpoint */
-            .container {
-                padding: 0 3rem; /* Increase padding on medium screens and up */
-            }
-        }
-         @media (min-width: 1024px) { /* lg breakpoint */
-            .container {
-                padding: 0 4rem; /* Increase padding on large screens and up */
-            }
         }
 
-
-        header {
-            background-color: rgba(8, 4, 21, 0.98); /* Almost opaque */
-            backdrop-filter: blur(10px);
-            position: sticky;
+        #backgroundCanvas {
+            position: fixed;
             top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Stronger shadow */
-        }
-        .brand-gradient {
-            background: linear-gradient(45deg, var(--purple-accent-dark), var(--purple-accent-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 1.8rem; /* Default font size */
-            font-weight: 700;
-            transition: transform 0.4s ease, filter 0.4s ease;
-            display: inline-block;
-            filter: drop-shadow(0 0 10px rgba(142, 45, 226, 0.7));
-        }
-         @media (min-width: 768px) {
-             .brand-gradient {
-                 font-size: 2rem; /* Increase font size on medium screens */
-             }
-         }
-
-         .brand-gradient:hover {
-             transform: scale(1.1) rotate(2deg);
-             filter: drop-shadow(0 0 20px rgba(142, 45, 226, 1.2));
-         }
-
-        .hero-section {
-            background: radial-gradient(circle at top left, rgba(74, 0, 224, 0.2) 0%, transparent 30%),
-                        radial-gradient(circle at bottom right, rgba(142, 45, 226, 0.2) 0%, transparent 30%),
-                        linear-gradient(180deg, var(--dark-bg-primary) 0%, #2a154f 100%);
-            position: relative;
-            overflow: hidden;
-            padding-top: 8rem; /* Default padding */
-            padding-bottom: 8rem; /* Default padding */
-            isolation: isolate;
-            text-align: center; /* Ensure text is centered by default */
-        }
-         @media (min-width: 768px) {
-             .hero-section {
-                 padding-top: 10rem; /* Increase padding on medium screens */
-                 padding-bottom: 10rem; /* Increase padding on medium screens */
-             }
-         }
-        .hero-section h1 {
-            font-size: 2.5rem; /* Default font size */
-            font-weight: 700;
-            margin-bottom: 1rem; /* Default margin */
-            letter-spacing: 0.05em;
-            filter: drop-shadow(0 0 15px rgba(142, 45, 226, 0.8));
-        }
-         @media (min-width: 768px) {
-             .hero-section h1 {
-                 font-size: 3.5rem; /* Increase font size on medium screens */
-                 margin-bottom: 1.5rem; /* Increase margin on medium screens */
-             }
-         }
-          @media (min-width: 1024px) {
-             .hero-section h1 {
-                 font-size: 4rem; /* Increase font size on large screens */
-             }
-         }
-        .hero-section p {
-            font-size: 1.1rem; /* Default font size */
-            margin-bottom: 2rem; /* Default margin */
-            color: var(--text-color-light);
-             max-width: 90%; /* Limit width on small screens */
-             margin-left: auto;
-             margin-right: auto;
-        }
-         @media (min-width: 768px) {
-             .hero-section p {
-                 font-size: 1.25rem; /* Increase font size on medium screens */
-                 margin-bottom: 2.5rem; /* Increase margin on medium screens */
-                  max-width: 70%; /* Adjust max width */
-             }
-         }
-          @media (min-width: 1024px) {
-             .hero-section p {
-                 font-size: 1.4rem; /* Increase font size on large screens */
-                  max-width: 60%; /* Adjust max width */
-             }
-         }
-
-        /* Disclaimer Banner */
-        .disclaimer-banner {
-            background-color: var(--warning-color);
-            color: var(--dark-bg-primary);
-            padding: 1rem;
-            text-align: center;
-            font-weight: 600;
-            position: relative;
-            z-index: 90; /* Below header, above hero */
-            font-size: 0.9rem;
-        }
-        @media (min-width: 768px) {
-            .disclaimer-banner {
-                font-size: 1rem;
-            }
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #1a1a2e;
         }
 
-
-        /* Glowing Border Animation */
-        @keyframes glowing-border {
-            0% { border-color: rgba(142, 45, 226, 0.4); box-shadow: 0 0 10px rgba(142, 45, 226, 0.4); }
-            50% { border-color: rgba(142, 45, 226, 0.8); box-shadow: 0 0 20px rgba(142, 45, 226, 0.8); }
-            100% { border-color: rgba(142, 45, 226, 0.4); box-shadow: 0 0 10px rgba(142, 45, 226, 0.4); }
-        }
-
-        .glowing-box {
-            border: 2px solid rgba(142, 45, 226, 0.4);
-            box-shadow: 0 0 10px rgba(142, 45, 226, 0.4);
-            animation: glowing-border 3s infinite ease-in-out alternate;
-            border-radius: 12px;
-            padding: 1.5rem; /* Default padding */
-        }
-         @media (min-width: 768px) {
-             .glowing-box {
-                 padding: 2rem; /* Increase padding on medium screens */
-             }
-         }
-
-
-        .cta-button {
-            background: linear-gradient(45deg, var(--purple-accent-dark), var(--purple-accent-light));
-            color: white;
-            font-weight: 700;
-            padding: 0.8rem 2rem; /* Default padding */
-            border-radius: 50px;
-            transition: all 0.5s ease;
-            box-shadow: 0 8px 25px rgba(74, 0, 224, 0.7);
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.08em; /* Default letter spacing */
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            font-size: 0.9rem; /* Default font size */
-        }
-         @media (min-width: 768px) {
-             .cta-button {
-                 padding: 1rem 3rem; /* Increase padding on medium screens */
-                 letter-spacing: 0.1em; /* Increase letter spacing */
-                 font-size: 1rem; /* Increase font size */
-             }
-         }
-
-         .cta-button::before {
-             content: '';
-             position: absolute;
-             top: 50%;
-             left: 50%;
-             width: 300%;
-             height: 300%;
-             background: rgba(255, 255, 255, 0.15);
-             transition: all 0.7s ease-in-out;
-             border-radius: 50%;
-             transform: translate(-50%, -50%) scale(0);
-             z-index: -1;
-         }
-        .cta-button:hover::before {
-             transform: translate(-50%, -50%) scale(1);
-         }
-        .cta-button:hover {
-            background: linear-gradient(45deg, var(--purple-accent-light), var(--purple-accent-dark));
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(142, 45, 226, 1.5);
-        }
-         .cta-button:active {
-             transform: translateY(0);
-             box-shadow: 0 8px 25px rgba(74, 0, 224, 0.7);
-         }
-
-
-        .feature-card {
-            background-color: var(--dark-bg-secondary);
-            border: 1px solid #3a1f6b;
-            border-radius: 12px;
-            padding: 1.5rem; /* Default padding */
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-            transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-        }
-         @media (min-width: 768px) {
-             .feature-card {
-                 padding: 2rem; /* Increase padding on medium screens */
-             }
-         }
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 70% 30%, rgba(142, 45, 226, 0.15), transparent 50%);
-            opacity: 0;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
             pointer-events: none;
         }
-         .feature-card:hover::before {
-             opacity: 1;
-             transform: scale(1.1);
-         }
-        .feature-card:hover {
-            transform: translateY(-15px) rotateZ(-1deg);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border-color: var(--purple-accent-light);
-        }
-        .feature-card .icon {
-            font-size: 3rem; /* Default font size */
-            color: var(--purple-accent-light);
-            margin-bottom: 0.75rem; /* Default margin */
-            transition: transform 0.4s ease;
-        }
-         @media (min-width: 768px) {
-             .feature-card .icon {
-                 font-size: 3.5rem; /* Increase font size on medium screens */
-                 margin-bottom: 1rem; /* Increase margin on medium screens */
-             }
-         }
-         .feature-card:hover .icon {
-             transform: scale(1.2) rotate(10deg);
-         }
-        .feature-card h3 {
-            font-size: 1.4rem; /* Default font size */
-            font-weight: 700;
-            margin-bottom: 0.5rem; /* Default margin */
-            color: var(--text-color-light);
-        }
-         @media (min-width: 768px) {
-             .feature-card h3 {
-                 font-size: 1.6rem; /* Increase font size on medium screens */
-                 margin-bottom: 0.75rem; /* Increase margin on medium screens */
-             }
-         }
-         .feature-card p {
-             color: var(--text-color-muted);
-             font-size: 0.95rem; /* Default font size */
-         }
-         @media (min-width: 768px) {
-             .feature-card p {
-                 font-size: 1rem; /* Increase font size on medium screens */
-             }
-         }
 
-
-        /* Animations */
-        @keyframes slideInBottom {
-            from {
-                opacity: 0;
-                transform: translateY(80px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-         @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-
-        .animate-slideInBottom {
-            animation: slideInBottom 1s ease-out forwards;
-            opacity: 0;
-        }
-         .animate-scaleIn {
-             animation: scaleIn 0.9s ease-out forwards;
-             opacity: 0;
-         }
-         .animate-fadeIn {
-             animation: fadeIn 1s ease-out forwards;
-             opacity: 0;
-         }
-
-
-        /* Nav Link Hover */
-        nav a {
+        .main-content-wrapper {
             position: relative;
-            font-weight: 600;
-            color: var(--text-color-light);
-            transition: color 0.3s ease;
-            padding-bottom: 5px;
-             font-size: 0.9rem; /* Default font size */
-        }
-         @media (min-width: 768px) {
-             nav a {
-                 font-size: 1rem; /* Increase font size on medium screens */
-             }
-         }
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--purple-accent-dark), var(--purple-accent-light));
-            transition: width 0.4s ease, left 0.4s ease;
-        }
-        nav a:hover::after {
-            width: 100%;
-            left: 0;
-        }
-         nav a:hover {
-             color: white;
-         }
-
-         /* How It Works */
-         .step-card {
-             background-color: var(--dark-bg-secondary);
-             border: 1px solid #3a1f6b;
-             border-radius: 12px;
-             padding: 1.5rem; /* Default padding */
-             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-             text-align: left;
-             transition: transform 0.4s ease, box-shadow 0.4s ease;
-         }
-          @media (min-width: 768px) {
-              .step-card {
-                  padding: 2rem; /* Increase padding on medium screens */
-              }
-          }
-          .step-card:hover {
-              transform: translateY(-8px);
-              box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-          }
-         .step-card .step-number {
-             font-size: 2.5rem; /* Default font size */
-             font-weight: 700;
-             color: var(--purple-accent-light);
-             margin-bottom: 0.5rem;
-             filter: drop-shadow(0 0 5px rgba(142, 45, 226, 0.5));
-         }
-          @media (min-width: 768px) {
-              .step-card .step-number {
-                  font-size: 3rem; /* Increase font size on medium screens */
-              }
-          }
-         .step-card h3 {
-             font-size: 1.4rem; /* Default font size */
-             font-weight: 700;
-             margin-bottom: 0.75rem;
-             color: var(--text-color-light);
-         }
-          @media (min-width: 768px) {
-              .step-card h3 {
-                  font-size: 1.5rem; /* Increase font size on medium screens */
-              }
-          }
-         .step-card p {
-             color: var(--text-color-muted);
-             font-size: 0.95rem; /* Default font size */
-         }
-         @media (min-width: 768px) {
-             .step-card p {
-                 font-size: 1rem; /* Increase font size on medium screens */
-             }
-         }
-
-
-         /* Pricing */
-         .pricing-card {
-             background-color: var(--dark-bg-secondary);
-             border: 2px solid transparent;
-             border-radius: 12px;
-             padding: 2rem; /* Default padding */
-             text-align: center;
-             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-             transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.4s ease;
-             position: relative;
-             overflow: hidden;
-             z-index: 10;
-         }
-          @media (min-width: 768px) {
-              .pricing-card {
-                  padding: 2.5rem; /* Increase padding on medium screens */
-              }
-          }
-          .pricing-card.featured {
-              border-color: var(--purple-accent-light);
-              box-shadow: 0 12px 30px rgba(142, 45, 226, 0.6);
-          }
-         .pricing-card:hover {
-             transform: translateY(-15px);
-             box-shadow: 0 25px 50px rgba(0,0,0,0.7);
-             border-color: var(--purple-accent-light);
-         }
-         .pricing-card h4 {
-             font-size: 1.6rem; /* Default font size */
-             font-weight: 700;
-             margin-bottom: 1rem;
-             color: var(--text-color-light);
-         }
-          @media (min-width: 768px) {
-              .pricing-card h4 {
-                  font-size: 1.8rem; /* Increase font size on medium screens */
-              }
-          }
-         .pricing-card .price {
-             font-size: 3rem; /* Default font size */
-             font-weight: 700;
-             color: var(--purple-accent-light);
-             margin-bottom: 1rem;
-             filter: drop-shadow(0 0 8px rgba(142, 45, 226, 0.6));
-         }
-          @media (min-width: 768px) {
-              .pricing-card .price {
-                  font-size: 3.5rem; /* Increase font size on medium screens */
-              }
-          }
-         .pricing-card .price span {
-             font-size: 1.1rem; /* Default font size */
-             font-weight: 400;
-             color: var(--text-color-muted);
-         }
-          @media (min-width: 768px) {
-              .pricing-card .price span {
-                  font-size: 1.2rem; /* Increase font size on medium screens */
-              }
-          }
-         .pricing-card ul {
-             list-style: none;
-             padding: 0;
-             margin-bottom: 2rem; /* Default margin */
-             text-align: left;
-         }
-          @media (min-width: 768px) {
-              .pricing-card ul {
-                  margin-bottom: 2.5rem; /* Increase margin on medium screens */
-              }
-          }
-         .pricing-card li {
-             margin-bottom: 0.8rem; /* Default margin */
-             color: var(--text-color-muted);
-             position: relative;
-             padding-left: 1.5rem; /* Default padding */
-         }
-          @media (min-width: 768px) {
-              .pricing-card li {
-                  margin-bottom: 1rem; /* Increase margin on medium screens */
-                  padding-left: 1.8rem; /* Increase padding on medium screens */
-              }
-          }
-         .pricing-card li::before {
-             content: '✓';
-             position: absolute;
-             left: 0;
-             color: var(--purple-accent-light);
-             font-weight: 700;
-             font-size: 1.1em; /* Default font size */
-         }
-          @media (min-width: 768px) {
-              .pricing-card li::before {
-                  font-size: 1.2em; /* Increase font size on medium screens */
-              }
-          }
-         .pricing-card .cta-button {
-             width: 100%;
-             display: block;
-             text-align: center;
-             font-size: 1rem; /* Default font size */
-         }
-         @media (min-width: 768px) {
-              .pricing-card .cta-button {
-                  font-size: 1.1rem; /* Increase font size on medium screens */
-              }
-          }
-
-
-         /* Contact Form */
-         .contact-form {
-             background-color: var(--dark-bg-secondary);
-             border-radius: 12px;
-             padding: 2rem; /* Default padding */
-             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-             max-width: 600px;
-             margin-left: auto;
-             margin-right: auto;
-         }
-          @media (min-width: 768px) {
-              .contact-form {
-                  padding: 2.5rem; /* Increase padding on medium screens */
-              }
-          }
-         .contact-form label {
-             display: block;
-             margin-bottom: 0.5rem; /* Default margin */
-             font-weight: 600;
-             color: var(--text-color-light);
-             font-size: 0.95rem; /* Default font size */
-         }
-          @media (min-width: 768px) {
-              .contact-form label {
-                  margin-bottom: 0.6rem; /* Increase margin on medium screens */
-                  font-size: 1rem; /* Increase font size on medium screens */
-              }
-          }
-         .contact-form input, .contact-form textarea {
-             width: 100%;
-             padding: 0.75rem; /* Default padding */
-             margin-bottom: 1.5rem; /* Default margin */
-             background-color: #2a154f;
-             border: 1px solid #5a3a8a;
-             border-radius: 8px;
-             color: var(--text-color-light);
-             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-             font-size: 1rem; /* Default font size */
-         }
-          @media (min-width: 768px) {
-              .contact-form input, .contact-form textarea {
-                  padding: 0.85rem; /* Increase padding on medium screens */
-                  margin-bottom: 1.8rem; /* Increase margin on medium screens */
-              }
-          }
-         .contact-form input:focus, .contact-form textarea:focus {
-             outline: none;
-             border-color: var(--purple-accent-light);
-             box-shadow: 0 0 10px rgba(142, 45, 226, 0.6);
-         }
-         .contact-form textarea {
-             min-height: 150px; /* Default height */
-         }
-          @media (min-width: 768px) {
-              .contact-form textarea {
-                  min-height: 180px; /* Increase height on medium screens */
-              }
-          }
-         .contact-form .cta-button {
-             width: auto;
-             display: inline-block;
-             font-size: 1rem; /* Default font size */
-         }
-         @media (min-width: 768px) {
-              .contact-form .cta-button {
-                  font-size: 1.1rem; /* Increase font size on medium screens */
-              }
-          }
-
-
-        /* Footer */
-        footer {
-            background-color: var(--dark-bg-primary);
-            padding: 1.5rem 0; /* Default padding */
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 90%;
+            width: 800px;
+            border-radius: 15px;
+            background-color: rgba(30, 30, 45, 0.7);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            min-height: 500px;
+            justify-content: center;
             text-align: center;
-            font-size: 0.8rem; /* Default font size */
-            color: var(--text-color-muted);
+            transition: transform 0.5s ease, opacity 0.5s ease, width 0.5s ease, height 0.5s ease;
+            transform-origin: center;
         }
-         @media (min-width: 768px) {
-             footer {
-                 padding: 2rem 0; /* Increase padding on medium screens */
-                 font-size: 0.9rem; /* Increase font size on medium screens */
-             }
-         }
+        
+        .main-content-wrapper.minimized {
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .main-content-wrapper.maximized {
+            width: 95vw;
+            max-width: 95vw;
+            height: 95vh;
+        }
+
+        .main-content-wrapper.closing {
+            animation: shakeAndFadeOut 0.8s forwards;
+        }
+
+        @keyframes shakeAndFadeOut {
+            0% { transform: scale(1) rotate(0); opacity: 1; }
+            20% { transform: scale(1.02) rotate(1deg); }
+            40% { transform: scale(1.02) rotate(-1deg); }
+            60% { transform: scale(1.02) rotate(1deg); }
+            80% { transform: scale(1.02) rotate(-1deg); }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
 
 
+        .top-left-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 9999px;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            transition: background-color 0.3s ease;
+            z-index: 10;
+            cursor: pointer;
+        }
+        .top-left-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .top-right-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .top-right-buttons button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .top-right-buttons button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-section {
+            background-color: transparent;
+            backdrop-filter: none;
+            border-radius: 0;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            box-shadow: none;
+            margin-top: 0;
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+            z-index: 2;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid transparent;
+            background-image: linear-gradient(#1a1a2e, #1a1a2e), linear-gradient(45deg, #ff00ff, #00ffff, #ffcc00);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.6);
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.6); }
+            100% { box-shadow: 0 0 25px rgba(0, 255, 255, 1), 0 0 50px rgba(255, 0, 255, 0.8); }
+        }
+
+        .thought-bubble {
+            position: fixed;
+            background-color: rgba(50, 50, 70, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            color: #e0e0e0;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            cursor: grab;
+            z-index: 5;
+        }
+        .thought-bubble.dragging {
+            cursor: grabbing;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 0 0 30px rgba(255, 0, 255, 0.5);
+        }
+
+
+        .social-icons a {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .social-icons a:hover {
+            transform: translateY(-5px) scale(1.1);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .copyright-text {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            color: #888;
+            z-index: 10;
+        }
+
+        .black-cat {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            width: 80px;
+            height: auto;
+            z-index: 10;
+            animation: cat-bounce 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes cat-bounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content-wrapper {
+                padding: 15px;
+                min-height: 400px;
+            }
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            .profile-avatar-container {
+                width: 200px;
+                height: 200px;
+            }
+            .thought-bubble {
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+
+            .top-left-button, .copyright-text, .black-cat, .top-right-buttons {
+                position: fixed;
+            }
+            .top-left-button { top: 10px; left: 10px; }
+            .top-right-buttons { top: 10px; right: 10px; }
+            .copyright-text { bottom: 10px; }
+            .black-cat { bottom: 5px; right: 10px; width: 60px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="disclaimer-banner">
-        ⚠️ This is a DEMO PAGE for testing purposes ONLY. Feel free to test vulnerabilities, DDoS, or spam requests without consent. NO actual damage will occur. This page is FREE to use for any role. ⚠️
+    <canvas id="backgroundCanvas"></canvas>
+
+    <canvas id="snowCanvas"></canvas>
+
+    <button id="homeBtn" class="top-left-button poppins-font">Red Sus's Profile | HOME</button>
+
+    <div class="top-right-buttons">
+        <button id="minimizeBtn" aria-label="Minimize"><i class="fas fa-minus"></i></button>
+        <button id="maximizeBtn" aria-label="Maximize"><i class="fas fa-square"></i></button>
+        <button id="closeBtn" aria-label="Close"><i class="fas fa-times"></i></button>
     </div>
 
-    <header class="py-4">
-        <div class="container flex justify-between items-center">
-            <div class="brand-gradient">CyberShield Demo</div>
-            <nav>
-                <ul class="flex space-x-4 md:space-x-8">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div id="thoughtBubblesContainer">
+        <div class="thought-bubble" id="bubble1">Coder (kind of)</div>
+        <div class="thought-bubble" id="bubble2">Me like cat</div>
+        <div class="thought-bubble" id="bubble3">Me like breaking stuff rather than making stuff</div>
+        <div class="thought-bubble" id="bubble4">Eat, check Discord, sleep</div>
+    </div>
 
-    <section class="hero-section py-24 text-center">
-        <div class="container relative z-20">
-            <h1 class="animate-slideInBottom">
-                Welcome to the<br>CyberShield Demo Page
-            </h1>
-            <p class="animate-slideInBottom" style="animation-delay: 0.3s;">
-                This page is designed purely for demonstration and testing. Explore its resilience and test your tools.
-            </p>
-            <a href="#how-it-works" class="cta-button animate-slideInBottom" style="animation-delay: 0.6s;">
-                Learn How to Test
-            </a>
-        </div>
-    </section>
 
-    <section id="features" class="py-16 md:py-20">
-        <div class="container">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 brand-gradient animate-fadeIn">Demo Features</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-                <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 0.8s;">
-                    <div class="icon">🧪</div>
-                    <h3>Open to Testing</h3>
-                    <p>This page is intentionally left open for you to experiment with various testing methods.</p>
-                </div>
-                <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 1s;">
-                     <div class="icon">🚫</div>
-                    <h3>No Damage Guaranteed</h3>
-                    <p>Feel free to send any kind of request; it will not harm any real systems.</p>
-                </div>
-                <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 1.2s;">
-                     <div class="icon">🌐</div>
-                    <h3>Globally Accessible</h3>
-                    <p>Available for testing from anywhere in the world, free of charge.</p>
-                </div>
-                 <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 1.4s;">
-                     <div class="icon">📄</div>
-                    <h3>Simple Structure</h3>
-                    <p>A basic HTML page to provide a clear and easy target for your tests.</p>
-                </div>
-                 <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 1.6s;">
-                     <div class="icon">🆓</div>
-                    <h3>Completely Free</h3>
-                    <p>Use this demo page as much as you need, with no costs or limitations.</p>
-                </div>
-                 <div class="feature-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 1.8s;">
-                     <div class="icon">🧑‍💻</div>
-                    <h3>For All Roles</h3>
-                    <p>Whether you're a security researcher, developer, or just curious, test away!</p>
-                </div>
+    <div id="mainContent" class="main-content-wrapper">
+        <div class="profile-section">
+            <div class="profile-avatar-container">
+                <img src="https://i.imgur.com/RtvXieL.jpeg" alt="Profile Avatar" class="profile-avatar" onerror="this.onerror=null;this.src='https://i.imgur.com/RtvXieL.jpeg';">
             </div>
-        </div>
-    </section>
 
-    <section id="how-it-works" class="py-16 md:py-20 text-center">
-        <div class="container glowing-box p-6 md:p-8">
-            <h2 class="text-3xl md:text-4xl font-bold mb-8 md:mb-12 brand-gradient animate-fadeIn">How to Use This Demo</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-                <div class="step-card p-6 md:p-8 animate-slideInBottom" style="animation-delay: 2s;">
-                    <div class="step-number">01</div>
-                    <h3>Choose Your Tool</h3>
-                    <p>Select any vulnerability scanner, stress testing tool, or simple script.</p>
-                </div>
-                <div class="step-card p-6 md:p-8 animate-slideInBottom" style="animation-delay: 2.2s;">
-                    <div class="step-number">02</div>
-                    <h3>Target This Page</h3>
-                    <p>Direct your testing traffic or requests towards the URL of this specific page.</p>
-                </div>
-                <div class="step-card p-6 md:p-8 animate-slideInBottom" style="animation-delay: 2.4s;">
-                    <div class="step-number">03</div>
-                    <h3>Observe & Learn</h3>
-                    <p>See how your tools interact with a basic web page environment.</p>
-                </div>
+            <h2 class="text-4xl font-bold text-white poppins-font mb-4">Hello   ! I'm Red Sus's</h2>
+
+            <div class="social-icons flex justify-center gap-4 mb-6">
+                <a href="https://discord.gg/EFzZSQNkxY" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
             </div>
-        </div>
-    </section>
 
-    <section id="pricing" class="py-16 md:py-20 text-center">
-        <div class="container">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 brand-gradient animate-fadeIn">Pricing (For Real Services)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-                <div class="pricing-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 2.6s;">
-                    <h4>Basic Plan</h4>
-                    <div class="price">$0<span>/mo</span></div>
-                    <ul>
-                        <li>Access to this Demo Page</li>
-                        <li>Unlimited Basic Testing</li>
-                        <li>No Sign-up Required</li>
-                        <li>Zero Cost</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">It's Free!</a>
-                </div>
-                 <div class="pricing-card featured p-6 md:p-8 animate-scaleIn" style="animation-delay: 2.8s;">
-                    <h4>Pro (Real Service)</h4>
-                    <div class="price">$499<span>/mo</span></div>
-                    <ul>
-                        <li>*Real* Server Testing</li>
-                        <li>Advanced Simulations</li>
-                        <li>Detailed Reports</li>
-                         <li>Actual Vulnerability Scanning</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Learn About Real Testing</a>
-                </div>
-                 <div class="pricing-card p-6 md:p-8 animate-scaleIn" style="animation-delay: 3s;">
-                    <h4>Enterprise (Real Service)</h4>
-                    <div class="price">Custom</div>
-                    <ul>
-                        <li>*Real* Infrastructure Testing</li>
-                        <li>Dedicated Support</li>
-                        <li>Compliance Features</li>
-                        <li>Managed Simulations</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Contact for Real Service</a>
-                </div>
+            <div class="relative flex items-center mb-6 w-full max-w-sm">
+                <div class="flex-grow border-t border-gray-700"></div>
+                <span class="flex-shrink mx-4 text-gray-500"></span>
+                <div class="flex-grow border-t border-gray-700"></div>
             </div>
+            <p>The random floating thing is dragable. And the button is clickable.</p>
         </div>
-    </section>
+    </div>
 
-    <section id="contact" class="py-16 md:py-20">
-        <div class="container">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 brand-gradient animate-fadeIn">Questions About This Demo?</h2>
-             <div class="contact-form p-6 md:p-8 animate-slideInBottom" style="animation-delay: 3.2s;">
-                 <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center text-color-light">Get Info About the Demo</h3>
-                 <form>
-                     <div class="mb-4 md:mb-6">
-                         <label for="name" class="block text-sm md:text-base mb-1">Name</label>
-                         <input type="text" id="name" name="name" required>
-                     </div>
-                     <div class="mb-4 md:mb-6">
-                         <label for="email" class="block text-sm md:text-base mb-1">Email</label>
-                         <input type="email" id="email" name="email" required>
-                     </div>
-                     <div class="mb-6 md:mb-8">
-                         <label for="message" class="block text-sm md:text-base mb-1">Question about the Demo</label>
-                         <textarea id="message" name="message" rows="4" md:rows="6" required></textarea>
-                     </div>
-                     <div class="text-center">
-                         <button type="submit" class="cta-button">Send Question</button>
-                     </div>
-                 </form>
-             </div>
-        </div>
-    </section>
+    <p class="copyright-text">© Copyright Red Sus's 2025</p>
 
-
-    <footer>
-        <div class="container">
-             <p>&copy; 2023 CyberShield Demo. All rights reserved. This is a DEMO page for illustration and testing purposes ONLY.</p>
-        </div>
-    </footer>
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s" alt="Black Cat" class="black-cat" onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s';">
 
     <script>
-        // Scroll Reveal Animation using Intersection Observer
-        document.addEventListener('DOMContentLoaded', () => {
-            const observerOptions = {
-                root: null, // viewport
-                rootMargin: '0px',
-                threshold: 0.1 // Trigger when 10% of the element is visible
-            };
+        const mainContent = document.getElementById('mainContent');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const maximizeBtn = document.getElementById('maximizeBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const maximizeIcon = maximizeBtn.querySelector('i');
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                         // Apply appropriate transform based on class
-                        if (entry.target.classList.contains('animate-slideInBottom')) {
-                             entry.target.style.transform = 'translateY(0)';
-                         } else if (entry.target.classList.contains('animate-scaleIn')) {
-                             entry.target.style.transform = 'scale(1)';
-                         } else if (entry.target.classList.contains('animate-fadeIn')) {
-                             // fadeIn doesn't need transform reset
-                         }
-                        observer.unobserve(entry.target); // Stop observing once animated
+        let isInteractable = true;
+        const COOLDOWN_PERIOD = 800;
+
+        function setCooldown() {
+            isInteractable = false;
+            setTimeout(() => { isInteractable = true; }, COOLDOWN_PERIOD);
+        }
+
+        minimizeBtn.addEventListener('click', () => {
+            if (!isInteractable) return;
+            setCooldown();
+            
+            mainContent.classList.add('minimized');
+            mainContent.classList.remove('maximized');
+            maximizeIcon.classList.remove('fa-window-restore');
+            maximizeIcon.classList.add('fa-square');
+        });
+
+        maximizeBtn.addEventListener('click', () => {
+            if (!isInteractable) return;
+            setCooldown();
+            
+            if (mainContent.classList.contains('minimized')) {
+                mainContent.classList.remove('minimized');
+            }
+            mainContent.classList.toggle('maximized');
+
+            if (mainContent.classList.contains('maximized')) {
+                maximizeIcon.classList.remove('fa-square');
+                maximizeIcon.classList.add('fa-window-restore');
+            } else {
+                maximizeIcon.classList.remove('fa-window-restore');
+                maximizeIcon.classList.add('fa-square');
+            }
+        });
+
+        closeBtn.addEventListener('click', () => {
+            if (!isInteractable || mainContent.classList.contains('minimized')) {
+                return;
+            }
+            setCooldown();
+            mainContent.classList.add('closing');
+
+            mainContent.addEventListener('animationend', () => {
+                mainContent.classList.add('minimized');
+                mainContent.classList.remove('closing');
+            }, { once: true });
+        });
+
+        homeBtn.addEventListener('click', () => {
+            if (!isInteractable) return;
+            setCooldown();
+            
+            mainContent.classList.remove('minimized', 'maximized', 'closing');
+            
+            maximizeIcon.classList.remove('fa-window-restore');
+            maximizeIcon.classList.add('fa-square');
+        });
+
+        function setupCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            return { canvas, ctx, get width() { return width; }, get height() { return height; } };
+        }
+
+        const { ctx: bgCtx, width: bgWidth, height: bgHeight } = setupCanvas('backgroundCanvas');
+        const particles = [];
+        const cubes = [];
+        const diamonds = [];
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * bgWidth;
+                this.y = Math.random() * bgHeight;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() * 0.2 - 0.1);
+                this.speedY = (Math.random() * 0.2 - 0.1);
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > bgWidth) this.speedX *= -1;
+                if (this.y < 0 || this.y > bgHeight) this.speedY *= -1;
+                this.opacity = Math.sin(Date.now() * 0.001 + this.x * 0.01) * 0.2 + 0.5;
+            }
+            draw() {
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fill();
+            }
+        }
+
+        class Cube {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * bgWidth;
+                this.y = Math.random() * bgHeight;
+                this.size = Math.random() * 30 + 20;
+                this.speedX = (Math.random() * 0.5 - 0.25);
+                this.speedY = (Math.random() * 0.5 - 0.25);
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() * 0.01 - 0.005);
+                this.color = `rgba(255, 0, 0, ${Math.random() * 0.3 + 0.2})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+                if (this.x < -this.size || this.x > bgWidth + this.size) this.x = this.x < -this.size ? bgWidth + this.size : -this.size;
+                if (this.y < -this.size || this.y > bgHeight + this.size) this.y = this.y < -this.size ? bgHeight + this.size : -this.size;
+            }
+            draw() {
+                bgCtx.save();
+                bgCtx.translate(this.x, this.y);
+                bgCtx.rotate(this.rotation);
+                bgCtx.fillStyle = this.color;
+                bgCtx.shadowColor = this.color;
+                bgCtx.shadowBlur = 20;
+                bgCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                bgCtx.restore();
+            }
+        }
+
+        class Diamond {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * bgWidth;
+                this.y = Math.random() * bgHeight;
+                this.size = Math.random() * 40 + 30;
+                this.speedX = (Math.random() * 0.4 - 0.2);
+                this.speedY = (Math.random() * 0.4 - 0.2);
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() * 0.008 - 0.004);
+                this.color = `rgba(0, 255, 255, ${Math.random() * 0.2 + 0.1})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+                if (this.x < -this.size || this.x > bgWidth + this.size) this.x = this.x < -this.size ? bgWidth + this.size : -this.size;
+                if (this.y < -this.size || this.y > bgHeight + this.size) this.y = this.y < -this.size ? bgHeight + this.size : -this.size;
+            }
+            draw() {
+                bgCtx.save();
+                bgCtx.translate(this.x, this.y);
+                bgCtx.rotate(this.rotation);
+                bgCtx.fillStyle = this.color;
+                bgCtx.shadowColor = this.color;
+                bgCtx.shadowBlur = 15;
+                bgCtx.beginPath();
+                bgCtx.moveTo(0, -this.size / 2);
+                bgCtx.lineTo(this.size / 2, 0);
+                bgCtx.lineTo(0, this.size / 2);
+                bgCtx.lineTo(-this.size / 2, 0);
+                bgCtx.closePath();
+                bgCtx.fill();
+                bgCtx.restore();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) { particles.push(new Particle()); }
+        for (let i = 0; i < 10; i++) { cubes.push(new Cube()); }
+        for (let i = 0; i < 10; i++) { diamonds.push(new Diamond()); }
+
+        function animateBackground() {
+            bgCtx.clearRect(0, 0, bgWidth, bgHeight);
+            particles.forEach(p => { p.update(); p.draw(); });
+            cubes.forEach(c => { c.update(); c.draw(); });
+            diamonds.forEach(d => { d.update(); d.draw(); });
+            requestAnimationFrame(animateBackground);
+        }
+
+        const { ctx: snowCtx, width: snowWidth, height: snowHeight } = setupCanvas('snowCanvas');
+        const snowflakes = [];
+        const maxSnowflakes = 150;
+        let mouseX = -100, mouseY = -100;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        window.addEventListener('mouseleave', () => {
+            mouseX = -100;
+            mouseY = -100;
+        });
+
+        class Snowflake {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * snowWidth;
+                this.y = Math.random() * snowHeight;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 0.5 + 0.2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.fadeSpeed = Math.random() * 0.005 + 0.001;
+                this.life = 1;
+                this.windInfluence = Math.random() * 0.05 + 0.02;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+
+                if (mouseX !== -100) {
+                    const dx = this.x - mouseX;
+                    const dy = this.y - mouseY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 200) {
+                        const force = (200 - distance) / 200;
+                        this.x += (dx > 0 ? 1 : -1) * force * this.windInfluence * 5;
+                        this.y += (dy > 0 ? 1 : -1) * force * this.windInfluence * 2;
                     }
-                });
-            }, observerOptions);
+                }
 
-            // Select elements to animate
-            const elementsToAnimate = document.querySelectorAll('.animate-slideInBottom, .animate-scaleIn, .animate-fadeIn');
+                if (this.y > snowHeight * 0.8) {
+                    this.life -= this.fadeSpeed;
+                    this.opacity = Math.max(0, this.life * 0.7 + 0.3);
+                }
 
-            elementsToAnimate.forEach(element => {
-                 // Apply initial styles if not already set by CSS
-                 element.style.opacity = '0';
-                 if (element.classList.contains('animate-slideInBottom')) {
-                      element.style.transform = 'translateY(80px)'; // Match CSS
-                 } else if (element.classList.contains('animate-scaleIn')) {
-                      element.style.transform = 'scale(0.8)'; // Match CSS
-                 }
-                 // fadeIn starts with opacity 0, no transform needed
+                if (this.y > snowHeight + this.size || this.life <= 0) {
+                    this.reset();
+                    this.y = -this.size;
+                }
+            }
+            draw() {
+                snowCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                snowCtx.beginPath();
+                snowCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                snowCtx.fill();
+            }
+        }
 
-                 // Check if element is already in view on load and animate immediately
-                 const rect = element.getBoundingClientRect();
-                 if (rect.top < window.innerHeight && rect.bottom >= 0) {
-                     element.style.opacity = '1';
-                      if (element.classList.contains('animate-slideInBottom')) {
-                           element.style.transform = 'translateY(0)';
-                      } else if (element.classList.contains('animate-scaleIn')) {
-                           element.style.transform = 'scale(1)';
-                      }
-                      // fadeIn just stays at opacity 1
-                 } else {
-                    observer.observe(element);
-                 }
+        for (let i = 0; i < maxSnowflakes; i++) {
+            snowflakes.push(new Snowflake());
+        }
+
+        function animateSnow() {
+            snowCtx.clearRect(0, 0, snowWidth, snowHeight);
+            snowflakes.forEach(flake => {
+                flake.update();
+                flake.draw();
+            });
+            requestAnimationFrame(animateSnow);
+        }
+
+        const bubbles = document.querySelectorAll('.thought-bubble');
+        const physicsBubbles = [];
+        const friction = 0.95;
+        const bounceFactor = 0.7;
+        const minVelocity = 0.1;
+        const randomForceScale = 0.05;
+
+        bubbles.forEach((bubble, index) => {
+            const rect = bubble.getBoundingClientRect();
+            let initialX = Math.random() * (window.innerWidth - rect.width);
+            let initialY = Math.random() * (window.innerHeight - rect.height);
+            
+            const spreadOffset = 100;
+            if (index === 0) { initialX = window.innerWidth * 0.2 - spreadOffset; initialY = window.innerHeight * 0.2 - spreadOffset; }
+            if (index === 1) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.2 - spreadOffset; }
+            if (index === 2) { initialX = window.innerWidth * 0.2 - spreadOffset; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
+            if (index === 3) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
+
+            bubble.style.left = `${initialX}px`;
+            bubble.style.top = `${initialY}px`;
+
+            physicsBubbles.push({
+                element: bubble, x: initialX, y: initialY,
+                vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+                isDragging: false, offsetX: 0, offsetY: 0,
+                width: rect.width, height: rect.height
             });
         });
 
-        // No complex parallax in this version for simplicity and focus on other effects.
-        // Can be added back if desired.
+        let activeBubble = null;
 
+        function handleDragStart(e) {
+            const target = e.target;
+            if (target && target.classList.contains('thought-bubble')) {
+                activeBubble = physicsBubbles.find(b => b.element === target);
+                if (activeBubble) {
+                    const clientX = e.clientX || e.touches[0].clientX;
+                    const clientY = e.clientY || e.touches[0].clientY;
+                    activeBubble.isDragging = true;
+                    activeBubble.element.classList.add('dragging');
+                    activeBubble.offsetX = clientX - activeBubble.x;
+                    activeBubble.offsetY = clientY - activeBubble.y;
+                    activeBubble.vx = 0;
+                    activeBubble.vy = 0;
+                    if (e.type === 'touchstart') e.preventDefault();
+                }
+            }
+        }
+
+        function handleDragMove(e) {
+            if (activeBubble && activeBubble.isDragging) {
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                activeBubble.x = clientX - activeBubble.offsetX;
+                activeBubble.y = clientY - activeBubble.offsetY;
+                activeBubble.x = Math.max(0, Math.min(activeBubble.x, window.innerWidth - activeBubble.width));
+                activeBubble.y = Math.max(0, Math.min(activeBubble.y, window.innerHeight - activeBubble.height));
+                activeBubble.element.style.left = `${activeBubble.x}px`;
+                activeBubble.element.style.top = `${activeBubble.y}px`;
+                if (e.type === 'touchmove') e.preventDefault();
+            }
+        }
+
+        function handleDragEnd() {
+            if (activeBubble) {
+                activeBubble.isDragging = false;
+                activeBubble.element.classList.remove('dragging');
+                activeBubble.vx = (Math.random() - 0.5) * 10;
+                activeBubble.vy = (Math.random() - 0.5) * 10;
+                activeBubble = null;
+            }
+        }
+
+        document.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+
+        function animateBubbles() {
+            physicsBubbles.forEach(bubble => {
+                if (!bubble.isDragging) {
+                    bubble.vx *= friction;
+                    bubble.vy *= friction;
+
+                    if (Math.abs(bubble.vx) < minVelocity && Math.abs(bubble.vy) < minVelocity) {
+                        bubble.vx += (Math.random() - 0.5) * randomForceScale;
+                        bubble.vy += (Math.random() - 0.5) * randomForceScale;
+                    }
+
+                    bubble.x += bubble.vx;
+                    bubble.y += bubble.vy;
+
+                    if (bubble.x + bubble.width > window.innerWidth) {
+                        bubble.x = window.innerWidth - bubble.width;
+                        bubble.vx *= -bounceFactor;
+                    } else if (bubble.x < 0) {
+                        bubble.x = 0;
+                        bubble.vx *= -bounceFactor;
+                    }
+
+                    if (bubble.y + bubble.height > window.innerHeight) {
+                        bubble.y = window.innerHeight - bubble.height;
+                        bubble.vy *= -bounceFactor;
+                    } else if (bubble.y < 0) {
+                        bubble.y = 0;
+                        bubble.vy *= -bounceFactor;
+                    }
+
+                    bubble.element.style.left = `${bubble.x}px`;
+                    bubble.element.style.top = `${bubble.y}px`;
+                }
+            });
+            requestAnimationFrame(animateBubbles);
+        }
+
+        window.onload = function() {
+            animateBackground();
+            animateSnow();
+            animateBubbles();
+        };
     </script>
-
 </body>
 </html>
