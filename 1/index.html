@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Chiếu Quảng Cáo</title>
+    <style>
+        /* Đảm bảo body chiếm toàn bộ màn hình và không có margin/padding */
+        body {
+            margin: 0;
+            overflow: hidden; /* Ẩn thanh cuộn */
+            background-color: black; /* Nền đen khi không có media hoặc trong quá trình chuyển đổi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw; /* Chiếm toàn bộ chiều rộng viewport */
+            height: 100vh; /* Chiếm toàn bộ chiều cao viewport */
+            cursor: none; /* Ẩn con trỏ chuột */
+            position: fixed; /* Cố định vị trí */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        /* Định dạng cho video để nó tự phóng to và lấp đầy khung hình */
+        #mediaPlayer {
+            max-width: 100%; /* Chiều rộng tối đa 100% của container */
+            max-height: 100%; /* Chiều cao tối đa 100% của container */
+            object-fit: cover; /* Video sẽ lấp đầy khung hình, có thể cắt bớt nếu tỷ lệ khung hình không khớp */
+            width: 100%; /* Đảm bảo video chiếm toàn bộ chiều rộng */
+            height: 100%; /* Đảm bảo video chiếm toàn bộ chiều cao */
+            display: none; /* Ban đầu ẩn */
+        }
+        /* Định dạng cho ảnh để nó vừa với khung hình mà không bị cắt */
+        #mediaImage {
+            max-width: 100%; /* Chiều rộng tối đa 100% của container */
+            max-height: 100%; /* Chiều cao tối đa 100% của container */
+            object-fit: contain; /* Ảnh sẽ vừa với khung hình, duy trì tỷ lệ khung hình */
+            display: none; /* Ban đầu ẩn */
+        }
+    </style>
+</head>
+<body>
+
+    <video id="mediaPlayer" autoplay muted playsinline></video>
+    <img id="mediaImage">
+
+    <script>
+        // Lấy các phần tử DOM cho video và ảnh
+        const mediaPlayer = document.getElementById('mediaPlayer');
+        const mediaImage = document.getElementById('mediaImage');
+
+        let mediaFiles = []; // Mảng chứa các đường link của video và ảnh
+        let currentIndex = 0; // Chỉ số của tệp media hiện tại trong mảng
+        let imageTimer = null; // Biến lưu trữ timer cho ảnh để có thể xóa nếu cần
+
+        /**
+         * Hàm chính để thiết lập danh sách các tệp media cần trình chiếu.
+         * @param {Array<string>} files - Một mảng các chuỗi URL của video hoặc ảnh.
+         */
+        function setupMedia(files) {
+            mediaFiles = files;
+            // Nếu có tệp media, bắt đầu trình chiếu tệp đầu tiên
+            if (mediaFiles.length > 0) {
+                playNextMedia();
+            }
+        }
+
+        /**
+         * Hàm phát/hiển thị tệp media tiếp theo trong danh sách.
+         */
+        function playNextMedia() {
+            // Xóa timer hiện có của ảnh để tránh xung đột
+            if (imageTimer) {
+                clearTimeout(imageTimer);
+                imageTimer = null;
+            }
+
+            // Nếu đã phát hết danh sách, quay lại từ đầu
+            if (currentIndex >= mediaFiles.length) {
+                currentIndex = 0;
+            }
+
+            const file = mediaFiles[currentIndex]; // Lấy đường link của tệp hiện tại
+            const fileExtension = file.split('.').pop().toLowerCase(); // Lấy phần mở rộng của tệp
+
+            // Ẩn cả hai phần tử trước khi hiển thị cái mới để đảm bảo chuyển đổi mượt mà
+            mediaPlayer.style.display = 'none';
+            mediaImage.style.display = 'none';
+
+            // Kiểm tra loại tệp dựa trên phần mở rộng
+            if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
+                // Nếu là video
+                mediaPlayer.src = file; // Đặt nguồn video
+                mediaPlayer.style.display = 'block'; // Hiển thị phần tử video
+                mediaPlayer.load(); // Tải video
+                mediaPlayer.play().catch(error => {
+                    // Xử lý lỗi nếu video không thể tự động phát (ví dụ: do chính sách của trình duyệt)
+                    console.error("Lỗi khi phát video:", error);
+                    // Có thể chuyển sang tệp tiếp theo nếu có lỗi phát
+                    currentIndex++;
+                    playNextMedia();
+                });
+            } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                // Nếu là ảnh
+                mediaImage.src = file; // Đặt nguồn ảnh
+                mediaImage.style.display = 'block'; // Hiển thị phần tử ảnh
+                // Đặt hẹn giờ để chuyển sang ảnh/video tiếp theo sau 10 giây
+                imageTimer = setTimeout(() => {
+                    currentIndex++;
+                    playNextMedia();
+                }, 10000); // 10000 miligiây = 10 giây
+            } else {
+                // Nếu định dạng tệp không được hỗ trợ, in cảnh báo và chuyển sang tệp tiếp theo
+                console.warn("Định dạng tệp không được hỗ trợ:", file);
+                currentIndex++;
+                playNextMedia();
+            }
+        }
+
+        // Lắng nghe sự kiện khi video kết thúc để chuyển sang tệp tiếp theo
+        mediaPlayer.onended = () => {
+            currentIndex++;
+            playNextMedia();
+        };
+
+        // Lắng nghe sự kiện khi toàn bộ nội dung DOM đã được tải
+        document.addEventListener('DOMContentLoaded', () => {
+            const elem = document.documentElement; // Lấy phần tử gốc của tài liệu (HTML)
+
+            // Hàm để yêu cầu chế độ toàn màn hình
+            function requestFullscreen() {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+            }
+
+            // Cố gắng yêu cầu toàn màn hình ngay khi DOMContentLoaded.
+            // Tuy nhiên, hầu hết các trình duyệt sẽ yêu cầu tương tác người dùng.
+            requestFullscreen();
+
+            // Thêm một lắng nghe sự kiện click để kích hoạt toàn màn hình nếu tự động không được phép
+            document.body.addEventListener('click', () => {
+                if (!document.fullscreenElement &&    // standard
+                    !document.webkitFullscreenElement && // Chrome, Safari and Opera
+                    !document.msFullscreenElement) {  // IE/Edge
+                    requestFullscreen();
+                }
+            });
+
+            // Gọi hàm setupMedia với danh sách các tệp của bạn
+            // Bạn có thể thay đổi các đường link dưới đây bằng đường link thực tế của mình
+            setupMedia([
+                'https://rare-gallery.com/livewalls/videostmp/74e1b2b16c84b17ac856d7785b12a5d8.mp4', 
+                'https://rare-gallery.com/uploads/posts/305736-Anime-Girl-Swimsuit-4K.jpg', 
+                'https://rare-gallery.com/livewalls/videostmp/ffd4b6cffa007420cc8dfed6f5ea514a.mp4', 
+		'https://rare-gallery.com/uploads/posts/4546476-original-characters-anime-anime-girls-loli-pyjamas-pink-pajamas-pink-candies.jpg',
+                'https://rare-gallery.com/livewalls/videostmp/1db279c067bdeecf5bac076123a27c22.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/fae9cb53dcd6d29234be1b45210103f2.mp4',
+		'https://rare-gallery.com/uploads/posts/303609-Azur-Lane-Kaga-Anime-Girl-Beach-Swimsuit-Bikini-4K.jpg',
+		'https://rare-gallery.com/mocahbig/418912-anime-girls-Amashiro-Natsuki-artwork-animal-ears.jpg',
+		'https://rare-gallery.com/livewalls/videostmp/7405fd317bd9aa52e60b177c37ba9092.mp4',
+		'https://rare-gallery.com/mocahbig/412414-THE-anime-anime-girls-legs-feet-sitting-bed-black-stockings.jpg',
+		'https://rare-gallery.com/livewalls/videostmp/65199d17abbdee3ba0b01e730dc6e967.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/cf2895842e2bf887397d5dbf5832c7ad.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/377b4b91acfc2f0b7a6f11980c29fa15.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/3cf88cd9af4d2f6dd3021b5953857d39.mp4',
+		'https://rare-gallery.com/uploads/posts/4516192-short-hair-white-hair-white-background-aqua-eyes-bed-blushing-hair-bows-eromanga-sensei-izumi-sagiri-loli-shorts.jpg',
+		'https://rare-gallery.com/livewalls/videostmp/10238d4bab573ed83c7054dc1cff7949.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/e0145b8e1e971ee6eef6882fe163ea29.mp4',
+		'https://rare-gallery.com/livewalls/videostmp/6bb6c152d23864b9d5aec51a6fee479a.mp4',
+            ]);
+        });
+    </script>
+
+</body>
+</html>
