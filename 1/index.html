@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình Chiếu Quảng Cáo</title>
+    <title>anime viewer</title>
     <style>
         body {
             margin: 0;
@@ -60,7 +60,7 @@
                 preloadNextMedia(PRELOAD_COUNT);
                 playNextMedia();
             } else {
-                console.warn("Không có tệp media nào được cung cấp.");
+                console.warn("no media provided.");
             }
         }
 
@@ -102,7 +102,7 @@
             }
 
             if (mediaFiles.length === 0) {
-                console.warn("Không có tệp media để phát.");
+                console.warn("no media to play.");
                 return;
             }
 
@@ -125,7 +125,7 @@
                     const attemptPlay = () => {
                         mediaPlayer.play()
                             .then(() => {
-                                console.log("Video đang phát:", file);
+                                console.log("playing:", file);
                                 if (playAttemptInterval) {
                                     clearInterval(playAttemptInterval);
                                     playAttemptInterval = null;
@@ -133,7 +133,7 @@
                                 mediaPlayer.style.opacity = 1;
                             })
                             .catch(error => {
-                                console.error("Lỗi khi phát video, thử lại sau 3 giây:", file, error);
+                                console.error("video playback error:", file, error);
                             });
                     };
 
@@ -153,12 +153,12 @@
                         }, 10000);
                     };
                     mediaImage.onerror = () => {
-                        console.error("Lỗi khi tải ảnh:", file);
+                        console.error("image error:", file);
                         currentIndex++;
                         playNextMedia();
                     };
                 } else {
-                    console.warn("Định dạng tệp không được hỗ trợ, bỏ qua:", file);
+                    console.warn("nah wtf is this file, skip:", file);
                     currentIndex++;
                     playNextMedia();
                 }
@@ -168,13 +168,13 @@
         }
 
         mediaPlayer.onended = () => {
-            console.log("Video kết thúc, chuyển tiếp.");
+            console.log("next vid");
             currentIndex++;
             playNextMedia();
         };
 
         mediaPlayer.onerror = (e) => {
-            console.error("Lỗi mediaPlayer (tải hoặc phát):", e.message || e);
+            console.error("media error:", e.message || e);
             currentIndex++;
             playNextMedia();
         };
