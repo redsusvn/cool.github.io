@@ -39,7 +39,6 @@
     </style>
 </head>
 <body>
-
     <video id="mediaPlayer" autoplay muted playsinline preload="auto"></video>
     <img id="mediaImage">
 
@@ -52,57 +51,54 @@
         let imageTimer = null;
         let playAttemptInterval = null;
         let preloadedMedia = [];
+        let isPlaying = false;
+        let eventListenersAdded = false;
         const PRELOAD_COUNT = 2;
+        const IMAGE_DURATION = 10000;
 
         function setupMedia(files) {
-            mediaFiles = files;
+            mediaFiles = files.filter(file => file && file.trim());
             if (mediaFiles.length > 0) {
+                setupEventListeners();
                 preloadNextMedia(PRELOAD_COUNT);
                 playNextMedia();
-            } else {
-                console.warn("No media provided. Please add URLs to the mediaFiles array.");
             }
         }
 
-        function preloadNextMedia(count) {
-            preloadedMedia.forEach(el => {
-                if (el && el.parentNode) {
-                    el.parentNode.removeChild(el);
-                }
-            });
-            preloadedMedia = [];
+        function setupEventListeners() {
+            if (eventListenersAdded) return;
+            
+            mediaPlayer.removeEventListener('ended', handleVideoEnd);
+            mediaPlayer.removeEventListener('error', handleVideoError);
+            mediaPlayer.removeEventListener('loadeddata', handleVideoLoaded);
+            mediaPlayer.removeEventListener('canplay', handleVideoCanPlay);
+            
+            mediaPlayer.addEventListener('ended', handleVideoEnd);
+            mediaPlayer.addEventListener('error', handleVideoError);
+            mediaPlayer.addEventListener('loadeddata', handleVideoLoaded);
+            mediaPlayer.addEventListener('canplay', handleVideoCanPlay);
+            
+            eventListenersAdded = true;
+        }
 
-            for (let i = 0; i < count; i++) {
-                const nextIndex = (currentIndex + 1 + i) % mediaFiles.length;
-                const file = mediaFiles[nextIndex];
-                const fileExtension = file.split('.').pop().toLowerCase();
+        function handleVideoEnd() {
+            nextMedia();
+        }
 
-                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
-                    const videoElement = document.createElement('video');
-                    videoElement.src = file;
-                    videoElement.preload = 'auto';
-                    videoElement.muted = true;
-                    videoElement.playsInline = true;
-                    videoElement.style.display = 'none';
-                    videoElement.onerror = (e) => {
-                        console.error(`Preload video error for ${file}:`, e);
-                    };
-                    document.body.appendChild(videoElement);
-                    preloadedMedia.push(videoElement);
-                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-                    const imageElement = new Image();
-                    imageElement.src = file;
-                    imageElement.style.display = 'none';
-                    imageElement.onerror = () => {
-                        console.error(`Preload image error for ${file}`);
-                    };
-                    document.body.appendChild(imageElement);
-                    preloadedMedia.push(imageElement);
-                }
+        function handleVideoError(e) {
+            nextMedia();
+        }
+
+        function handleVideoLoaded() {
+        }
+
+        function handleVideoCanPlay() {
+            if (!isPlaying) {
+                attemptPlay();
             }
         }
 
-        function playNextMedia() {
+        function cleanupTimers() {
             if (imageTimer) {
                 clearTimeout(imageTimer);
                 imageTimer = null;
@@ -111,9 +107,87 @@
                 clearInterval(playAttemptInterval);
                 playAttemptInterval = null;
             }
+        }
+
+        function cleanupPreloadedMedia() {
+            preloadedMedia.forEach(el => {
+                if (el && el.parentNode) {
+                    el.removeEventListener('error', () => {});
+                    el.parentNode.removeChild(el);
+                }
+            });
+            preloadedMedia = [];
+        }
+
+        function preloadNextMedia(count) {
+            cleanupPreloadedMedia();
+
+            for (let i = 0; i < count && i < mediaFiles.length; i++) {
+                const nextIndex = (currentIndex + 1 + i) % mediaFiles.length;
+                const file = mediaFiles[nextIndex];
+                const fileExtension = getFileExtension(file);
+
+                if (isVideoFile(fileExtension)) {
+                    const videoElement = document.createElement('video');
+                    videoElement.src = file;
+                    videoElement.preload = 'metadata';
+                    videoElement.muted = true;
+                    videoElement.playsInline = true;
+                    videoElement.style.display = 'none';
+                    videoElement.addEventListener('error', () => {});
+                    document.body.appendChild(videoElement);
+                    preloadedMedia.push(videoElement);
+                } else if (isImageFile(fileExtension)) {
+                    const imageElement = new Image();
+                    imageElement.src = file;
+                    imageElement.style.display = 'none';
+                    imageElement.addEventListener('error', () => {});
+                    document.body.appendChild(imageElement);
+                    preloadedMedia.push(imageElement);
+                }
+            }
+        }
+
+        function getFileExtension(file) {
+            return file.split('.').pop().toLowerCase().split('?')[0];
+        }
+
+        function isVideoFile(extension) {
+            return ['mp4', 'webm', 'ogg', 'mov', 'avi'].includes(extension);
+        }
+
+        function isImageFile(extension) {
+            return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+        }
+
+        function nextMedia() {
+            currentIndex = (currentIndex + 1) % mediaFiles.length;
+            playNextMedia();
+        }
+
+        function attemptPlay() {
+            if (mediaPlayer.readyState >= 2) {
+                mediaPlayer.play()
+                    .then(() => {
+                        isPlaying = true;
+                        cleanupTimers();
+                        mediaPlayer.style.opacity = 1;
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            if (!isPlaying) {
+                                nextMedia();
+                            }
+                        }, 3000);
+                    });
+            }
+        }
+
+        function playNextMedia() {
+            cleanupTimers();
+            isPlaying = false;
 
             if (mediaFiles.length === 0) {
-                console.warn("No media to play. The mediaFiles array is empty.");
                 return;
             }
 
@@ -122,96 +196,111 @@
             }
 
             const file = mediaFiles[currentIndex];
-            const fileExtension = file.split('.').pop().toLowerCase();
+            if (!file) {
+                nextMedia();
+                return;
+            }
+
+            const fileExtension = getFileExtension(file);
 
             mediaPlayer.style.opacity = 0;
             mediaImage.style.opacity = 0;
 
             setTimeout(() => {
-                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
-                    mediaPlayer.src = file;
-                    mediaPlayer.style.display = 'block';
-                    mediaImage.style.display = 'none';
-
-                    const attemptPlay = () => {
-                        mediaPlayer.play()
-                            .then(() => {
-                                console.log("Playing video:", file);
-                                if (playAttemptInterval) {
-                                    clearInterval(playAttemptInterval);
-                                    playAttemptInterval = null;
-                                }
-                                mediaPlayer.style.opacity = 1;
-                            })
-                            .catch(error => {
-                                console.error(`Video playback error for ${file}:`, error);
-                            });
-                    };
-
-                    attemptPlay();
-                    playAttemptInterval = setInterval(attemptPlay, 3000);
-                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-                    mediaImage.src = file;
-                    mediaImage.style.display = 'block';
-                    mediaPlayer.style.display = 'none';
-
-                    mediaImage.onload = () => {
-                        mediaImage.style.opacity = 1;
-                        imageTimer = setTimeout(() => {
-                            currentIndex++;
-                            playNextMedia();
-                        }, 10000);
-                    };
-                    mediaImage.onerror = () => {
-                        console.error("Image load error (skipping to next):", file);
-                        currentIndex++;
-                        playNextMedia();
-                    };
+                if (isVideoFile(fileExtension)) {
+                    playVideo(file);
+                } else if (isImageFile(fileExtension)) {
+                    playImage(file);
                 } else {
-                    console.warn("Unsupported file type (skipping):", file);
-                    currentIndex++;
-                    playNextMedia();
+                    nextMedia();
                 }
-
-                preloadNextMedia(PRELOAD_COUNT);
             }, 500);
         }
 
-        mediaPlayer.onended = () => {
-            console.log("Video ended, playing next.");
-            currentIndex++;
-            playNextMedia();
-        };
+        function playVideo(file) {
+            mediaPlayer.pause();
+            mediaPlayer.src = '';
+            mediaPlayer.load();
+            
+            mediaPlayer.src = file;
+            mediaPlayer.style.display = 'block';
+            mediaImage.style.display = 'none';
 
-        mediaPlayer.onerror = (e) => {
-            console.error("Media player error (skipping to next):", e);
-            currentIndex++;
-            playNextMedia();
-        };
+            const checkReady = () => {
+                if (mediaPlayer.readyState >= 2) {
+                    attemptPlay();
+                } else {
+                    setTimeout(checkReady, 100);
+                }
+            };
 
-        document.addEventListener('DOMContentLoaded', () => {
+            mediaPlayer.load();
+            setTimeout(checkReady, 100);
+
+            setTimeout(() => {
+                if (!isPlaying) {
+                    attemptPlay();
+                }
+            }, 3000);
+
+            setTimeout(() => {
+                if (!isPlaying) {
+                    nextMedia();
+                }
+            }, 10000);
+
+            preloadNextMedia(PRELOAD_COUNT);
+        }
+
+        function playImage(file) {
+            mediaImage.src = file;
+            mediaImage.style.display = 'block';
+            mediaPlayer.style.display = 'none';
+            mediaPlayer.pause();
+
+            const imageLoadTimeout = setTimeout(() => {
+                nextMedia();
+            }, 5000);
+
+            mediaImage.onload = () => {
+                clearTimeout(imageLoadTimeout);
+                mediaImage.style.opacity = 1;
+                
+                imageTimer = setTimeout(() => {
+                    nextMedia();
+                }, IMAGE_DURATION);
+            };
+
+            mediaImage.onerror = () => {
+                clearTimeout(imageLoadTimeout);
+                nextMedia();
+            };
+
+            preloadNextMedia(PRELOAD_COUNT);
+        }
+
+        function requestFullscreen() {
             const elem = document.documentElement;
-
-            function requestFullscreen() {
-                if (!document.fullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen().catch(err => {
-                            console.error("Fullscreen request failed:", err);
-                        });
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen().catch(err => {
-                            console.error("Fullscreen request (webkit) failed:", err);
-                        });
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen().catch(err => {
-                            console.error("Fullscreen request (ms) failed:", err);
-                        });
-                    }
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.error("Fullscreen request failed:", err);
+                    });
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen().catch(err => {
+                        console.error("Fullscreen request (webkit) failed:", err);
+                    });
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen().catch(err => {
+                        console.error("Fullscreen request (ms) failed:", err);
+                    });
                 }
             }
+        }
 
-            document.body.addEventListener('click', requestFullscreen);
-            document.addEventListener('keydown', requestFullscreen);
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.addEventListener('click', requestFullscreen, { once: true });
+            document.addEventListener('keydown', requestFullscreen, { once: true });
 
             setupMedia([
                 'https://rare-gallery.com/livewalls/videostmp/74e1b2b16c84b17ac856d7785b12a5d8.mp4',
@@ -229,10 +318,14 @@
                 'https://rare-gallery.com/uploads/posts/4516192-short-hair-white-hair-white-background-aqua-eyes-bed-blushing-hair-bows-eromanga-sensei-izumi-sagiri-loli-shorts.jpg',
                 'https://rare-gallery.com/livewalls/videostmp/10238d4bab573ed83c7054dc1cff7949.mp4',
                 'https://rare-gallery.com/livewalls/videostmp/e0145b8e1e971ee6eef6882fe163ea29.mp4',
-                'https://rare-gallery.com/livewalls/videostmp/6bb6c152d23864b9d5aec51a6fee479a.mp4',
+                'https://rare-gallery.com/livewalls/videostmp/6bb6c152d23864b9d5aec51a6fee479a.mp4'
             ]);
         });
-    </script>
 
+        window.addEventListener('beforeunload', () => {
+            cleanupTimers();
+            cleanupPreloadedMedia();
+        });
+    </script>
 </body>
 </html>
