@@ -60,12 +60,18 @@
                 preloadNextMedia(PRELOAD_COUNT);
                 playNextMedia();
             } else {
-                console.warn("no media provided.");
+                console.warn("No media provided. Please add URLs to the mediaFiles array.");
             }
         }
 
         function preloadNextMedia(count) {
+            preloadedMedia.forEach(el => {
+                if (el && el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            });
             preloadedMedia = [];
+
             for (let i = 0; i < count; i++) {
                 const nextIndex = (currentIndex + 1 + i) % mediaFiles.length;
                 const file = mediaFiles[nextIndex];
@@ -78,12 +84,18 @@
                     videoElement.muted = true;
                     videoElement.playsInline = true;
                     videoElement.style.display = 'none';
+                    videoElement.onerror = (e) => {
+                        console.error(`Preload video error for ${file}:`, e);
+                    };
                     document.body.appendChild(videoElement);
                     preloadedMedia.push(videoElement);
                 } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
                     const imageElement = new Image();
                     imageElement.src = file;
                     imageElement.style.display = 'none';
+                    imageElement.onerror = () => {
+                        console.error(`Preload image error for ${file}`);
+                    };
                     document.body.appendChild(imageElement);
                     preloadedMedia.push(imageElement);
                 }
@@ -95,14 +107,13 @@
                 clearTimeout(imageTimer);
                 imageTimer = null;
             }
-
             if (playAttemptInterval) {
                 clearInterval(playAttemptInterval);
                 playAttemptInterval = null;
             }
 
             if (mediaFiles.length === 0) {
-                console.warn("no media to play.");
+                console.warn("No media to play. The mediaFiles array is empty.");
                 return;
             }
 
@@ -125,7 +136,7 @@
                     const attemptPlay = () => {
                         mediaPlayer.play()
                             .then(() => {
-                                console.log("playing:", file);
+                                console.log("Playing video:", file);
                                 if (playAttemptInterval) {
                                     clearInterval(playAttemptInterval);
                                     playAttemptInterval = null;
@@ -133,13 +144,12 @@
                                 mediaPlayer.style.opacity = 1;
                             })
                             .catch(error => {
-                                console.error("video playback error:", file, error);
+                                console.error(`Video playback error for ${file}:`, error);
                             });
                     };
 
                     attemptPlay();
                     playAttemptInterval = setInterval(attemptPlay, 3000);
-
                 } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
                     mediaImage.src = file;
                     mediaImage.style.display = 'block';
@@ -153,12 +163,12 @@
                         }, 10000);
                     };
                     mediaImage.onerror = () => {
-                        console.error("image error:", file);
+                        console.error("Image load error (skipping to next):", file);
                         currentIndex++;
                         playNextMedia();
                     };
                 } else {
-                    console.warn("nah wtf is this file, skip:", file);
+                    console.warn("Unsupported file type (skipping):", file);
                     currentIndex++;
                     playNextMedia();
                 }
@@ -168,13 +178,13 @@
         }
 
         mediaPlayer.onended = () => {
-            console.log("next vid");
+            console.log("Video ended, playing next.");
             currentIndex++;
             playNextMedia();
         };
 
         mediaPlayer.onerror = (e) => {
-            console.error("media error:", e.message || e);
+            console.error("Media player error (skipping to next):", e);
             currentIndex++;
             playNextMedia();
         };
@@ -185,16 +195,20 @@
             function requestFullscreen() {
                 if (!document.fullscreenElement) {
                     if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
+                        elem.requestFullscreen().catch(err => {
+                            console.error("Fullscreen request failed:", err);
+                        });
                     } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
+                        elem.webkitRequestFullscreen().catch(err => {
+                            console.error("Fullscreen request (webkit) failed:", err);
+                        });
                     } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
+                        elem.msRequestFullscreen().catch(err => {
+                            console.error("Fullscreen request (ms) failed:", err);
+                        });
                     }
                 }
             }
-
-            requestFullscreen();
 
             document.body.addEventListener('click', requestFullscreen);
             document.addEventListener('keydown', requestFullscreen);
