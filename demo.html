@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            cursor: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        #mediaPlayer, #mediaImage {
+            max-width: 100%;
+            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #mediaPlayer {
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <video id="mediaPlayer" autoplay muted playsinline preload="auto"></video>
+    <img id="mediaImage">
+
+    <script>
+        const mediaPlayer = document.getElementById('mediaPlayer');
+        const mediaImage = document.getElementById('mediaImage');
+
+        let mediaFiles = [];
+        let currentIndex = 0;
+        let imageTimer = null;
+        let playAttemptInterval = null;
+        let preloadedMedia = [];
+        const PRELOAD_COUNT = 2;
+
+        function setupMedia(files) {
+            mediaFiles = files;
+            if (mediaFiles.length > 0) {
+                preloadNextMedia(PRELOAD_COUNT);
+                playNextMedia();
+            } else {
+                console.warn("Không có tệp media nào được cung cấp.");
+            }
+        }
+
+        function preloadNextMedia(count) {
+            preloadedMedia.forEach(el => el.remove());
+            preloadedMedia = [];
+
+            for (let i = 0; i < count; i++) {
+                const nextIndex = (currentIndex + 1 + i) % mediaFiles.length;
+                if (nextIndex === 0 && (currentIndex + 1 + i) >= mediaFiles.length) {
+                    continue;
+                }
+
+                const file = mediaFiles[nextIndex];
+                const fileExtension = file.split('.').pop().toLowerCase();
+
+                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
+                    const videoElement = document.createElement('video');
+                    videoElement.src = file;
+                    videoElement.preload = 'auto';
+                    videoElement.muted = true;
+                    videoElement.playsInline = true;
+                    videoElement.style.display = 'none';
+                    document.body.appendChild(videoElement);
+                    preloadedMedia.push(videoElement);
+                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                    const imageElement = new Image();
+                    imageElement.src = file;
+                    imageElement.style.display = 'none';
+                    document.body.appendChild(imageElement);
+                    preloadedMedia.push(imageElement);
+                }
+            }
+        }
+
+        function playNextMedia() {
+            if (imageTimer) {
+                clearTimeout(imageTimer);
+                imageTimer = null;
+            }
+
+            if (playAttemptInterval) {
+                clearInterval(playAttemptInterval);
+                playAttemptInterval = null;
+            }
+
+            if (mediaFiles.length === 0) {
+                console.warn("Không có tệp media để phát.");
+                return;
+            }
+
+            if (currentIndex >= mediaFiles.length) {
+                console.log("Đã chơi hết tất cả media trong danh sách. Tải lại trang...");
+                location.reload();
+                return;
+            }
+
+            const file = mediaFiles[currentIndex];
+            const fileExtension = file.split('.').pop().toLowerCase();
+
+            mediaPlayer.style.opacity = 0;
+            mediaImage.style.opacity = 0;
+
+            setTimeout(() => {
+                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
+                    mediaPlayer.src = file;
+                    mediaPlayer.style.display = 'block';
+                    mediaImage.style.display = 'none';
+
+                    const attemptPlay = () => {
+                        mediaPlayer.play()
+                            .then(() => {
+                                console.log("Video đang phát:", file);
+                                if (playAttemptInterval) {
+                                    clearInterval(playAttemptInterval);
+                                    playAttemptInterval = null;
+                                }
+                                mediaPlayer.style.opacity = 1;
+                            })
+                            .catch(error => {
+                                console.error("Lỗi khi phát video, thử lại sau 3 giây:", file, error);
+                            });
+                    };
+
+                    attemptPlay();
+                    playAttemptInterval = setInterval(attemptPlay, 3000);
+
+                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                    mediaImage.src = file;
+                    mediaImage.style.display = 'block';
+                    mediaPlayer.style.display = 'none';
+
+                    mediaImage.onload = () => {
+                        mediaImage.style.opacity = 1;
+                        imageTimer = setTimeout(() => {
+                            currentIndex++;
+                            playNextMedia();
+                        }, 10000);
+                    };
+                    mediaImage.onerror = () => {
+                        console.error("Lỗi khi tải ảnh:", file);
+                        currentIndex++;
+                        playNextMedia();
+                    };
+                } else {
+                    console.warn("Định dạng tệp không được hỗ trợ, bỏ qua:", file);
+                    currentIndex++;
+                    playNextMedia();
+                }
+
+                if (currentIndex + 1 < mediaFiles.length) {
+                    preloadNextMedia(PRELOAD_COUNT);
+                }
+            }, 500);
+        }
+
+        mediaPlayer.onended = () => {
+            console.log("Video kết thúc, chuyển tiếp.");
+            currentIndex++;
+            playNextMedia();
+        };
+
+        mediaPlayer.onerror = (e) => {
+            console.error("Lỗi mediaPlayer (tải hoặc phát):", e.message || e);
+            currentIndex++;
+            playNextMedia();
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const elem = document.documentElement;
+
+            function requestFullscreen() {
+                if (!document.fullscreenElement) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) {
+                        elem.msRequestFullscreen();
+                    }
+                }
+            }
+
+            requestFullscreen();
+
+            document.body.addEventListener('click', requestFullscreen);
+            document.addEventListener('keydown', requestFullscreen);
+
+            setupMedia([
+                'https://files.catbox.moe/16v781.mp4',
+                'https://files.catbox.moe/j8jy2d.mp4',
+                'https://files.catbox.moe/2zxg2j.mp4',
+                'https://files.catbox.moe/wq1ob7.mp4',
+                'https://files.catbox.moe/6xmlmu.mp4',
+                'https://files.catbox.moe/qdldj1.mp4',
+                'https://files.catbox.moe/ndse9u.mp4',
+                'https://files.catbox.moe/h5fxz5.mp4',
+                'https://files.catbox.moe/o2p1tz.mp4',
+                'https://files.catbox.moe/fzxtza.mp4',
+                'https://files.catbox.moe/3imfsm.mp4',
+                'https://files.catbox.moe/v62c85.mp4',
+                'https://files.catbox.moe/smnl0g.mp4',
+                'https://files.catbox.moe/uvp4va.mp4',
+                'https://files.catbox.moe/8stsu3.mp4',
+                'https://files.catbox.moe/jd8o7x.mp4',
+                'https://files.catbox.moe/xc4sth.mp4',
+                'https://files.catbox.moe/0f0ojf.mp4',
+                'https://files.catbox.moe/d8syaf.mp4',
+                'https://files.catbox.moe/uebltq.mp4',
+                'https://files.catbox.moe/1npdhr.mp4',
+                'https://files.catbox.moe/16v781.mp4',
+                'https://files.catbox.moe/cb2un2.mp4',
+                'https://files.catbox.moe/dmz4af.mp4',
+                'https://files.catbox.moe/d22vt1.mp4',
+                'https://files.catbox.moe/pip03e.mp4',
+                'https://files.catbox.moe/cmlk5y.mp4',
+                'https://files.catbox.moe/8y3zid.mp4',
+                'https://files.catbox.moe/t4msvs.mp4',
+                'https://files.catbox.moe/yaq48n.mp4',
+                'https://files.catbox.moe/1ix9l9.mp4',
+                'https://files.catbox.moe/wmz4vp.mp4',
+                'https://files.catbox.moe/aqjz9p.mp4',
+                'https://files.catbox.moe/hb7k2w.mp4',
+                'https://files.catbox.moe/y3keyk.mp4',
+                'https://files.catbox.moe/4hqy5g.mp4',
+                'https://files.catbox.moe/nlgw7g.mp4',
+                'https://files.catbox.moe/0jbzmn.mp4'
+            ]);
+        });
+    </script>
+
+</body>
+</html>
