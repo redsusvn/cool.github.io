@@ -1,256 +1,173 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1</title>
+    <title>Video Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
+        body, html {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            background-color: black;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        #videoPlayer {
             width: 100vw;
             height: 100vh;
-            cursor: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-        #mediaPlayer, #mediaImage {
-            max-width: 100%;
-            max-height: 100%;
-            width: 100%;
-            height: 100%;
             object-fit: contain;
+            background-color: black;
+            border-radius: 0.5rem;
+        }
+        .loading-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 10;
+            border-radius: 0.5rem;
         }
-        #mediaPlayer {
-            object-fit: cover;
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+        }
+        .message-box button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .message-box button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white flex items-center justify-center">
 
-    <video id="mediaPlayer" autoplay muted playsinline preload="auto"></video>
-    <img id="mediaImage">
+    <video id="videoPlayer" class="rounded-lg shadow-lg" autoplay muted playsinline></video>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+
+    </div>
+
+    <div id="messageBox" class="message-box">
+        <p id="messageText"></p>
+        <button onclick="hideMessageBox()">OK</button>
+    </div>
 
     <script>
-        const mediaPlayer = document.getElementById('mediaPlayer');
-        const mediaImage = document.getElementById('mediaImage');
+        const videoUrls = [
+            'https://files.catbox.moe/16v781.mp4',
+            'https://files.catbox.moe/j8jy2d.mp4',
+            'https://files.catbox.moe/2zxg2j.mp4',
+            'https://files.catbox.moe/wq1ob7.mp4',
+            'https://files.catbox.moe/6xmlmu.mp4',
+            'https://files.catbox.moe/qdldj1.mp4',
+            'https://files.catbox.moe/ndse9u.mp4',
+            'https://files.catbox.moe/h5fxz5.mp4'
+            
+        ];
 
-        let mediaFiles = [];
-        let currentIndex = 0;
-        let imageTimer = null;
-        let playAttemptInterval = null;
-        let preloadedMedia = [];
-        const PRELOAD_COUNT = 2;
+        const videoPlayer = document.getElementById('videoPlayer');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
 
-        function setupMedia(files) {
-            mediaFiles = files;
-            if (mediaFiles.length > 0) {
-                preloadNextMedia(PRELOAD_COUNT);
-                playNextMedia();
-            } else {
-                console.warn("Không có tệp media nào được cung cấp.");
-            }
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
         }
 
-        function preloadNextMedia(count) {
-            preloadedMedia.forEach(el => el.remove());
-            preloadedMedia = [];
-
-            for (let i = 0; i < count; i++) {
-                const nextIndex = (currentIndex + 1 + i) % mediaFiles.length;
-                if (nextIndex === 0 && (currentIndex + 1 + i) >= mediaFiles.length) {
-                    continue;
-                }
-
-                const file = mediaFiles[nextIndex];
-                const fileExtension = file.split('.').pop().toLowerCase();
-
-                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
-                    const videoElement = document.createElement('video');
-                    videoElement.src = file;
-                    videoElement.preload = 'auto';
-                    videoElement.muted = true;
-                    videoElement.playsInline = true;
-                    videoElement.style.display = 'none';
-                    document.body.appendChild(videoElement);
-                    preloadedMedia.push(videoElement);
-                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-                    const imageElement = new Image();
-                    imageElement.src = file;
-                    imageElement.style.display = 'none';
-                    document.body.appendChild(imageElement);
-                    preloadedMedia.push(imageElement);
-                }
-            }
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
         }
 
-        function playNextMedia() {
-            if (imageTimer) {
-                clearTimeout(imageTimer);
-                imageTimer = null;
+        function getCurrentVideoIndex() {
+            const params = new URLSearchParams(window.location.search);
+            const videoNum = parseInt(params.get('video'));
+            if (!isNaN(videoNum) && videoNum >= 0 && videoNum < videoUrls.length) {
+                return videoNum;
             }
+            return 0;
+        }
 
-            if (playAttemptInterval) {
-                clearInterval(playAttemptInterval);
-                playAttemptInterval = null;
-            }
-
-            if (mediaFiles.length === 0) {
-                console.warn("Không có tệp media để phát.");
+        async function playVideo(index) {
+            if (index < 0 || index >= videoUrls.length) {
+                console.error('Invalid video index:', index);
+                showMessageBox('Error: Invalid video index provided.');
                 return;
             }
 
-            if (currentIndex >= mediaFiles.length) {
-                console.log("Đã chơi hết tất cả media trong danh sách. Tải lại trang...");
-                location.reload();
-                return;
+            loadingOverlay.classList.remove('hidden');
+            videoPlayer.src = videoUrls[index];
+
+            try {
+                await videoPlayer.load();
+                await videoPlayer.play();
+                loadingOverlay.classList.add('hidden');
+            } catch (error) {
+                console.error('Error playing video:', error);
+                loadingOverlay.classList.add('hidden');
+                showMessageBox('Video autoplay was blocked by the browser. Please click the play button or interact with the page to start.');
+                videoPlayer.muted = false;
             }
-
-            const file = mediaFiles[currentIndex];
-            const fileExtension = file.split('.').pop().toLowerCase();
-
-            mediaPlayer.style.opacity = 0;
-            mediaImage.style.opacity = 0;
-
-            setTimeout(() => {
-                if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
-                    mediaPlayer.src = file;
-                    mediaPlayer.style.display = 'block';
-                    mediaImage.style.display = 'none';
-
-                    const attemptPlay = () => {
-                        mediaPlayer.play()
-                            .then(() => {
-                                console.log("Video đang phát:", file);
-                                if (playAttemptInterval) {
-                                    clearInterval(playAttemptInterval);
-                                    playAttemptInterval = null;
-                                }
-                                mediaPlayer.style.opacity = 1;
-                            })
-                            .catch(error => {
-                                console.error("Lỗi khi phát video, thử lại sau 3 giây:", file, error);
-                            });
-                    };
-
-                    attemptPlay();
-                    playAttemptInterval = setInterval(attemptPlay, 3000);
-
-                } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-                    mediaImage.src = file;
-                    mediaImage.style.display = 'block';
-                    mediaPlayer.style.display = 'none';
-
-                    mediaImage.onload = () => {
-                        mediaImage.style.opacity = 1;
-                        imageTimer = setTimeout(() => {
-                            currentIndex++;
-                            playNextMedia();
-                        }, 10000);
-                    };
-                    mediaImage.onerror = () => {
-                        console.error("Lỗi khi tải ảnh:", file);
-                        currentIndex++;
-                        playNextMedia();
-                    };
-                } else {
-                    console.warn("Định dạng tệp không được hỗ trợ, bỏ qua:", file);
-                    currentIndex++;
-                    playNextMedia();
-                }
-
-                if (currentIndex + 1 < mediaFiles.length) {
-                    preloadNextMedia(PRELOAD_COUNT);
-                }
-            }, 500);
         }
 
-        mediaPlayer.onended = () => {
-            console.log("Video kết thúc, chuyển tiếp.");
-            currentIndex++;
-            playNextMedia();
+        function handleVideoEnded() {
+            let currentIndex = getCurrentVideoIndex();
+            let nextIndex = (currentIndex + 1) % videoUrls.length;
+
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('video', nextIndex);
+            window.location.href = newUrl.toString();
+        }
+
+        window.onload = function() {
+            const initialIndex = getCurrentVideoIndex();
+            playVideo(initialIndex);
+
+            videoPlayer.addEventListener('ended', handleVideoEnded);
+
+            videoPlayer.addEventListener('playing', () => {
+                loadingOverlay.classList.add('hidden');
+            });
+
+            videoPlayer.addEventListener('error', (e) => {
+                console.error('Video error:', e);
+                loadingOverlay.classList.add('hidden');
+                showMessageBox('Failed to load video. It might be unavailable, corrupted, or the URL is incorrect.');
+            });
         };
 
-        mediaPlayer.onerror = (e) => {
-            console.error("Lỗi mediaPlayer (tải hoặc phát):", e.message || e);
-            currentIndex++;
-            playNextMedia();
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const elem = document.documentElement;
-
-            function requestFullscreen() {
-                if (!document.fullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen();
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
-                }
-            }
-
-            requestFullscreen();
-
-            document.body.addEventListener('click', requestFullscreen);
-            document.addEventListener('keydown', requestFullscreen);
-
-            setupMedia([
-                'https://files.catbox.moe/16v781.mp4',
-                'https://files.catbox.moe/j8jy2d.mp4',
-                'https://files.catbox.moe/2zxg2j.mp4',
-                'https://files.catbox.moe/wq1ob7.mp4',
-                'https://files.catbox.moe/6xmlmu.mp4',
-                'https://files.catbox.moe/qdldj1.mp4',
-                'https://files.catbox.moe/ndse9u.mp4',
-                'https://files.catbox.moe/h5fxz5.mp4',
-                'https://files.catbox.moe/o2p1tz.mp4',
-                'https://files.catbox.moe/fzxtza.mp4',
-                'https://files.catbox.moe/3imfsm.mp4',
-                'https://files.catbox.moe/v62c85.mp4',
-                'https://files.catbox.moe/smnl0g.mp4',
-                'https://files.catbox.moe/uvp4va.mp4',
-                'https://files.catbox.moe/8stsu3.mp4',
-                'https://files.catbox.moe/jd8o7x.mp4',
-                'https://files.catbox.moe/xc4sth.mp4',
-                'https://files.catbox.moe/0f0ojf.mp4',
-                'https://files.catbox.moe/d8syaf.mp4',
-                'https://files.catbox.moe/uebltq.mp4',
-                'https://files.catbox.moe/1npdhr.mp4',
-                'https://files.catbox.moe/16v781.mp4',
-                'https://files.catbox.moe/cb2un2.mp4',
-                'https://files.catbox.moe/dmz4af.mp4',
-                'https://files.catbox.moe/d22vt1.mp4',
-                'https://files.catbox.moe/pip03e.mp4',
-                'https://files.catbox.moe/cmlk5y.mp4',
-                'https://files.catbox.moe/8y3zid.mp4',
-                'https://files.catbox.moe/t4msvs.mp4',
-                'https://files.catbox.moe/yaq48n.mp4',
-                'https://files.catbox.moe/1ix9l9.mp4',
-                'https://files.catbox.moe/wmz4vp.mp4',
-                'https://files.catbox.moe/aqjz9p.mp4',
-                'https://files.catbox.moe/hb7k2w.mp4',
-                'https://files.catbox.moe/y3keyk.mp4',
-                'https://files.catbox.moe/4hqy5g.mp4',
-                'https://files.catbox.moe/nlgw7g.mp4',
-                'https://files.catbox.moe/0jbzmn.mp4'
-            ]);
+        window.addEventListener('resize', () => {
         });
     </script>
-
 </body>
 </html>
