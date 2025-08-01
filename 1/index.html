@@ -74,7 +74,7 @@
     <video id="videoPlayer" class="rounded-lg shadow-lg" autoplay muted playsinline></video>
 
     <div id="loadingOverlay" class="loading-overlay hidden">
-
+        Loading...
     </div>
 
     <div id="messageBox" class="message-box">
@@ -128,6 +128,7 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const body = document.body;
 
         function showMessageBox(message) {
             messageText.textContent = message;
@@ -136,6 +137,16 @@
 
         function hideMessageBox() {
             messageBox.style.display = 'none';
+        }
+
+        function enterFullscreen() {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.webkitRequestFullscreen) { /* Safari */
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) { /* IE11 */
+                videoPlayer.msRequestFullscreen();
+            }
         }
 
         function getCurrentVideoIndex() {
@@ -164,8 +175,16 @@
             } catch (error) {
                 console.error('Error playing video:', error);
                 loadingOverlay.classList.add('hidden');
-                showMessageBox('Video autoplay was blocked by the browser. Please click the play button or interact with the page to start.');
-                videoPlayer.muted = false;
+                showMessageBox('Video autoplay was blocked by the browser. Please click to play.');
+                // Handle the case where autoplay is blocked by adding a click listener
+                const playBlockedHandler = () => {
+                    videoPlayer.play();
+                    videoPlayer.removeEventListener('click', playBlockedHandler);
+                    videoPlayer.removeEventListener('touchend', playBlockedHandler);
+                    hideMessageBox();
+                };
+                videoPlayer.addEventListener('click', playBlockedHandler);
+                videoPlayer.addEventListener('touchend', playBlockedHandler);
             }
         }
 
@@ -193,10 +212,23 @@
                 loadingOverlay.classList.add('hidden');
                 showMessageBox('Failed to load video. It might be unavailable, corrupted, or the URL is incorrect.');
             });
-        };
 
-        window.addEventListener('resize', () => {
-        });
+            // Automatically enter fullscreen on the first touch/click
+            const handleFirstInteraction = () => {
+                enterFullscreen();
+                // If on a mobile device, attempt to lock to landscape
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch((e) => {
+                        console.log('Screen orientation lock failed:', e);
+                    });
+                }
+                document.body.removeEventListener('click', handleFirstInteraction);
+                document.body.removeEventListener('touchend', handleFirstInteraction);
+            };
+
+            document.body.addEventListener('click', handleFirstInteraction);
+            document.body.addEventListener('touchend', handleFirstInteraction);
+        };
     </script>
 </body>
 </html>
