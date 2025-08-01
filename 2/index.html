@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looping Video Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        body.fullscreen-active {
+            cursor: none;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        .drop-zone {
+            border: 4px dashed #cbd5e1;
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 1.125rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .drop-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+        video {
+            width: 100%;
+            max-height: 60vh;
+            background-color: #000;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .message-box {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            text-align: center;
+            display: none;
+        }
+        .current-video-info {
+            font-size: 1rem;
+            color: #475569;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .fullscreen-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        .fullscreen-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Local Video Looper</h1>
+
+        <div id="dropZone" class="drop-zone">
+            <p>Drag & Drop your video files here</p>
+            <p class="text-sm mt-1">or click to browse (only video files accepted)</p>
+        </div>
+
+        <video id="videoPlayer" controls autoplay muted class="rounded-xl"></video>
+
+        <div id="currentVideoInfo" class="current-video-info hidden"></div>
+
+        <button id="fullscreenButton" class="fullscreen-button hidden">Toggle Fullscreen</button>
+
+        <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const messageBox = document.getElementById('messageBox');
+        const currentVideoInfo = document.getElementById('currentVideoInfo');
+        const fullscreenButton = document.getElementById('fullscreenButton');
+
+        let playlist = [];
+        let currentVideoIndex = 0;
+        let currentVideoObjectURL = null;
+        let cursorHideTimeout;
+
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type === 'error' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function updateCurrentVideoInfo(fileName) {
+            currentVideoInfo.textContent = `Now playing: ${fileName}`;
+            currentVideoInfo.classList.remove('hidden');
+        }
+
+        function playVideo(index) {
+            if (index < 0 || index >= playlist.length) {
+                console.warn('Invalid video index, resetting to 0.');
+                index = 0;
+            }
+
+            const videoFile = playlist[index];
+            if (!videoFile) {
+                console.error('No video file found at index:', index);
+                return;
+            }
+
+            if (currentVideoObjectURL) {
+                URL.revokeObjectURL(currentVideoObjectURL);
+                currentVideoObjectURL = null;
+            }
+
+            currentVideoObjectURL = URL.createObjectURL(videoFile);
+            videoPlayer.src = currentVideoObjectURL;
+            videoPlayer.style.display = 'block';
+            fullscreenButton.classList.remove('hidden');
+
+            videoPlayer.play()
+                .then(() => {
+                    console.log(`Playing: ${videoFile.name}`);
+                    updateCurrentVideoInfo(videoFile.name);
+                })
+                .catch(error => {
+                    console.error('Error playing video:', error);
+                    showMessage(`Could not play "${videoFile.name}". Please try another file.`, 'error');
+                    currentVideoIndex++;
+                    playVideo(currentVideoIndex % playlist.length);
+                });
+
+            currentVideoIndex = index;
+        }
+
+        function enterFullscreen() {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.mozRequestFullScreen) {
+                videoPlayer.mozRequestFullScreen();
+            } else if (videoPlayer.webkitRequestFullscreen) {
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) {
+                videoPlayer.msRequestFullscreen();
+            }
+        }
+
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        function hideCursor() {
+            clearTimeout(cursorHideTimeout);
+            cursorHideTimeout = setTimeout(() => {
+                document.body.classList.add('fullscreen-active');
+            }, 2000);
+        }
+
+        function showCursor() {
+            clearTimeout(cursorHideTimeout);
+            document.body.classList.remove('fullscreen-active');
+            if (document.fullscreenElement) {
+                hideCursor();
+            }
+        }
+
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', (event) => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('dragover');
+
+            const files = event.dataTransfer.files;
+            const videoFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+
+            if (videoFiles.length === 0) {
+                showMessage('No video files found. Please drop video files.', 'error');
+                return;
+            }
+
+            playlist = playlist.concat(videoFiles);
+
+            if (videoPlayer.paused && playlist.length > 0) {
+                currentVideoIndex = 0;
+                playVideo(currentVideoIndex);
+            } else if (playlist.length > 0) {
+                showMessage(`Added ${videoFiles.length} video(s) to the playlist.`);
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            input.multiple = true;
+
+            input.onchange = (event) => {
+                const files = event.target.files;
+                const videoFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+
+                if (videoFiles.length === 0) {
+                    showMessage('No video files selected. Please select video files.', 'error');
+                    return;
+                }
+
+                playlist = playlist.concat(videoFiles);
+
+                if (videoPlayer.paused && playlist.length > 0) {
+                    currentVideoIndex = 0;
+                    playVideo(currentVideoIndex);
+                } else if (playlist.length > 0) {
+                    showMessage(`Added ${videoFiles.length} video(s) to the playlist.`);
+                }
+            };
+            input.click();
+        });
+
+        videoPlayer.addEventListener('ended', () => {
+            if (playlist.length === 0) {
+                console.log('Playlist is empty, stopping.');
+                videoPlayer.style.display = 'none';
+                currentVideoInfo.classList.add('hidden');
+                fullscreenButton.classList.add('hidden');
+                return;
+            }
+
+            currentVideoIndex++;
+            if (currentVideoIndex >= playlist.length) {
+                currentVideoIndex = 0;
+            }
+            playVideo(currentVideoIndex);
+        });
+
+        videoPlayer.addEventListener('error', (event) => {
+            console.error('Video playback error:', event.target.error);
+            showMessage(`Error playing video: ${event.target.error.message || 'Unknown error'}`, 'error');
+            currentVideoIndex++;
+            playVideo(currentVideoIndex % playlist.length);
+        });
+
+        fullscreenButton.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                enterFullscreen();
+            } else {
+                exitFullscreen();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                hideCursor();
+                document.addEventListener('mousemove', showCursor);
+            } else {
+                clearTimeout(cursorHideTimeout);
+                document.body.classList.remove('fullscreen-active');
+                document.removeEventListener('mousemove', showCursor);
+            }
+        });
+
+        window.onload = function() {
+
+        };
+    </script>
+</body>
+</html>
