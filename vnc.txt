@@ -1,0 +1,4 @@
+US-East|server01.example.com|P@ssw0rd123!
+Europe-West|db.prod.company.net|R3ad0nly!
+Asia-South|dev-server.local|t3stP@ssw0rd
+Australia-East|web.app.com|g3n3r@t3dK3y!
