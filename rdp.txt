@@ -1,4 +1,1 @@
-US-East|server01.example.com|admin_user|P@ssw0rd123!
-Europe-West|db.prod.company.net|report_viewer|R3ad0nly!
-Asia-South|dev-server.local|test_user|t3stP@ssw0rd
-Australia-East|web.app.com|api_key_user|g3n3r@t3dK3y!
+Server 1|vps-05.free.vpsgiare.eu.org|user2|(no password)
