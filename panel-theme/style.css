@@ -1,0 +1,315 @@
+/* --- 1. Root Variables & Font Import --- */
+/* We're importing "Inter", a modern and clean sans-serif font from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Using CSS variables makes it easy to change the theme's colors and styles later. */
+:root {
+    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+    /* A modern, Windows 11-inspired color palette */
+    --color-bg-dark: #1A1A1A; /* Deep, dark background */
+    --color-bg-panel: #2C2C2E; /* Slightly lighter for panels and surfaces */
+    --color-bg-interactive: #3A3A3C; /* For hover states and inputs */
+    --color-border-subtle: #4A4A4C; /* Soft borders, less harsh than before */
+    
+    --color-text-primary: #F3F3F3; /* Bright, but not stark white for main text */
+    --color-text-secondary: #A1A1A1; /* For less important text and labels */
+    
+    --color-accent-primary: #0078D4; /* A vibrant, modern blue for buttons and links */
+    --color-accent-primary-hover: #005A9E; /* A darker shade for hover effects */
+
+    --color-success: #107C10;
+    --color-warning: #F7A800;
+    --color-danger: #D83B01;
+
+    /* Consistent rounded corners for that modern, soft look */
+    --border-radius-main: 12px;
+    --border-radius-small: 8px;
+
+    /* Soft shadows for creating depth */
+    --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-small: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- 2. General Body & Typography --- */
+body, #cpanel_body {
+    font-family: var(--font-main);
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-primary);
+    font-weight: 400; /* Using normal font weight for better readability */
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-main);
+    font-weight: 600; /* Bolder headings for clear hierarchy */
+    color: var(--color-text-primary);
+}
+
+h1.page-header {
+    border-bottom: none;
+    border-left: 4px solid var(--color-accent-primary);
+    padding: 0 0 0 1em;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+a {
+    color: var(--color-accent-primary);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover, .btn-link:hover {
+    color: var(--color-accent-primary-hover);
+    text-decoration: none;
+}
+
+
+/* --- 3. Main Layout: Header, Sidebar, Content --- */
+
+/* Applying a "Mica" or "Acrylic" glass effect to the header */
+.navbar-cpanel {
+    background-color: rgba(44, 44, 46, 0.7); /* Semi-transparent background */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--color-border-subtle);
+    box-shadow: none;
+}
+
+/* Applying the same glass effect to the sidebar */
+#sidebar {
+    background-color: rgba(44, 44, 46, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid var(--color-border-subtle);
+    box-shadow: none;
+    top: 0;
+}
+
+#sidebar a {
+    border-bottom: none;
+    padding: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+#sidebar a.active {
+    color: var(--color-text-primary);
+    background-color: var(--color-accent-primary);
+    border-left: 4px solid var(--color-accent-primary-hover);
+    box-shadow: none;
+    padding-left: 11px; /* Adjust padding to account for border */
+}
+
+#sidebar a:hover:not(.active) {
+    background-color: var(--color-bg-interactive);
+}
+
+#content, #home.cpanel #content {
+    margin: 40px; /* More breathing room */
+}
+
+
+/* --- 4. Core Components: Panels, Items, Buttons, Forms --- */
+
+/* Panels and Widgets - The main content blocks */
+.panel, .widget {
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-main);
+    box-shadow: var(--shadow-main);
+    margin-top: 25px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.panel:hover, .widget:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.widget-header, .widget-heading, .panel-heading {
+    background-color: transparent;
+    border-bottom: 1px solid var(--color-border-subtle);
+    color: var(--color-text-primary);
+    font-size: 20px;
+    font-weight: 600;
+    padding: 20px 25px;
+    border-top-left-radius: var(--border-radius-main);
+    border-top-right-radius: var(--border-radius-main);
+}
+
+.panel-body, .widget-body {
+    padding: 25px;
+}
+
+/* Items - The individual feature boxes (e.g., File Manager) */
+.item {
+    display: flex; /* Using flexbox for better alignment */
+    align-items: center;
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-main);
+    margin: 0 15px 15px 0;
+    padding: 15px;
+    width: calc(33.333% - 15px); /* Responsive width */
+    height: auto;
+    transition: all 0.2s ease-in-out;
+    box-shadow: var(--shadow-small);
+}
+
+.item:hover {
+    transform: translateY(-4px);
+    background-color: var(--color-bg-interactive);
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+}
+
+.itemImageWrapper {
+    margin: 0 15px 0 0;
+    flex-shrink: 0;
+}
+
+#content .itemTextWrapper a {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+/* Buttons */
+.btn-primary, #content .btn-primary, form input[value="Go"] {
+    background-color: var(--color-accent-primary);
+    border: none;
+    border-radius: var(--border-radius-small);
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    box-shadow: none;
+}
+
+.btn-primary:hover, #content .btn-primary:hover {
+    background-color: var(--color-accent-primary-hover);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-default {
+    background-color: var(--color-bg-interactive);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-small);
+    color: var(--color-text-primary);
+    padding: 10px 20px;
+}
+
+/* Forms & Inputs */
+input.form-control, select.form-control, textarea.form-control, button, input, select, textarea {
+    background-color: var(--color-bg-dark);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-small);
+    color: var(--color-text-primary);
+    padding: 10px 15px;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.3); /* Focus ring */
+    outline: none;
+}
+
+/* Quick Find Search Bar */
+#quickjump.form-control, #jump-search {
+    border-radius: var(--border-radius-main);
+    height: 48px;
+    font-size: 16px;
+}
+
+
+/* --- 5. Tables & Modals --- */
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table>thead>tr>th {
+    background-color: transparent;
+    border-bottom: 2px solid var(--color-border-subtle) !important;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th {
+    border-top: 1px solid var(--color-border-subtle) !important;
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(44, 44, 46, 0.5); /* Subtle striping */
+}
+.table-striped tbody tr:nth-of-type(2n) {
+    background-color: transparent;
+}
+
+.modal-content {
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--color-border-subtle);
+}
+
+
+/* --- 6. Stats and Progress Bars --- */
+#stats .table {
+    background-color: transparent;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: var(--color-bg-interactive);
+    box-shadow: none;
+}
+
+.progress-bar {
+    background-color: var(--color-accent-primary);
+}
+
+.progress-bar-warning {
+    background-color: var(--color-warning);
+}
+
+.progress-bar-danger {
+    background-color: var(--color-danger);
+}
+
+
+/* --- 7. Responsive Adjustments --- */
+@media (max-width: 991px) {
+    .item {
+        width: calc(50% - 15px); /* Two items per row on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    #content, #home.cpanel #content {
+        margin: 20px;
+    }
+    .item {
+        width: 100%; /* One item per row on mobile */
+        margin-right: 0;
+    }
+    h1.page-header {
+        font-size: 24px;
+    }
+}
