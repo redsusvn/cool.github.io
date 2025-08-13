@@ -1,315 +1,344 @@
-/* --- 1. Root Variables & Font Import --- */
-/* We're importing "Inter", a modern and clean sans-serif font from Google Fonts. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/*
+ * Modern cPanel CSS Theme
+ * Design: Windows 11 / iOS Glassmorphism Inspired
+ * Features: Liquid Glass Effect, Glows, Animations, Modern Font
+ * by Gemini
+ */
 
-/* Using CSS variables makes it easy to change the theme's colors and styles later. */
+/* --- 1. Imports & Root Variables --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
 :root {
-    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    
-    /* A modern, Windows 11-inspired color palette */
-    --color-bg-dark: #1A1A1A; /* Deep, dark background */
-    --color-bg-panel: #2C2C2E; /* Slightly lighter for panels and surfaces */
-    --color-bg-interactive: #3A3A3C; /* For hover states and inputs */
-    --color-border-subtle: #4A4A4C; /* Soft borders, less harsh than before */
-    
-    --color-text-primary: #F3F3F3; /* Bright, but not stark white for main text */
-    --color-text-secondary: #A1A1A1; /* For less important text and labels */
-    
-    --color-accent-primary: #0078D4; /* A vibrant, modern blue for buttons and links */
-    --color-accent-primary-hover: #005A9E; /* A darker shade for hover effects */
+    --font-primary: 'Poppins', sans-serif;
+    --color-text: #e0e5ec;
+    --color-text-muted: #8a99b0;
+    --color-bg: #0d1117;
+    --color-accent: #ff6c2c;
+    --color-accent-glow: rgba(255, 108, 44, 0.6);
+    --color-glass-bg: rgba(30, 41, 59, 0.6);
+    --color-glass-border: rgba(255, 255, 255, 0.1);
+    --border-radius-lg: 16px;
+    --border-radius-md: 10px;
+    --border-radius-sm: 6px;
+    --transition-speed: 0.3s;
+}
 
-    --color-success: #107C10;
-    --color-warning: #F7A800;
-    --color-danger: #D83B01;
+/* --- 2. Animations --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-    /* Consistent rounded corners for that modern, soft look */
-    --border-radius-main: 12px;
-    --border-radius-small: 8px;
-
-    /* Soft shadows for creating depth */
-    --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --shadow-small: 0 2px 6px rgba(0, 0, 0, 0.1);
+@keyframes backgroundPan {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 
-/* --- 2. General Body & Typography --- */
+/* --- 3. Base & Body Styles --- */
 body, #cpanel_body {
-    font-family: var(--font-main);
-    background-color: var(--color-bg-dark);
-    color: var(--color-text-primary);
-    font-weight: 400; /* Using normal font weight for better readability */
-    line-height: 1.6;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    color: var(--color-text);
+    background: var(--color-bg);
+    background-image: radial-gradient(circle at 20% 20%, rgba(255, 108, 44, 0.1), transparent 30%),
+                      radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1), transparent 30%);
+    animation: fadeIn var(--transition-speed) ease-out;
 }
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: var(--font-main);
-    font-weight: 600; /* Bolder headings for clear hierarchy */
-    color: var(--color-text-primary);
+/* --- 4. Typography & Links --- */
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--color-text);
 }
 
 h1.page-header {
+    border-left: 4px solid var(--color-accent);
+    padding: 0 0 0 .5em;
     border-bottom: none;
-    border-left: 4px solid var(--color-accent-primary);
-    padding: 0 0 0 1em;
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 2.5rem;
     margin-bottom: 40px;
 }
 
 a {
-    color: var(--color-accent-primary);
+    color: var(--color-accent);
     text-decoration: none;
-    transition: color 0.2s ease-in-out;
+    transition: color var(--transition-speed) ease;
 }
 
 a:hover, .btn-link:hover {
-    color: var(--color-accent-primary-hover);
+    color: #fff;
+    text-shadow: 0 0 8px var(--color-accent-glow);
     text-decoration: none;
 }
 
-
-/* --- 3. Main Layout: Header, Sidebar, Content --- */
-
-/* Applying a "Mica" or "Acrylic" glass effect to the header */
-.navbar-cpanel {
-    background-color: rgba(44, 44, 46, 0.7); /* Semi-transparent background */
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--color-border-subtle);
-    box-shadow: none;
-}
-
-/* Applying the same glass effect to the sidebar */
-#sidebar {
-    background-color: rgba(44, 44, 46, 0.7);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-right: 1px solid var(--color-border-subtle);
-    box-shadow: none;
-    top: 0;
-}
-
-#sidebar a {
-    border-bottom: none;
-    padding: 15px;
-    transition: all 0.2s ease-in-out;
-}
-
-#sidebar a.active {
-    color: var(--color-text-primary);
-    background-color: var(--color-accent-primary);
-    border-left: 4px solid var(--color-accent-primary-hover);
-    box-shadow: none;
-    padding-left: 11px; /* Adjust padding to account for border */
-}
-
-#sidebar a:hover:not(.active) {
-    background-color: var(--color-bg-interactive);
-}
-
-#content, #home.cpanel #content {
-    margin: 40px; /* More breathing room */
-}
-
-
-/* --- 4. Core Components: Panels, Items, Buttons, Forms --- */
-
-/* Panels and Widgets - The main content blocks */
-.panel, .widget {
-    background-color: var(--color-bg-panel);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-main);
-    box-shadow: var(--shadow-main);
+/* --- 5. Glassmorphism & Panel Styles --- */
+.panel, .widget, .modal-content, .yui-panel, #sidebar, .well, .tab-content, #hilight-box, .sa-box {
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all var(--transition-speed) ease;
     margin-top: 25px;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: transparent; /* Override old styles */
 }
 
 .panel:hover, .widget:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 108, 44, 0.4);
+    transform: translateY(-5px);
 }
 
-.widget-header, .widget-heading, .panel-heading {
-    background-color: transparent;
-    border-bottom: 1px solid var(--color-border-subtle);
-    color: var(--color-text-primary);
-    font-size: 20px;
-    font-weight: 600;
-    padding: 20px 25px;
-    border-top-left-radius: var(--border-radius-main);
-    border-top-right-radius: var(--border-radius-main);
+.panel-heading, .widget-header, .widget-heading {
+    background: transparent;
+    border-bottom: 1px solid var(--color-glass-border);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 20px;
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
 }
 
 .panel-body, .widget-body {
     padding: 25px;
+    background-color: transparent;
 }
 
-/* Items - The individual feature boxes (e.g., File Manager) */
+/* --- 6. Feature Items / Cards --- */
 .item {
-    display: flex; /* Using flexbox for better alignment */
-    align-items: center;
-    background-color: var(--color-bg-panel);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-main);
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(10px) saturate(150%);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--border-radius-md);
     margin: 0 15px 15px 0;
-    padding: 15px;
-    width: calc(33.333% - 15px); /* Responsive width */
+    width: 230px;
     height: auto;
-    transition: all 0.2s ease-in-out;
-    box-shadow: var(--shadow-small);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px;
+    text-align: center;
+    transition: all var(--transition-speed) ease;
 }
 
 .item:hover {
-    transform: translateY(-4px);
-    background-color: var(--color-bg-interactive);
-    border-color: var(--color-accent-primary);
-    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 108, 44, 0.5);
 }
 
 .itemImageWrapper {
-    margin: 0 15px 0 0;
-    flex-shrink: 0;
+    margin: 0 0 15px 0;
 }
 
-#content .itemTextWrapper a {
-    font-size: 16px;
+#content .itemTextWrapper a, #content a.itemTextWrapper {
+    color: var(--color-text);
     font-weight: 500;
-    color: var(--color-text-primary);
+    padding: 0;
+    width: 100%;
+    display: block;
 }
 
-/* Buttons */
-.btn-primary, #content .btn-primary, form input[value="Go"] {
-    background-color: var(--color-accent-primary);
-    border: none;
-    border-radius: var(--border-radius-small);
-    color: #fff;
-    font-weight: 600;
+.item:hover #content .itemTextWrapper a, .item:hover #content a.itemTextWrapper {
+    color: var(--color-accent);
+    text-shadow: 0 0 8px var(--color-accent-glow);
+}
+
+
+/* --- 7. Buttons & Form Elements --- */
+.btn {
+    border-radius: var(--border-radius-md);
+    border: 1px solid transparent;
     padding: 10px 20px;
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    box-shadow: none;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    box-shadow: inset 0 0 0 0 var(--color-accent);
+}
+
+.btn-primary, #content .btn-primary, form input[value="Go"] {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
 }
 
 .btn-primary:hover, #content .btn-primary:hover {
-    background-color: var(--color-accent-primary-hover);
-    color: #fff;
+    background: #fff;
+    color: var(--color-accent);
+    box-shadow: 0 0 15px var(--color-accent-glow), 0 0 5px var(--color-accent);
     transform: translateY(-2px);
 }
 
 .btn-default {
-    background-color: var(--color-bg-interactive);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-small);
-    color: var(--color-text-primary);
-    padding: 10px 20px;
+    background-color: var(--color-glass-bg);
+    border-color: var(--color-glass-border);
+    color: var(--color-text);
 }
 
-/* Forms & Inputs */
-input.form-control, select.form-control, textarea.form-control, button, input, select, textarea {
-    background-color: var(--color-bg-dark);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-small);
-    color: var(--color-text-primary);
+.btn-default:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: var(--color-bg);
+}
+
+input, select, textarea, .form-control, #quickjump.form-control {
+    background-color: rgba(13, 17, 23, 0.8);
+    border: 1px solid var(--color-glass-border);
+    color: var(--color-text);
+    border-radius: var(--border-radius-md);
     padding: 10px 15px;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition: all var(--transition-speed) ease;
+    height: auto;
 }
 
-input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
-    border-color: var(--color-accent-primary);
-    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.3); /* Focus ring */
+input:focus, select:focus, textarea:focus, .form-control:focus {
+    background-color: var(--color-bg);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 10px var(--color-accent-glow);
     outline: none;
 }
 
-/* Quick Find Search Bar */
-#quickjump.form-control, #jump-search {
-    border-radius: var(--border-radius-main);
-    height: 48px;
-    font-size: 16px;
+/* --- 8. Header & Navigation --- */
+.navbar-cpanel {
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-glass-border);
+    box-shadow: none;
+    height: 60px;
+}
+
+header .navbar-header .navbar-brand .brand-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#btnUserPref, #lnkHeaderLogout, #lnkHeaderNotifications, .navbar-preferences button.navbar-item.btn-primary {
+    color: var(--color-text-muted);
+    transition: all var(--transition-speed) ease;
+    border-left: 1px solid var(--color-glass-border);
+    height: 60px;
+    min-width: 60px;
+}
+
+#btnUserPref:hover, #lnkHeaderLogout:hover, #lnkHeaderNotifications:hover {
+    color: #fff;
+    background: var(--color-accent);
+}
+
+.dropdown-menu {
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    padding: 5px 0;
+}
+
+.dropdown-menu>li>a {
+    color: var(--color-text);
+    padding: 10px 20px;
+    transition: all var(--transition-speed) ease;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>.active>a {
+    background-color: var(--color-accent);
+    color: #fff;
+}
+.dropdown-menu .divider {
+    background-color: var(--color-glass-border);
+    height: 1px;
+    margin: 5px 0;
+    border: none;
 }
 
 
-/* --- 5. Tables & Modals --- */
+/* --- 9. Sidebar --- */
+#sidebar {
+    top: 60px; /* Match new header height */
+    box-shadow: none;
+    border-right: 1px solid var(--color-glass-border);
+    padding-top: 10px;
+}
 
+#sidebar a {
+    color: var(--color-text-muted);
+    border-bottom: none;
+    padding: 15px;
+    border-radius: var(--border-radius-md);
+    margin: 5px 10px;
+    transition: all var(--transition-speed) ease;
+}
+
+#sidebar a:hover {
+    background: var(--color-glass-bg);
+    color: #fff;
+}
+
+#sidebar a.active {
+    background-color: var(--color-accent);
+    color: #fff;
+    box-shadow: 0 0 15px var(--color-accent-glow);
+    border-left: none;
+    padding-left: 15px; /* Reset padding */
+}
+
+/* --- 10. Tables --- */
 .table {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
+    background-color: transparent;
 }
 
 .table>thead>tr>th {
-    background-color: transparent;
-    border-bottom: 2px solid var(--color-border-subtle) !important;
-    color: var(--color-text-secondary);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 12px;
+    border-bottom: 2px solid var(--color-glass-border) !important;
+    color: #fff;
+    font-weight: 500;
 }
 
 .table>tbody>tr>td, .table>tbody>tr>th {
-    border-top: 1px solid var(--color-border-subtle) !important;
-    padding: 15px;
-    vertical-align: middle;
+    border-top: 1px solid var(--color-glass-border) !important;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(44, 44, 46, 0.5); /* Subtle striping */
-}
-.table-striped tbody tr:nth-of-type(2n) {
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
-.modal-content {
-    background-color: var(--color-bg-panel);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--border-radius-main);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header, .modal-footer {
-    border-color: var(--color-border-subtle);
-}
-
-
-/* --- 6. Stats and Progress Bars --- */
-#stats .table {
-    background-color: transparent;
-}
-
-.progress {
-    height: 8px;
-    border-radius: 4px;
-    background-color: var(--color-bg-interactive);
-    box-shadow: none;
-}
-
-.progress-bar {
-    background-color: var(--color-accent-primary);
-}
-
-.progress-bar-warning {
-    background-color: var(--color-warning);
-}
-
-.progress-bar-danger {
-    background-color: var(--color-danger);
-}
-
-
-/* --- 7. Responsive Adjustments --- */
-@media (max-width: 991px) {
-    .item {
-        width: calc(50% - 15px); /* Two items per row on tablets */
-    }
+/* --- 11. Responsive Adjustments --- */
+#home.cpanel #content, .cpanel #content, #content {
+    margin-top: 80px; /* 60px header + 20px space */
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 @media (max-width: 768px) {
-    #content, #home.cpanel #content {
-        margin: 20px;
+    .navbar-cpanel, header .navbar, .navbar-preferences {
+        height: auto;
+        min-height: 60px;
+    }
+    #sidebar {
+        top: 59px;
     }
     .item {
-        width: 100%; /* One item per row on mobile */
+        width: 48%; /* Two columns on tablets */
+        margin-right: 2%;
+        margin-bottom: 15px;
+    }
+    .item:nth-child(2n){
         margin-right: 0;
     }
-    h1.page-header {
-        font-size: 24px;
+}
+
+@media (max-width: 480px) {
+    .item {
+        width: 100%; /* Single column on mobile */
+        margin-right: 0;
     }
 }
