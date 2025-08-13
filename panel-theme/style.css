@@ -50,13 +50,6 @@ input[type=checkbox]:focus,input[type=file]:focus,input[type=radio]:focus{
     outline-offset: 2px;
 }
 
-.alert-danger,.alert-info,.alert-success,.alert-warning,.cjt-pagenotice-container .cjt-notice-info .bd,.cjt-pagenotice-container .cjt-notice-success .bd,.cjt-pagenotice-container .cjt-notice-warn .bd,.validation_errors_div,div.cjt_status_bar_success{
-    border: none;
-    border-radius: 12px;
-    padding: 16px 20px;
-    background-color: #2a2a3f;
-}
-
 ul.validation_errors_ul>li.validation_errors_li{
     color: #f8fafc;
 }
@@ -159,11 +152,6 @@ button:hover,input:hover,input.form-control:hover,select:hover,select.form-contr
     border-color: #2a2a3f;
 }
 
-.alert .close{
-    color: inherit;
-    opacity: 1;
-    text-shadow: none;
-}
 
 .close,.modal .close{
     color: #f8fafc;
@@ -1164,20 +1152,50 @@ div#stats:nth-child(2) > div#statsSection:nth-child(2) {
     overflow-wrap: anywhere;
 }
 
-.alert.alert-warning {
-    background: rgba(255, 152, 0, 0.1);
-    border: 1px solid #ff9800;
-    border-left: 4px solid #ff9800;
+/* new fucking alert for no fucking reason */
+.alert {
+    border: none;
     border-radius: 12px;
-}
-.input-group-addon {
-    background: #2a2a3f;
-}
-
-.alert-message, .input-group-addon {
-    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
     font-weight: 500;
 }
+
+.alert .close {
+    color: inherit;
+    opacity: 1;
+    text-shadow: none;
+}
+
+.alert-message {
+    color: white;
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    border-left: 4px solid #f44336;
+    color: #ffb3b3;
+}
+
+.alert-info {
+    background: rgba(33, 150, 243, 0.1);
+    border-left: 4px solid #2196f3;
+    color: #b3d1ff;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    color: #b3ffb3;
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    color: #ffdd75;
+}
+
 
 .input-group-addon {
     border-color: #3c3c58;
