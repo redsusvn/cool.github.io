@@ -10,4 +10,4 @@ setTimeout(function() {
   if (sidebar) {
     sidebar.remove();
   }
-}, 2500);
+}, 999);
