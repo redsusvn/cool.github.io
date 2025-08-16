@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Hỗ Trợ Chọn Mua Máy Chủ Cũ - Ngân Sách 10 Triệu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A single-page dashboard designed as a decision-support tool. The user flow starts with a high-level summary, moves to an interactive dashboard comparing the two main server builds (R720 vs. DL380 G9), visualizes budget allocation and long-term costs via charts, provides a deep-dive section for details, and concludes with actionable vendor/checklist info. This non-linear, dashboard structure is chosen over a linear report format to empower the user to compare options and explore data points relevant to their decision-making process, focusing on the core trade-off between initial performance and long-term efficiency. -->
+    <!-- Visualization & Content Choices: 1. Budget Breakdown: Report Info (Component Costs) -> Goal (Show budget proportion) -> Viz (Doughnut Chart) -> Interaction (Hover tooltips) -> Justification (Visually intuitive for parts of a whole) -> Library (Chart.js). 2. TCO Comparison: Report Info (Power Consumption Watts) -> Goal (Highlight long-term cost difference) -> Viz (Bar Chart) -> Interaction (Hover tooltips) -> Justification (Direct, clear comparison of two values) -> Library (Chart.js). 3. Main Comparison: Report Info (Key specs like Cores, RAM) -> Goal (At-a-glance decision summary) -> Viz (Styled HTML/Tailwind Cards) -> Interaction (Static display) -> Justification (Clear, scannable presentation of primary metrics). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #FDFBF7;
+            color: #3a3a3a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #4A5568;
+            border-bottom-color: #A0AEC0;
+        }
+        .stat-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-gray-800">Tư Vấn Máy Chủ Cũ</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="nav-link text-gray-500 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Giới Thiệu</a>
+                        <a href="#comparison" class="nav-link text-gray-500 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">So Sánh</a>
+                        <a href="#tco" class="nav-link text-gray-500 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Chi Phí Dài Hạn</a>
+                        <a href="#vendors" class="nav-link text-gray-500 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">Nhà Cung Cấp</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Tìm Máy Chủ Cũ Tốt Nhất Với Ngân Sách 10 Triệu Đồng</h2>
+            <p class="max-w-3xl mx-auto text-gray-600">
+                Việc lựa chọn máy chủ cũ đòi hỏi sự cân nhắc giữa hiệu năng tức thời và hiệu quả lâu dài. Báo cáo này tập trung vào hai chiến lược chính: tối đa hóa sức mạnh ban đầu hoặc đầu tư vào một nền tảng hiện đại, tiết kiệm hơn. Hãy cùng khám phá lựa chọn nào phù hợp nhất với bạn.
+            </p>
+        </section>
+
+        <section id="comparison" class="mb-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10">So Sánh Trực Quan Hai Lựa Chọn Hàng Đầu</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                
+                <div class="stat-card flex flex-col">
+                    <h4 class="text-xl font-bold text-center text-blue-800 mb-2">Lựa chọn 1: Tối Đa Hóa Hiệu Năng</h4>
+                    <p class="text-center text-gray-500 mb-6 font-semibold">Dell PowerEdge R720</p>
+                    <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                        <div>
+                            <p class="text-sm text-gray-500">CPU</p>
+                            <p class="text-2xl font-bold text-gray-800">20 Lõi</p>
+                            <p class="text-xs text-gray-400">40 Luồng</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">RAM</p>
+                            <p class="text-2xl font-bold text-gray-800">128 GB</p>
+                            <p class="text-xs text-gray-400">DDR3 ECC</p>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="text-center text-sm font-medium text-gray-700 mb-2">Phân Bổ Ngân Sách Ước Tính</p>
+                        <div class="chart-container">
+                            <canvas id="r720BudgetChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm text-blue-900"><strong class="font-semibold">Phù hợp nếu:</strong> Bạn ưu tiên sức mạnh xử lý và dung lượng RAM cao nhất có thể ngay lập tức, chấp nhận chi phí điện năng cao hơn.</p>
+                    </div>
+                </div>
+
+                <div class="stat-card flex flex-col">
+                    <h4 class="text-xl font-bold text-center text-green-800 mb-2">Lựa chọn 2: Hiệu Quả & Tương Lai</h4>
+                    <p class="text-center text-gray-500 mb-6 font-semibold">HPE ProLiant DL380 Gen9</p>
+                    <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                        <div>
+                            <p class="text-sm text-gray-500">CPU</p>
+                            <p class="text-2xl font-bold text-gray-800">24 Lõi</p>
+                             <p class="text-xs text-gray-400">48 Luồng</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">RAM</p>
+                            <p class="text-2xl font-bold text-gray-800">64 GB</p>
+                            <p class="text-xs text-gray-400">DDR4 ECC</p>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="text-center text-sm font-medium text-gray-700 mb-2">Phân Bổ Ngân Sách Ước Tính</p>
+                        <div class="chart-container">
+                            <canvas id="dl380g9BudgetChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <p class="text-sm text-green-900"><strong class="font-semibold">Phù hợp nếu:</strong> Bạn ưu tiên chi phí vận hành thấp, một nền tảng hiện đại hơn và có kế hoạch nâng cấp trong tương lai.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tco" class="mb-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-4">Phân Tích Tổng Chi Phí Sở Hữu (TCO)</h3>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-10">
+                Chi phí mua ban đầu chỉ là một phần câu chuyện. Chi phí điện năng vận hành 24/7 có thể tạo ra sự khác biệt lớn trong dài hạn. Nền tảng hiện đại hơn thường tiết kiệm hơn đáng kể.
+            </p>
+            <div class="stat-card max-w-4xl mx-auto">
+                <p class="text-center text-sm font-medium text-gray-700 mb-2">Chi Phí Điện Năng Ước Tính Hàng Năm</p>
+                <div class="chart-container h-80 md:h-96 max-w-2xl">
+                    <canvas id="tcoChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="vendors">
+            <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10">Nhà Cung Cấp Uy Tín & Danh Sách Kiểm Tra</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="stat-card">
+                    <h4 class="font-bold text-lg mb-4 text-gray-800">Một số nhà cung cấp tham khảo</h4>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start"><span class="font-bold text-gray-500 mr-2">&#9679;</span> <strong>TP.HCM:</strong> Máy Chủ Sài Gòn, Khoserver, ICT SÀI GÒN</li>
+                        <li class="flex items-start"><span class="font-bold text-gray-500 mr-2">&#9679;</span> <strong>Hà Nội:</strong> Máy Chủ Hà Nội, Nghĩa Hưng</li>
+                        <li class="flex items-start"><span class="font-bold text-gray-500 mr-2">&#9679;</span> <strong>Toàn quốc:</strong> Các sàn TMĐT (cần kiểm tra kỹ uy tín người bán)</li>
+                    </ul>
+                </div>
+                <div class="stat-card">
+                    <h4 class="font-bold text-lg mb-4 text-gray-800">Danh sách kiểm tra trước khi mua</h4>
+                     <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> Yêu cầu hình ảnh thực tế của máy.</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> Xác minh chính xác model CPU, RAM, RAID controller.</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> Hỏi rõ về chính sách và thời gian bảo hành.</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> Hỏi về quy trình kiểm tra (test burn-in) của người bán.</li>
+                        <li class="flex items-center"><span class="text-green-500 mr-3">✔</span> Xác nhận chi phí vận chuyển và đóng gói.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-100 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+            <p class="text-sm">&copy; 2025 Gemini AI Pro. Dữ liệu dựa trên báo cáo phân tích thị trường máy chủ cũ.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const serverData = {
+                r720: {
+                    name: 'Dell PowerEdge R720',
+                    budget: {
+                        labels: ['Khung máy', 'CPU (2x)', 'RAM (128GB)', 'SSD (480GB)'],
+                        data: [2500000, 2300000, 4000000, 1200000],
+                        backgroundColor: ['#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'],
+                    },
+                    tco: {
+                        powerIdle: 150, 
+                        powerLoad: 300, 
+                    }
+                },
+                dl380g9: {
+                    name: 'HPE ProLiant DL380 Gen9',
+                    budget: {
+                        labels: ['Khung máy', 'CPU (2x)', 'RAM (64GB)', 'SSD (480GB)'],
+                        data: [6500000, 600000, 2000000, 1200000],
+                        backgroundColor: ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0'],
+                    },
+                    tco: {
+                        powerIdle: 100,
+                        powerLoad: 220, 
+                    }
+                }
+            };
+
+            const pricePerKwh = 2500;
+            const hoursPerYear = 24 * 365;
+
+            const calculateAnnualCost = (powerWatts) => {
+                return (powerWatts / 1000) * hoursPerYear * pricePerKwh;
+            };
+
+            const formatCurrency = (value) => {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+            };
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                family: "'Be Vietnam Pro', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += formatCurrency(context.parsed);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            new Chart(document.getElementById('r720BudgetChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: serverData.r720.budget.labels,
+                    datasets: [{
+                        data: serverData.r720.budget.data,
+                        backgroundColor: serverData.r720.budget.backgroundColor,
+                        borderColor: '#FDFBF7',
+                        borderWidth: 4
+                    }]
+                },
+                options: chartOptions
+            });
+
+            new Chart(document.getElementById('dl380g9BudgetChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: serverData.dl380g9.budget.labels,
+                    datasets: [{
+                        data: serverData.dl380g9.budget.data,
+                        backgroundColor: serverData.dl380g9.budget.backgroundColor,
+                        borderColor: '#FDFBF7',
+                        borderWidth: 4
+                    }]
+                },
+                options: chartOptions
+            });
+
+            const r720AnnualCost = calculateAnnualCost(serverData.r720.tco.powerIdle);
+            const dl380g9AnnualCost = calculateAnnualCost(serverData.dl380g9.tco.powerIdle);
+
+            new Chart(document.getElementById('tcoChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Dell R720', 'HPE DL380 G9'],
+                    datasets: [{
+                        label: 'Chi phí điện hàng năm (chế độ nghỉ)',
+                        data: [r720AnnualCost, dl380g9AnnualCost],
+                        backgroundColor: ['#3B82F6', '#10B981'],
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                         legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
