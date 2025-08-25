@@ -1,5 +1,127 @@
  /* Flat and big ass item theme by @redsus.vn */
 
+.dropdown-menu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  display: block;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.open > .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.panel-heading .group-header-indicator,
+.widget-heading .group-header-indicator {
+  transition: transform 0.3s ease-in-out;
+}
+
+.panel-heading:not(.collapsed) .group-header-indicator,
+.widget-heading:not(.collapsed) .group-header-indicator {
+  transform: rotate(180deg);
+}
+
+.panel-body,
+.widget-body {
+  max-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: all 0.4s ease-in-out;
+}
+
+.panel-heading:not(.collapsed) + .panel-body,
+.widget-heading:not(.collapsed) + .widget-body {
+  max-height: 1000px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.item,
+.panel,
+.widget {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background 0.2s ease;
+}
+
+.item::after,
+.panel::after,
+.widget::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(100deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 80%);
+  transform: skewX(-25deg);
+  transition: left 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.item:hover,
+.panel:hover,
+.widget:hover {
+  background: radial-gradient(circle at 50% 0%, #4a4a68, #1e1e2d 70%);
+  box-shadow: 0 0 25px 5px rgba(59, 130, 246, 0.45);
+  transform: translateY(-4px);
+}
+
+.item:hover::after,
+.panel:hover::after,
+.widget:hover::after {
+  left: 150%;
+}
+
+#btnUserPref,
+#lnkHeaderLogout,
+.dropdown-menu > li > a {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+  transform: translateZ(0);
+}
+
+#btnUserPref::after,
+#lnkHeaderLogout::after,
+.dropdown-menu > li > a::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(100deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 80%);
+  transform: skewX(-25deg);
+  transition: left 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+  z-index: 1;
+}
+
+#btnUserPref:hover,
+#lnkHeaderLogout:hover,
+.dropdown-menu > li > a:hover {
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
+}
+
+#btnUserPref:hover::after,
+#lnkHeaderLogout:hover::after,
+.dropdown-menu > li > a:hover::after {
+  left: 150%;
+}
+
+/* */
+
 body #content, 
 body #main-content, 
 #cpanel_body {
