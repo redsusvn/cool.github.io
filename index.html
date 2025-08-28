@@ -447,7 +447,7 @@
         const closeBtn = document.getElementById('closeBtn');
         const homeBtn = document.getElementById('homeBtn');
         const maximizeIcon = maximizeBtn.querySelector('i');
-
+    
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsPanel = document.getElementById('settingsPanel');
         const bgVideo = document.getElementById('bgVideo');
@@ -457,16 +457,16 @@
         const nextVideoBtn = document.getElementById('nextVideoBtn');
         const videoCounter = document.getElementById('videoCounter');
         const playPauseBtn = document.getElementById('playPauseBtn');
-
-
+    
+    
         let isInteractable = true;
         const COOLDOWN_PERIOD = 800;
-
+    
         function setCooldown() {
             isInteractable = false;
             setTimeout(() => { isInteractable = true; }, COOLDOWN_PERIOD);
         }
-
+    
         minimizeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -476,7 +476,7 @@
             maximizeIcon.classList.remove('fa-window-restore');
             maximizeIcon.classList.add('fa-square');
         });
-
+    
         maximizeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -485,7 +485,7 @@
                 mainContent.classList.remove('minimized');
             }
             mainContent.classList.toggle('maximized');
-
+    
             if (mainContent.classList.contains('maximized')) {
                 maximizeIcon.classList.remove('fa-square');
                 maximizeIcon.classList.add('fa-window-restore');
@@ -494,20 +494,20 @@
                 maximizeIcon.classList.add('fa-square');
             }
         });
-
+    
         closeBtn.addEventListener('click', () => {
             if (!isInteractable || mainContent.classList.contains('minimized')) {
                 return;
             }
             setCooldown();
             mainContent.classList.add('closing');
-
+    
             mainContent.addEventListener('animationend', () => {
                 mainContent.classList.add('minimized');
                 mainContent.classList.remove('closing');
             }, { once: true });
         });
-
+    
         homeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -561,15 +561,16 @@
             'https://files.catbox.moe/c0ye1j.mp4'
         ];
         let currentVideoIndex = 0;
-
+    
         function updateVideoCounter() {
             videoCounter.textContent = `${currentVideoIndex + 1} / ${videoUrls.length}`;
         }
-
+    
         function loadVideo(index) {
             bgVideo.style.opacity = '0';
             setTimeout(() => {
                 bgVideo.src = videoUrls[index];
+                bgVideo.load();
                 const playPromise = bgVideo.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
@@ -584,29 +585,35 @@
                 updateVideoCounter();
             }, 800);
         }
-
+    
         bgVideo.addEventListener('loadeddata', () => {
             bgVideo.style.opacity = '1';
         });
-
+    
+        // Add this event listener to handle automatic switching
+        bgVideo.addEventListener('ended', () => {
+            currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+            loadVideo(currentVideoIndex);
+        });
+    
         settingsBtn.addEventListener('click', () => {
             settingsPanel.classList.toggle('visible');
         });
-
+    
         blurSlider.addEventListener('input', (e) => {
             bgVideo.style.filter = `blur(${e.target.value}px)`;
         });
-
+    
         volumeSlider.addEventListener('input', (e) => {
             bgVideo.volume = e.target.value;
             bgVideo.muted = e.target.value == 0;
         });
-
+    
         nextVideoBtn.addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             loadVideo(currentVideoIndex);
         });
-
+    
         prevVideoBtn.addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
             loadVideo(currentVideoIndex);
@@ -624,27 +631,27 @@
                 icon.classList.add('fa-play');
             }
         });
-
+    
         function setupCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
             let width, height;
-
+    
             function resizeCanvas() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
             }
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
-
+    
             return { canvas, ctx, get width() { return width; }, get height() { return height; } };
         }
-
+    
         const { ctx: snowCtx, width: snowWidth, height: snowHeight } = setupCanvas('snowCanvas');
         const snowflakes = [];
         const maxSnowflakes = 150;
         let mouseX = -100, mouseY = -100;
-
+    
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
@@ -653,7 +660,7 @@
             mouseX = -100;
             mouseY = -100;
         });
-
+    
         class Snowflake {
             constructor() { this.reset(); }
             reset() {
@@ -670,7 +677,7 @@
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
-
+    
                 if (mouseX !== -100) {
                     const dx = this.x - mouseX;
                     const dy = this.y - mouseY;
@@ -681,12 +688,12 @@
                         this.y += (dy > 0 ? 1 : -1) * force * this.windInfluence * 2;
                     }
                 }
-
+    
                 if (this.y > snowHeight * 0.8) {
                     this.life -= this.fadeSpeed;
                     this.opacity = Math.max(0, this.life * 0.7 + 0.3);
                 }
-
+    
                 if (this.y > snowHeight + this.size || this.life <= 0) {
                     this.reset();
                     this.y = -this.size;
@@ -699,11 +706,11 @@
                 snowCtx.fill();
             }
         }
-
+    
         for (let i = 0; i < maxSnowflakes; i++) {
             snowflakes.push(new Snowflake());
         }
-
+    
         function animateSnow() {
             snowCtx.clearRect(0, 0, snowWidth, snowHeight);
             snowflakes.forEach(flake => {
@@ -712,14 +719,14 @@
             });
             requestAnimationFrame(animateSnow);
         }
-
+    
         const bubbles = document.querySelectorAll('.thought-bubble');
         const physicsBubbles = [];
         const friction = 0.95;
         const bounceFactor = 0.7;
         const minVelocity = 0.1;
         const randomForceScale = 0.05;
-
+    
         bubbles.forEach((bubble, index) => {
             const rect = bubble.getBoundingClientRect();
             let initialX = Math.random() * (window.innerWidth - rect.width);
@@ -730,10 +737,10 @@
             if (index === 1) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.2 - spreadOffset; }
             if (index === 2) { initialX = window.innerWidth * 0.2 - spreadOffset; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
             if (index === 3) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
-
+    
             bubble.style.left = `${initialX}px`;
             bubble.style.top = `${initialY}px`;
-
+    
             physicsBubbles.push({
                 element: bubble, x: initialX, y: initialY,
                 vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
@@ -741,9 +748,9 @@
                 width: rect.width, height: rect.height
             });
         });
-
+    
         let activeBubble = null;
-
+    
         function handleDragStart(e) {
             const target = e.target;
             if (target && target.classList.contains('thought-bubble')) {
@@ -761,7 +768,7 @@
                 }
             }
         }
-
+    
         function handleDragMove(e) {
             if (activeBubble && activeBubble.isDragging) {
                 const clientX = e.clientX || e.touches[0].clientX;
@@ -775,7 +782,7 @@
                 if (e.type === 'touchmove') e.preventDefault();
             }
         }
-
+    
         function handleDragEnd() {
             if (activeBubble) {
                 activeBubble.isDragging = false;
@@ -785,28 +792,28 @@
                 activeBubble = null;
             }
         }
-
+    
         document.addEventListener('mousedown', handleDragStart);
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
         document.addEventListener('touchstart', handleDragStart, { passive: false });
         document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
-
+    
         function animateBubbles() {
             physicsBubbles.forEach(bubble => {
                 if (!bubble.isDragging) {
                     bubble.vx *= friction;
                     bubble.vy *= friction;
-
+    
                     if (Math.abs(bubble.vx) < minVelocity && Math.abs(bubble.vy) < minVelocity) {
                         bubble.vx += (Math.random() - 0.5) * randomForceScale;
                         bubble.vy += (Math.random() - 0.5) * randomForceScale;
                     }
-
+    
                     bubble.x += bubble.vx;
                     bubble.y += bubble.vy;
-
+    
                     if (bubble.x + bubble.width > window.innerWidth) {
                         bubble.x = window.innerWidth - bubble.width;
                         bubble.vx *= -bounceFactor;
@@ -814,7 +821,7 @@
                         bubble.x = 0;
                         bubble.vx *= -bounceFactor;
                     }
-
+    
                     if (bubble.y + bubble.height > window.innerHeight) {
                         bubble.y = window.innerHeight - bubble.height;
                         bubble.vy *= -bounceFactor;
@@ -822,14 +829,14 @@
                         bubble.y = 0;
                         bubble.vy *= -bounceFactor;
                     }
-
+    
                     bubble.element.style.left = `${bubble.x}px`;
                     bubble.element.style.top = `${bubble.y}px`;
                 }
             });
             requestAnimationFrame(animateBubbles);
         }
-
+    
         window.onload = function() {
             animateSnow();
             animateBubbles();
