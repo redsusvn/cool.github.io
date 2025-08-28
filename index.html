@@ -590,7 +590,6 @@
             bgVideo.style.opacity = '1';
         });
     
-        // Add this event listener to handle automatic switching
         bgVideo.addEventListener('ended', () => {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             loadVideo(currentVideoIndex);
