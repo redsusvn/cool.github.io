@@ -646,7 +646,7 @@
             return { canvas, ctx, get width() { return width; }, get height() { return height; } };
         }
     
-        const snowSetup = setupCanvas('snowCanvas');
+        const { ctx: snowCtx, width: snowWidth, height: snowHeight } = setupCanvas('snowCanvas');
         const snowflakes = [];
         const maxSnowflakes = 150;
         let mouseX = -100, mouseY = -100;
@@ -663,8 +663,8 @@
         class Snowflake {
             constructor() { this.reset(); }
             reset() {
-                this.x = Math.random() * snowSetup.width;
-                this.y = Math.random() * snowSetup.height;
+                this.x = Math.random() * snowWidth;
+                this.y = Math.random() * snowHeight;
                 this.size = Math.random() * 3 + 1;
                 this.speedY = Math.random() * 0.5 + 0.2;
                 this.speedX = (Math.random() - 0.5) * 0.5;
@@ -688,12 +688,12 @@
                     }
                 }
     
-                if (this.y > snowSetup.height * 0.8) {
+                if (this.y > snowHeight * 0.8) {
                     this.life -= this.fadeSpeed;
                     this.opacity = Math.max(0, this.life * 0.7 + 0.3);
                 }
     
-                if (this.y > snowSetup.height + this.size || this.life <= 0) {
+                if (this.y > snowHeight + this.size || this.life <= 0) {
                     this.reset();
                     this.y = -this.size;
                 }
@@ -711,7 +711,7 @@
         }
     
         function animateSnow() {
-            snowSetup.ctx.clearRect(0, 0, snowSetup.width, snowSetup.height);
+            snowCtx.clearRect(0, 0, snowWidth, snowHeight);
             snowflakes.forEach(flake => {
                 flake.update();
                 flake.draw();
