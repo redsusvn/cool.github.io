@@ -1,4 +1,4 @@
-const DURATION_MS = 5000;
+const DURATION_MS = 6000;
 const RUN_ONCE_PER_SESSION = true;
 const AUDIO_SRC = "https://sussydomain.eu.org/2-thang-9/2-9.mp3";
 const ENABLE_PROGRESS_BAR = true;
@@ -45,7 +45,7 @@ const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
               <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
             <button class="audio-toggle" type="button" style="display:none">🔊 Nghe giọng Bác Hồ</button>
-            <audio id="gpmn-audio" preload="auto" ${AUDIO_SRC ? `src="${AUDIO_SRC}" autoplay` : ""}></audio>
+            <audio id="gpmn-audio" preload="auto" ${AUDIO_SRC ? `src="${AUDIO_SRC}"` : ""}></audio>
           </div>
         </div>
 
@@ -59,13 +59,20 @@ const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
 
     const audio = wrap.querySelector("#gpmn-audio");
     const toggleBtn = wrap.querySelector(".audio-toggle");
+
     const tryAutoPlay = () => {
       if (!audio || !AUDIO_SRC) return;
-      audio.currentTime = 0; audio.volume = 0.8;
-      audio.play().catch(() => { toggleBtn.style.display = "inline-flex"; });
+      audio.currentTime = 0;
+      audio.volume = 0.8;
+      audio.play().catch(() => {
+        toggleBtn.style.display = "inline-flex";
+      });
     };
+
     if (audio && AUDIO_SRC) {
-      audio.addEventListener('loadeddata', tryAutoPlay);
+      audio.addEventListener('canplaythrough', tryAutoPlay, { once: true });
+      audio.load();
+
       toggleBtn.addEventListener("click", () => {
         audio.play().then(() => {
           toggleBtn.style.display = "none";
@@ -77,6 +84,7 @@ const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
         toggleBtn.style.display = "inline-flex";
       });
     }
+
     setTimeout(() => {
       wrap.classList.add("fade-out");
       setTimeout(() => wrap.parentNode && wrap.parentNode.removeChild(wrap), 800);
@@ -91,6 +99,7 @@ const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
         setTimeout(() => wrap.parentNode && wrap.parentNode.removeChild(wrap), 800);
       }
     });
-    wrap.setAttribute('tabindex','0'); wrap.focus();
+    wrap.setAttribute('tabindex', '0');
+    wrap.focus();
   });
 })();
