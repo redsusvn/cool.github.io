@@ -59,6 +59,16 @@
             z-index: 0;
             pointer-events: none;
         }
+        
+        #trailCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
 
         .main-content-wrapper {
             position: relative;
@@ -159,7 +169,7 @@
             border-radius: 15px;
             background-color: rgba(255, 255, 255, 0.35);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 25px rgba(229, 115, 115, 0.35);
+            box-shadow: 0 0 25px rgba(229, 154, 154, 0.35);
             display: flex;
             flex-direction: column;
             gap: 18px;
@@ -350,7 +360,7 @@
 
             .profile-section h2 {
                 font-size: 1.5rem;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5rem; 
                 line-height: 1.2;
             }
 
@@ -365,7 +375,7 @@
             .profile-avatar-container {
                 width: 120px;
                 height: 120px;
-                margin-bottom: 10px;
+                margin-bottom: 10px; 
             }
             
             .social-icons a {
@@ -374,12 +384,12 @@
                 font-size: 1.1rem;
             }
             .social-icons {
-                gap: 0.75rem; 
+                gap: 0.75rem;
                 margin-bottom: 0.75rem;
             }
             
             .profile-section .relative.flex {
-                margin-bottom: 1rem; 
+                margin-bottom: 1rem;
             }
             
             #thoughtBubblesContainer {
@@ -388,7 +398,7 @@
 
             .settings-panel {
                 right: 10px;
-                top: 50px; 
+                top: 50px;
                 width: calc(100% - 20px);
                 max-width: 260px;
             }
@@ -400,7 +410,7 @@
                 top: 10px; 
                 left: 10px; 
                 font-size: 0.75rem; 
-                padding: 5px 10px;
+                padding: 5px 10px; 
             }
             .top-right-buttons { 
                 top: 10px; 
@@ -430,6 +440,7 @@
     </div>
 
     <canvas id="snowCanvas"></canvas>
+    <canvas id="trailCanvas"></canvas>
 
     <button id="homeBtn" class="top-left-button poppins-font">[RS Profile]</button>
 
@@ -453,7 +464,7 @@
         <div class="video-controls">
             <button id="prevVideoBtn" aria-label="Previous Video"><i class="fas fa-chevron-left"></i></button>
             <button id="playPauseBtn" aria-label="Play/Pause Video"><i class="fas fa-pause"></i></button>
-            <span id="videoCounter">1 / 40</span>
+            <span id="videoCounter">1 / 38</span>
             <button id="nextVideoBtn" aria-label="Next Video"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
@@ -473,7 +484,7 @@
                 <img src="https://i.imgur.com/RtvXieL.jpeg" alt="Profile Avatar" class="profile-avatar" onerror="this.onerror=null;this.src='https://i.imgur.com/RtvXieL.jpeg';">
             </div>
 
-            <h2 class="text-4xl font-bold poppins-font mb-4">Hello! I'm Red Sus's</h2>
+            <h2 class="text-4xl font-bold poppins-font mb-4">Hello  ! I'm Red Sus's</h2>
 
             <div class="social-icons flex justify-center gap-4 mb-6">
                 <a href="https://discord.com/users/968437760463622164" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
@@ -500,7 +511,7 @@
         const closeBtn = document.getElementById('closeBtn');
         const homeBtn = document.getElementById('homeBtn');
         const maximizeIcon = maximizeBtn.querySelector('i');
-    
+        
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsPanel = document.getElementById('settingsPanel');
         const bgVideo = document.getElementById('bgVideo');
@@ -510,16 +521,16 @@
         const nextVideoBtn = document.getElementById('nextVideoBtn');
         const videoCounter = document.getElementById('videoCounter');
         const playPauseBtn = document.getElementById('playPauseBtn');
-    
-    
+        
+        
         let isInteractable = true;
         const COOLDOWN_PERIOD = 800;
-    
+        
         function setCooldown() {
             isInteractable = false;
             setTimeout(() => { isInteractable = true; }, COOLDOWN_PERIOD);
         }
-    
+        
         minimizeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -529,7 +540,7 @@
             maximizeIcon.classList.remove('fa-window-restore');
             maximizeIcon.classList.add('fa-square');
         });
-    
+        
         maximizeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -538,7 +549,7 @@
                 mainContent.classList.remove('minimized');
             }
             mainContent.classList.toggle('maximized');
-    
+        
             if (mainContent.classList.contains('maximized')) {
                 maximizeIcon.classList.remove('fa-square');
                 maximizeIcon.classList.add('fa-window-restore');
@@ -547,20 +558,20 @@
                 maximizeIcon.classList.add('fa-square');
             }
         });
-    
+        
         closeBtn.addEventListener('click', () => {
             if (!isInteractable || mainContent.classList.contains('minimized')) {
                 return;
             }
             setCooldown();
             mainContent.classList.add('closing');
-    
+        
             mainContent.addEventListener('animationend', () => {
                 mainContent.classList.add('minimized');
                 mainContent.classList.remove('closing');
             }, { once: true });
         });
-    
+        
         homeBtn.addEventListener('click', () => {
             if (!isInteractable) return;
             setCooldown();
@@ -571,7 +582,7 @@
             maximizeIcon.classList.add('fa-square');
         });
 
-        const videoUrls = [            
+        const videoUrls = [          
             'https://files.catbox.moe/he5889.mp4',
             'https://files.catbox.moe/j8jy2d.mp4',
             'https://files.catbox.moe/2zxg2j.mp4',
@@ -614,11 +625,11 @@
             'https://files.catbox.moe/c0ye1j.mp4'
         ];
         let currentVideoIndex = 0;
-    
+        
         function updateVideoCounter() {
             videoCounter.textContent = `${currentVideoIndex + 1} / ${videoUrls.length}`;
         }
-    
+        
         function loadVideo(index) {
             bgVideo.style.opacity = '0';
             setTimeout(() => {
@@ -638,34 +649,34 @@
                 updateVideoCounter();
             }, 800);
         }
-    
+        
         bgVideo.addEventListener('loadeddata', () => {
             bgVideo.style.opacity = '1';
         });
-    
+        
         bgVideo.addEventListener('ended', () => {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             loadVideo(currentVideoIndex);
         });
-    
+        
         settingsBtn.addEventListener('click', () => {
             settingsPanel.classList.toggle('visible');
         });
-    
+        
         blurSlider.addEventListener('input', (e) => {
             bgVideo.style.filter = `blur(${e.target.value}px)`;
         });
-    
+        
         volumeSlider.addEventListener('input', (e) => {
             bgVideo.volume = e.target.value;
             bgVideo.muted = e.target.value == 0;
         });
-    
+        
         nextVideoBtn.addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             loadVideo(currentVideoIndex);
         });
-    
+        
         prevVideoBtn.addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
             loadVideo(currentVideoIndex);
@@ -683,27 +694,27 @@
                 icon.classList.add('fa-play');
             }
         });
-    
+        
         function setupCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
             let width, height;
-    
+        
             function resizeCanvas() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
             }
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
-    
+        
             return { canvas, ctx, get width() { return width; }, get height() { return height; } };
         }
-    
+        
         const { ctx: snowCtx, width: snowWidth, height: snowHeight } = setupCanvas('snowCanvas');
         const snowflakes = [];
         const maxSnowflakes = 150;
         let mouseX = -100, mouseY = -100;
-    
+        
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
@@ -712,7 +723,7 @@
             mouseX = -100;
             mouseY = -100;
         });
-    
+        
         class Snowflake {
             constructor() { this.reset(); }
             reset() {
@@ -729,7 +740,7 @@
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
-    
+        
                 if (mouseX !== -100) {
                     const dx = this.x - mouseX;
                     const dy = this.y - mouseY;
@@ -740,12 +751,12 @@
                         this.y += (dy > 0 ? 1 : -1) * force * this.windInfluence * 2;
                     }
                 }
-    
+        
                 if (this.y > snowHeight * 0.8) {
                     this.life -= this.fadeSpeed;
                     this.opacity = Math.max(0, this.life * 0.7 + 0.3);
                 }
-    
+        
                 if (this.y > snowHeight + this.size || this.life <= 0) {
                     this.reset();
                     this.y = -this.size;
@@ -758,11 +769,11 @@
                 snowCtx.fill();
             }
         }
-    
+        
         for (let i = 0; i < maxSnowflakes; i++) {
             snowflakes.push(new Snowflake());
         }
-    
+        
         function animateSnow() {
             snowCtx.clearRect(0, 0, snowWidth, snowHeight);
             snowflakes.forEach(flake => {
@@ -771,14 +782,14 @@
             });
             requestAnimationFrame(animateSnow);
         }
-    
+        
         const bubbles = document.querySelectorAll('.thought-bubble');
         const physicsBubbles = [];
         const friction = 0.95;
         const bounceFactor = 0.7;
         const minVelocity = 0.1;
         const randomForceScale = 0.05;
-    
+        
         bubbles.forEach((bubble, index) => {
             const rect = bubble.getBoundingClientRect();
             let initialX = Math.random() * (window.innerWidth - rect.width);
@@ -789,10 +800,10 @@
             if (index === 1) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.2 - spreadOffset; }
             if (index === 2) { initialX = window.innerWidth * 0.2 - spreadOffset; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
             if (index === 3) { initialX = window.innerWidth * 0.8 + spreadOffset - rect.width; initialY = window.innerHeight * 0.8 + spreadOffset - rect.height; }
-    
+        
             bubble.style.left = `${initialX}px`;
             bubble.style.top = `${initialY}px`;
-    
+        
             physicsBubbles.push({
                 element: bubble, x: initialX, y: initialY,
                 vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
@@ -800,9 +811,9 @@
                 width: rect.width, height: rect.height
             });
         });
-    
+        
         let activeBubble = null;
-    
+        
         function handleDragStart(e) {
             const target = e.target;
             if (target && target.classList.contains('thought-bubble')) {
@@ -820,7 +831,7 @@
                 }
             }
         }
-    
+        
         function handleDragMove(e) {
             if (activeBubble && activeBubble.isDragging) {
                 const clientX = e.clientX || e.touches[0].clientX;
@@ -834,7 +845,7 @@
                 if (e.type === 'touchmove') e.preventDefault();
             }
         }
-    
+        
         function handleDragEnd() {
             if (activeBubble) {
                 activeBubble.isDragging = false;
@@ -844,28 +855,28 @@
                 activeBubble = null;
             }
         }
-    
+        
         document.addEventListener('mousedown', handleDragStart);
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
         document.addEventListener('touchstart', handleDragStart, { passive: false });
         document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
-    
+        
         function animateBubbles() {
             physicsBubbles.forEach(bubble => {
                 if (!bubble.isDragging) {
                     bubble.vx *= friction;
                     bubble.vy *= friction;
-    
+        
                     if (Math.abs(bubble.vx) < minVelocity && Math.abs(bubble.vy) < minVelocity) {
                         bubble.vx += (Math.random() - 0.5) * randomForceScale;
                         bubble.vy += (Math.random() - 0.5) * randomForceScale;
                     }
-    
+        
                     bubble.x += bubble.vx;
                     bubble.y += bubble.vy;
-    
+        
                     if (bubble.x + bubble.width > window.innerWidth) {
                         bubble.x = window.innerWidth - bubble.width;
                         bubble.vx *= -bounceFactor;
@@ -873,7 +884,7 @@
                         bubble.x = 0;
                         bubble.vx *= -bounceFactor;
                     }
-    
+        
                     if (bubble.y + bubble.height > window.innerHeight) {
                         bubble.y = window.innerHeight - bubble.height;
                         bubble.vy *= -bounceFactor;
@@ -881,14 +892,14 @@
                         bubble.y = 0;
                         bubble.vy *= -bounceFactor;
                     }
-    
+        
                     bubble.element.style.left = `${bubble.x}px`;
                     bubble.element.style.top = `${bubble.y}px`;
                 }
             });
             requestAnimationFrame(animateBubbles);
         }
-    
+        
         window.onload = function() {
             animateSnow();
             animateBubbles();
@@ -896,6 +907,107 @@
             bgVideo.volume = volumeSlider.value;
             loadVideo(currentVideoIndex);
         };
+    </script>
+    <script>
+        const trailCanvas = document.getElementById('trailCanvas');
+        const ctxTrail = trailCanvas.getContext('2d');
+        let trailParticles = [];
+        let mousePos = { x: null, y: null };
+        let mouseTrail = [];
+        const trailLifetime = 150;
+        const particleFrequency = 10;
+
+        function resizeTrailCanvas() {
+            trailCanvas.width = window.innerWidth;
+            trailCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeTrailCanvas);
+        resizeTrailCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            if (mousePos.x !== null) {
+                const distance = Math.sqrt(Math.pow(e.clientX - mousePos.x, 2) + Math.pow(e.clientY - mousePos.y, 2));
+                if (distance > particleFrequency) {
+                    createHeartParticle(e.clientX, e.clientY);
+                }
+            }
+            mousePos.x = e.clientX;
+            mousePos.y = e.clientY;
+            mouseTrail.push({ x: mousePos.x, y: mousePos.y, timestamp: Date.now() });
+        });
+
+        function createHeartParticle(x, y) {
+            trailParticles.push({
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                opacity: 1,
+                size: Math.random() * 10 + 5
+            });
+        }
+
+        function drawHeartEmoji(x, y, opacity, size) {
+            ctxTrail.font = `${size}px serif`;
+            ctxTrail.globalAlpha = opacity;
+            ctxTrail.fillText("❤️", x - size / 2, y + size / 2);
+            ctxTrail.globalAlpha = 1;
+        }
+
+        function animateTrail() {
+            ctxTrail.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+
+            const now = Date.now();
+            
+            for (let i = trailParticles.length - 1; i >= 0; i--) {
+                let p = trailParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.opacity -= 0.01;
+                p.size -= 0.1;
+                if (p.opacity <= 0 || p.size <= 0) {
+                    trailParticles.splice(i, 1);
+                } else {
+                    drawHeartEmoji(p.x, p.y, p.opacity, p.size);
+                }
+            }
+            
+            mouseTrail = mouseTrail.filter(segment => now - segment.timestamp < trailLifetime);
+
+            if (mouseTrail.length > 1) {
+                ctxTrail.beginPath();
+                ctxTrail.moveTo(mouseTrail[0].x, mouseTrail[0].y);
+
+                for (let i = 1; i < mouseTrail.length - 1; i++) {
+                    const nextPoint = mouseTrail[i + 1];
+                    const midpointX = (mouseTrail[i].x + nextPoint.x) / 2;
+                    const midpointY = (mouseTrail[i].y + nextPoint.y) / 2;
+                    ctxTrail.quadraticCurveTo(mouseTrail[i].x, mouseTrail[i].y, midpointX, midpointY);
+                }
+                ctxTrail.lineTo(mouseTrail[mouseTrail.length - 1].x, mouseTrail[mouseTrail.length - 1].y);
+
+                const gradient = ctxTrail.createLinearGradient(mouseTrail[0].x, mouseTrail[0].y, mouseTrail[mouseTrail.length - 1].x, mouseTrail[mouseTrail.length - 1].y);
+                gradient.addColorStop(0, 'rgba(255, 182, 193, 0.8)');
+                gradient.addColorStop(1, 'rgba(255, 105, 180, 0.6)');
+                
+                ctxTrail.strokeStyle = gradient;
+                ctxTrail.lineWidth = 8;
+                ctxTrail.lineCap = 'round';
+                ctxTrail.lineJoin = 'round';
+                
+                ctxTrail.stroke();
+
+                ctxTrail.shadowBlur = 15;
+                ctxTrail.shadowColor = '#ff69b4';
+                ctxTrail.stroke();
+                ctxTrail.shadowBlur = 0;
+            }
+
+            requestAnimationFrame(animateTrail);
+        }
+
+        animateTrail();
     </script>
 </body>
 </html>
