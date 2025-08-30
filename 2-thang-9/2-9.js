@@ -1,8 +1,8 @@
 const DURATION_MS = 5000;
 const RUN_ONCE_PER_SESSION = true;
-const AUDIO_SRC = "https://files.catbox.moe/z61614.mp3";
+const AUDIO_SRC = "https://sussydomain.eu.org/2-thang-9/2-9.mp3";
 const ENABLE_PROGRESS_BAR = true;
-const PLANE_IMG = "https://files.catbox.moe/cz8o4v.png";
+const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
 
 (function () {
   let loadPreloader = true;
