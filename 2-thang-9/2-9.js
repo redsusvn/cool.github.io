@@ -45,7 +45,7 @@ const PLANE_IMG = "https://sussydomain.eu.org/2-thang-9/maybay.png";
               <span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
             <button class="audio-toggle" type="button" style="display:none">🔊 Nghe giọng Bác Hồ</button>
-            <audio id="gpmn-audio" preload="auto" ${AUDIO_SRC ? `src="${AUDIO_SRC}"` : ""}></audio>
+            <audio id="gpmn-audio" preload="auto" ${AUDIO_SRC ? `src="${AUDIO_SRC}" autoplay` : ""}></audio>
           </div>
         </div>
 
