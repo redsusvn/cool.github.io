@@ -338,31 +338,26 @@
             100% { transform: translateY(0); }
         }
         
-        /* --- MORE AGGRESSIVE MOBILE STYLES --- */
         @media (max-width: 768px) {
             .main-content-wrapper {
-                /* Make the main panel responsive and smaller */
                 width: 90vw;
-                padding: 12px; /* Reduced padding */
+                padding: 12px; 
                 min-height: 0; 
                 height: auto;
-                margin-top: 55px; /* Reduced margin */
-                margin-bottom: 50px; /* Reduced margin */
+                margin-top: 55px; 
+                margin-bottom: 50px;
             }
 
-            /* Further reduce heading size and spacing */
             .profile-section h2 {
-                font-size: 1.5rem; /* Reduced from 1.8rem */
-                margin-bottom: 0.5rem; /* Tighter spacing */
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
                 line-height: 1.2;
             }
 
-            /* Further reduce paragraph text size */
             .profile-section p {
                 font-size: 0.85rem;
             }
 
-            /* Make avatar significantly smaller */
             .profile-avatar {
                 width: 80px; 
                 height: 80px;
@@ -370,46 +365,42 @@
             .profile-avatar-container {
                 width: 120px;
                 height: 120px;
-                margin-bottom: 10px; /* Tighter spacing */
+                margin-bottom: 10px;
             }
             
-            /* Further reduce social icon size and spacing */
             .social-icons a {
                 width: 36px;
                 height: 36px;
                 font-size: 1.1rem;
             }
             .social-icons {
-                gap: 0.75rem; /* 12px */
+                gap: 0.75rem; 
                 margin-bottom: 0.75rem;
             }
             
-            /* Reduce space taken by the divider */
             .profile-section .relative.flex {
-                margin-bottom: 1rem; /* 16px */
+                margin-bottom: 1rem; 
             }
             
-            /* Hide thought bubbles on mobile to prevent clutter */
             #thoughtBubblesContainer {
                 display: none;
             }
 
             .settings-panel {
                 right: 10px;
-                top: 50px; /* Move up slightly */
+                top: 50px; 
                 width: calc(100% - 20px);
                 max-width: 260px;
             }
 
-            /* Adjust fixed elements to be smaller */
             .top-left-button, .copyright-text, .black-cat, .top-right-buttons {
                 position: fixed;
             }
             .top-left-button { 
                 top: 10px; 
                 left: 10px; 
-                font-size: 0.75rem; /* Smaller font */
-                padding: 5px 10px; /* Tighter padding */
+                font-size: 0.75rem; 
+                padding: 5px 10px;
             }
             .top-right-buttons { 
                 top: 10px; 
@@ -417,17 +408,17 @@
                 gap: 5px;
             }
             .top-right-buttons button {
-                width: 32px; /* Make buttons smaller */
+                width: 32px; 
                 height: 32px;
             }
             .copyright-text { 
                 bottom: 8px; 
-                font-size: 0.7rem; /* Make copyright smaller */
+                font-size: 0.7rem; 
             }
             .black-cat { 
                 bottom: 5px; 
                 right: 10px; 
-                width: 50px; /* Make cat smaller */
+                width: 50px; 
             }
         }
     </style>
@@ -440,7 +431,7 @@
 
     <canvas id="snowCanvas"></canvas>
 
-    <button id="homeBtn" class="top-left-button poppins-font">Red Sus's Profile | HOME</button>
+    <button id="homeBtn" class="top-left-button poppins-font">RS Profile</button>
 
     <div class="top-right-buttons">
         <button id="settingsBtn" aria-label="Settings"><i class="fas fa-cog"></i></button>
@@ -482,7 +473,7 @@
                 <img src="https://i.imgur.com/RtvXieL.jpeg" alt="Profile Avatar" class="profile-avatar" onerror="this.onerror=null;this.src='https://i.imgur.com/RtvXieL.jpeg';">
             </div>
 
-            <h2 class="text-4xl font-bold poppins-font mb-4">Hello   ! I'm Red Sus's</h2>
+            <h2 class="text-4xl font-bold poppins-font mb-4">Hello! I'm Red Sus's</h2>
 
             <div class="social-icons flex justify-center gap-4 mb-6">
                 <a href="https://discord.com/users/968437760463622164" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
@@ -498,7 +489,7 @@
         </div>
     </div>
 
-    <p class="copyright-text">© Copyright Red Sus's 2025</p>
+    <p class="copyright-text">© Red Sus's Profile V1</p>
 
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s" alt="Black Cat" class="black-cat" onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s';">
 
