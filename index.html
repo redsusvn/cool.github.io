@@ -295,6 +295,8 @@
             box-shadow: 0 0 10px rgba(255, 153, 172, 0.5);
             cursor: grab;
             z-index: 5;
+            padding: 6px 12px;
+            font-size: 0.7rem;
         }
         .thought-bubble.dragging {
             cursor: grabbing;
@@ -391,7 +393,7 @@
             }
             
             #thoughtBubblesContainer {
-                display: none;
+                display: block; 
             }
 
             .settings-panel {
@@ -923,17 +925,45 @@
         window.addEventListener('resize', resizeTrailCanvas);
         resizeTrailCanvas();
 
-        window.addEventListener('mousemove', (e) => {
-            if (mousePos.x !== null) {
-                const distance = Math.sqrt(Math.pow(e.clientX - mousePos.x, 2) + Math.pow(e.clientY - mousePos.y, 2));
+
+        function handleInteractionUpdate(x, y) {
+            if (mousePos.x !== null && mousePos.y !== null) {
+                const distance = Math.sqrt(Math.pow(x - mousePos.x, 2) + Math.pow(y - mousePos.y, 2));
                 if (distance > particleFrequency) {
-                    createHeartParticle(e.clientX, e.clientY);
+                    createHeartParticle(x, y);
                 }
             }
-            mousePos.x = e.clientX;
-            mousePos.y = e.clientY;
+            mousePos.x = x;
+            mousePos.y = y;
             mouseTrail.push({ x: mousePos.x, y: mousePos.y, timestamp: Date.now() });
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            handleInteractionUpdate(e.clientX, e.clientY);
         });
+
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                const touch = e.touches[0];
+                mousePos.x = touch.clientX;
+                mousePos.y = touch.clientY;
+                mouseTrail.push({ x: mousePos.x, y: mousePos.y, timestamp: Date.now() });
+            }
+        }, { passive: false });
+        
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            if (e.touches.length > 0) {
+                const touch = e.touches[0];
+                handleInteractionUpdate(touch.clientX, touch.clientY);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            mousePos.x = null;
+            mousePos.y = null;
+        });
+
 
         function createHeartParticle(x, y) {
             trailParticles.push({
