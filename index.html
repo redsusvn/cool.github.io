@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Sus's | Home</title>
-    <meta name="description" content="Welcome to Red Sus's Profile V1.0.3! Now with a gallery tab to showcase my photography skills.">
+    <meta name="description" content="Welcome to Red Sus's Profile V1.0.4! Now with a gallery tab to show my photography skills. (Update the image loader to make it load faster)">
     <meta name="keywords" content="red sus, red sus's, Red Sus, Red Sus's, red sus web, red sus's web, Red Sus web, Red Sus's web, red sus website, red sus's website, Red Sus website, Red Sus's website, portfolio, gallery">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -245,6 +245,37 @@
         .gallery-item img:hover {
             transform: scale(1.05);
         }
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0 5px 0;
+            gap: 8px;
+        }
+        .page-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(0,0,0,0.05);
+            color: #555;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .page-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #212121;
+        }
+        .page-btn.active {
+            background-color: #ff99ac;
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 14px -4px #ff99ac;
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .image-modal {
             display: none;
             position: fixed;
@@ -470,90 +501,24 @@
             font-size: 0.9rem;
         }
         @media (max-width: 768px) {
-            .main-content-wrapper {
-                width: 90vw;
-                padding: 12px;
-                min-height: 0;
-                height: auto;
-                margin-top: 55px;
-                margin-bottom: 50px;
-            }
-            .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-                gap: 5px;
-            }
-            .profile-avatar {
-                width: 80px;
-                height: 80px;
-            }
-            .profile-avatar-container {
-                width: 120px;
-                height: 120px;
-                margin-bottom: 10px;
-            }
-            .thought-bubble {
-                padding: 6px 12px;
-                font-size: 0.7rem;
-            }
-            .profile-section h2 {
-                font-size: 1.5rem;
-                margin-bottom: 0.5rem;
-                line-height: 1.2;
-            }
-            .profile-section p {
-                font-size: 0.85rem;
-            }
-            .social-icons a {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
-            }
-            .social-icons {
-                gap: 0.75rem;
-                margin-bottom: 0.75rem;
-            }
-            .profile-section .relative.flex {
-                margin-bottom: 1rem;
-            }
-            #thoughtBubblesContainer {
-                display: block;
-            }
-            .settings-panel {
-                right: 10px;
-                top: 50px;
-                width: calc(100% - 20px);
-                max-width: 260px;
-            }
-            .top-left-button,
-            .copyright-text,
-            .black-cat,
-            .top-right-buttons {
-                position: fixed;
-            }
-            .top-left-button {
-                top: 10px;
-                left: 10px;
-                font-size: 0.75rem;
-                padding: 5px 10px;
-            }
-            .top-right-buttons {
-                top: 10px;
-                right: 10px;
-                gap: 5px;
-            }
-            .top-right-buttons button {
-                width: 32px;
-                height: 32px;
-            }
-            .copyright-text {
-                bottom: 8px;
-                font-size: 0.7rem;
-            }
-            .black-cat {
-                bottom: 5px;
-                right: 10px;
-                width: 50px;
-            }
+            .main-content-wrapper { width: 90vw; padding: 12px; min-height: 0; height: auto; margin-top: 55px; margin-bottom: 50px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 5px; }
+            .profile-avatar { width: 80px; height: 80px; }
+            .profile-avatar-container { width: 120px; height: 120px; margin-bottom: 10px; }
+            .thought-bubble { padding: 6px 12px; font-size: 0.7rem; }
+            .profile-section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; }
+            .profile-section p { font-size: 0.85rem; }
+            .social-icons a { width: 36px; height: 36px; font-size: 1.1rem; }
+            .social-icons { gap: 0.75rem; margin-bottom: 0.75rem; }
+            .profile-section .relative.flex { margin-bottom: 1rem; }
+            #thoughtBubblesContainer { display: block; }
+            .settings-panel { right: 10px; top: 50px; width: calc(100% - 20px); max-width: 260px; }
+            .top-left-button, .copyright-text, .black-cat, .top-right-buttons { position: fixed; }
+            .top-left-button { top: 10px; left: 10px; font-size: 0.75rem; padding: 5px 10px; }
+            .top-right-buttons { top: 10px; right: 10px; gap: 5px; }
+            .top-right-buttons button { width: 32px; height: 32px; }
+            .copyright-text { bottom: 8px; font-size: 0.7rem; }
+            .black-cat { bottom: 5px; right: 10px; width: 50px; }
         }
     </style>
 </head>
@@ -615,11 +580,11 @@
             </div>
         </div>
         <div id="gallery" class="tab-content">
-            <div class="gallery-grid">
-            </div>
+            <div class="gallery-grid"></div>
+            <div class="pagination-controls"></div>
         </div>
     </div>
-    <p class="copyright-text">© Red Sus's Profile V1.0.3</p>
+    <p class="copyright-text">© Red Sus's Profile V1.0.4</p>
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s" alt="Black Cat" class="black-cat" onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s';">
     <div class="image-modal">
         <span class="close-modal">&times;</span>
@@ -659,9 +624,14 @@
             const zoomOutBtn = document.getElementById('zoomOutBtn');
             const rotateLeftBtn = document.getElementById('rotateLeftBtn');
             const rotateRightBtn = document.getElementById('rotateRightBtn');
+            const galleryGrid = document.querySelector('.gallery-grid');
+            const paginationControls = document.querySelector('.pagination-controls');
 
             let videoUrls = [];
             let currentVideoIndex = 0;
+            let allImageUrls = [];
+            let currentPage = 1;
+            const itemsPerPage = 10;
             let isInteractable = true;
             const COOLDOWN_PERIOD = 800;
             let scale = 1, rotation = 0, translateX = 0, translateY = 0;
@@ -679,15 +649,14 @@
                 }
             }
 
-            async function populateGallery() {
-                const galleryGrid = document.querySelector('.gallery-grid');
+            function displayPage(page) {
                 galleryGrid.innerHTML = '';
-                const imageUrls = await fetchContent('https://sussydomain.eu.org/gallery.txt');
-                if (imageUrls.length === 0) {
-                    galleryGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">No picture yet...</p>';
-                    return;
-                }
-                imageUrls.forEach(src => {
+                currentPage = page;
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageImages = allImageUrls.slice(startIndex, endIndex);
+
+                pageImages.forEach(src => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item loading-placeholder';
                     const img = document.createElement('img');
@@ -705,6 +674,42 @@
                     item.appendChild(img);
                     galleryGrid.appendChild(item);
                 });
+                setupPagination();
+            }
+
+            function setupPagination() {
+                paginationControls.innerHTML = '';
+                const totalPages = Math.ceil(allImageUrls.length / itemsPerPage);
+                if (totalPages <= 1) return;
+
+                const prevButton = document.createElement('button');
+                prevButton.innerHTML = `<i class="fas fa-chevron-left"></i>`;
+                prevButton.className = 'page-btn';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) displayPage(currentPage - 1);
+                });
+                paginationControls.appendChild(prevButton);
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.textContent = i;
+                    pageButton.className = 'page-btn';
+                    if (i === currentPage) {
+                        pageButton.classList.add('active');
+                    }
+                    pageButton.addEventListener('click', () => displayPage(i));
+                    paginationControls.appendChild(pageButton);
+                }
+
+                const nextButton = document.createElement('button');
+                nextButton.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+                nextButton.className = 'page-btn';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) displayPage(currentPage + 1);
+                });
+                paginationControls.appendChild(nextButton);
             }
             
             function setCooldown() {
@@ -792,7 +797,13 @@
                 } else {
                     videoCounter.textContent = '0 / 0';
                 }
-                populateGallery();
+                allImageUrls = await fetchContent('https://sussydomain.eu.org/gallery.txt');
+                if (allImageUrls.length > 0) {
+                    displayPage(1);
+                } else {
+                    galleryGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">No picture yet...</p>';
+                }
+
                 animateSnow();
                 animateBubbles();
                 bgVideo.volume = volumeSlider.value;
