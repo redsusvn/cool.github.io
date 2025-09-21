@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Sus's | Home</title>
-    <meta name="description" content="Welcome to Red Sus's Profile V2! Now with a gallery tab.">
+    <meta name="description" content="Welcome to Red Sus's Profile V1.0.3! Now with a gallery tab to showcase my photography skills.">
     <meta name="keywords" content="red sus, red sus's, Red Sus, Red Sus's, red sus web, red sus's web, Red Sus web, Red Sus's web, red sus website, red sus's website, Red Sus website, Red Sus's website, portfolio, gallery">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -17,7 +17,6 @@
             --bg-glass: rgba(255, 255, 255, 0.25);
             --bg-glass-hover: rgba(255, 255, 255, 0.3);
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #ffdde1, #ff99ac);
@@ -33,14 +32,12 @@
             -ms-user-select: none;
             user-select: none;
         }
-
         body.no-select {
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
-
         img {
             -webkit-user-drag: none;
             -khtml-user-drag: none;
@@ -48,14 +45,9 @@
             -o-user-drag: none;
             user-drag: none;
         }
-
-        h1,
-        h2,
-        h3,
-        .poppins-font {
+        h1, h2, h3, .poppins-font {
             font-family: 'Poppins', sans-serif;
         }
-
         #videoBackgroundContainer {
             position: fixed;
             top: 0;
@@ -65,7 +57,6 @@
             z-index: -1;
             background: linear-gradient(135deg, #ffdde1, #ff99ac);
         }
-
         #bgVideo {
             width: 100%;
             height: 100%;
@@ -73,7 +64,6 @@
             transition: opacity 0.8s ease-in-out, filter 0.5s ease;
             opacity: 0;
         }
-
         #snowCanvas,
         #trailCanvas {
             position: fixed;
@@ -84,11 +74,9 @@
             z-index: 0;
             pointer-events: none;
         }
-
         #trailCanvas {
             z-index: 9999;
         }
-
         .main-content-wrapper {
             position: relative;
             z-index: 1;
@@ -105,46 +93,27 @@
             transition: transform 0.5s ease, opacity 0.5s ease, width 0.5s ease, height 0.5s ease;
             transform-origin: center;
         }
-
         .main-content-wrapper.minimized {
             transform: scale(0);
             opacity: 0;
             pointer-events: none;
         }
-
         .main-content-wrapper.maximized {
             width: 95vw;
             max-width: 95vw;
             height: 95vh;
         }
-
         .main-content-wrapper.closing {
             animation: shakeAndFadeOut 0.8s forwards;
         }
-
         @keyframes shakeAndFadeOut {
-            0% {
-                transform: scale(1) rotate(0);
-                opacity: 1;
-            }
-            20% {
-                transform: scale(1.02) rotate(1deg);
-            }
-            40% {
-                transform: scale(1.02) rotate(-1deg);
-            }
-            60% {
-                transform: scale(1.02) rotate(1deg);
-            }
-            80% {
-                transform: scale(1.02) rotate(-1deg);
-            }
-            100% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
+            0% { transform: scale(1) rotate(0); opacity: 1; }
+            20% { transform: scale(1.02) rotate(1deg); }
+            40% { transform: scale(1.02) rotate(-1deg); }
+            60% { transform: scale(1.02) rotate(1deg); }
+            80% { transform: scale(1.02) rotate(-1deg); }
+            100% { transform: scale(0.5); opacity: 0; }
         }
-
         .top-left-button,
         .top-right-buttons button {
             background-color: rgba(255, 255, 255, 0.2);
@@ -154,12 +123,10 @@
             cursor: pointer;
             z-index: 10;
         }
-
         .top-left-button:hover,
         .top-right-buttons button:hover {
             background-color: var(--bg-glass-hover);
         }
-
         .top-left-button {
             position: fixed;
             top: 20px;
@@ -168,7 +135,6 @@
             border-radius: 9999px;
             font-weight: 600;
         }
-
         .top-right-buttons {
             position: fixed;
             top: 20px;
@@ -177,7 +143,6 @@
             gap: 10px;
             z-index: 10;
         }
-
         .top-right-buttons button {
             width: 40px;
             height: 40px;
@@ -187,14 +152,12 @@
             align-items: center;
             border: none;
         }
-
         .tabs-container {
             display: flex;
             justify-content: center;
             padding: 10px 0;
             gap: 50px;
         }
-
         .tab-link {
             font-family: 'Poppins', sans-serif;
             font-size: 1.1rem;
@@ -208,15 +171,12 @@
             transition: color 0.3s ease;
             padding-bottom: 12px;
         }
-
         .tab-link.active {
             color: #212121;
         }
-
         .tab-link:not(.active):hover {
             color: #333;
         }
-
         .tab-link::after {
             content: '';
             position: absolute;
@@ -230,34 +190,23 @@
             transition: transform 0.3s ease-out;
             transform-origin: center;
         }
-
         .tab-link.active::after {
             transform: translateX(-50%) scaleX(1);
         }
-
         .tab-content {
             display: none;
             flex-grow: 1;
             overflow: hidden;
             animation: fadeIn 0.5s;
         }
-
         .tab-content.active {
             display: flex;
             flex-direction: column;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -267,27 +216,35 @@
             flex-grow: 1;
             align-content: start;
         }
-
         .gallery-item {
             aspect-ratio: 1 / 1;
             border-radius: 8px;
             overflow: hidden;
-            background-color: rgba(0, 0, 0, 0.1);
+            position: relative;
         }
-
+        .loading-placeholder {
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: pulse-bg 2s infinite;
+        }
+        @keyframes pulse-bg {
+            0% { background-color: rgba(255, 255, 255, 0.1); }
+            50% { background-color: rgba(255, 255, 255, 0.2); }
+            100% { background-color: rgba(255, 255, 255, 0.1); }
+        }
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease, filter 0.3s ease;
             cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.3s ease;
         }
-
+        .gallery-item img.loaded {
+            opacity: 1;
+        }
         .gallery-item img:hover {
             transform: scale(1.05);
-            filter: brightness(1.1);
         }
-
         .image-modal {
             display: none;
             position: fixed;
@@ -301,7 +258,6 @@
             align-items: center;
             backdrop-filter: blur(5px);
         }
-
         .modal-content-wrapper {
             max-width: 90vw;
             max-height: 80vh;
@@ -309,7 +265,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .modal-content {
             max-width: 100%;
             max-height: 100%;
@@ -317,11 +272,9 @@
             transition: transform 0.3s ease-in-out;
             cursor: grab;
         }
-
         .modal-content.panning {
             transition: none;
         }
-
         .close-modal {
             position: absolute;
             top: 20px;
@@ -332,13 +285,11 @@
             transition: 0.3s;
             cursor: pointer;
         }
-
         .close-modal:hover,
         .close-modal:focus {
             color: #bbb;
             text-decoration: none;
         }
-
         .modal-controls {
             position: absolute;
             bottom: 20px;
@@ -350,7 +301,6 @@
             padding: 10px 20px;
             border-radius: 50px;
         }
-
         .modal-controls button {
             background: none;
             border: none;
@@ -359,11 +309,9 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-
         .modal-controls button:hover {
             transform: scale(1.2);
         }
-
         .profile-section {
             width: 100%;
             display: flex;
@@ -372,11 +320,9 @@
             justify-content: center;
             flex-grow: 1;
         }
-
         .themed-border {
             border-color: var(--border-color);
         }
-
         .profile-avatar-container {
             position: relative;
             margin-bottom: 20px;
@@ -386,7 +332,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .profile-avatar {
             width: 150px;
             height: 150px;
@@ -399,16 +344,10 @@
             box-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--secondary-glow);
             animation: pulse-glow 3s infinite alternate;
         }
-
         @keyframes pulse-glow {
-            from {
-                box-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--secondary-glow);
-            }
-            to {
-                box-shadow: 0 0 25px rgba(255, 106, 136, 1), 0 0 50px rgba(255, 154, 139, 0.8);
-            }
+            from { box-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--secondary-glow); }
+            to { box-shadow: 0 0 25px rgba(255, 106, 136, 1), 0 0 50px rgba(255, 154, 139, 0.8); }
         }
-
         .thought-bubble {
             position: fixed;
             background-color: rgba(255, 255, 255, 0.5);
@@ -422,12 +361,10 @@
             cursor: grab;
             z-index: 5;
         }
-
         .thought-bubble.dragging {
             cursor: grabbing;
             box-shadow: 0 0 20px var(--primary-glow), 0 0 30px var(--secondary-glow);
         }
-
         .social-icons a {
             background-color: rgba(255, 255, 255, 0.2);
             color: #424242;
@@ -440,12 +377,10 @@
             font-size: 1.5rem;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
-
         .social-icons a:hover {
             transform: translateY(-5px) scale(1.1);
             background-color: var(--bg-glass-hover);
         }
-
         .copyright-text {
             position: fixed;
             bottom: 20px;
@@ -455,7 +390,6 @@
             color: #757575;
             z-index: 10;
         }
-
         .black-cat {
             position: fixed;
             bottom: 10px;
@@ -465,19 +399,11 @@
             z-index: 10;
             animation: cat-bounce 3s ease-in-out infinite alternate;
         }
-
         @keyframes cat-bounce {
-            0% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-5px);
-            }
-            100% {
-                transform: translateY(0);
-            }
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
         }
-
         .settings-panel {
             position: fixed;
             top: 70px;
@@ -499,38 +425,32 @@
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
             transform-origin: top right;
         }
-
         .settings-panel.visible {
             transform: scale(1) translateY(0);
             opacity: 1;
             pointer-events: auto;
         }
-
         .settings-panel h3 {
             text-align: center;
             font-size: 1.1rem;
             margin-bottom: 5px;
             color: #212121;
         }
-
         .setting-item {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .setting-item label {
             font-weight: 600;
             font-size: 0.9rem;
         }
-
         .video-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 5px;
         }
-
         .video-controls button {
             background-color: rgba(255, 255, 255, 0.2);
             color: #424242;
@@ -541,17 +461,14 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-
         .video-controls button:hover {
             background-color: var(--bg-glass-hover);
             transform: scale(1.1);
         }
-
         #videoCounter {
             font-weight: 600;
             font-size: 0.9rem;
         }
-
         @media (max-width: 768px) {
             .main-content-wrapper {
                 width: 90vw;
@@ -644,7 +561,6 @@
     <div id="videoBackgroundContainer"><video id="bgVideo" muted loop playsinline></video></div>
     <canvas id="snowCanvas"></canvas>
     <canvas id="trailCanvas"></canvas>
-
     <button id="homeBtn" class="top-left-button poppins-font">[RS Profile]</button>
     <div class="top-right-buttons">
         <button id="settingsBtn" aria-label="Settings"><i class="fas fa-cog"></i></button>
@@ -652,7 +568,6 @@
         <button id="maximizeBtn" aria-label="Maximize"><i class="fas fa-square"></i></button>
         <button id="closeBtn" aria-label="Close"><i class="fas fa-times"></i></button>
     </div>
-
     <div id="settingsPanel" class="settings-panel">
         <h3 class="poppins-font">Background Settings</h3>
         <div class="setting-item">
@@ -670,20 +585,17 @@
             <button id="nextVideoBtn" aria-label="Next Video"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
-
     <div id="thoughtBubblesContainer">
         <div class="thought-bubble" id="bubble1">Coder (kind of)</div>
         <div class="thought-bubble" id="bubble2">Me like cat</div>
         <div class="thought-bubble" id="bubble3">Learning photography</div>
         <div class="thought-bubble" id="bubble4">Studying in school</div>
     </div>
-
     <div id="mainContent" class="main-content-wrapper">
         <div class="tabs-container">
             <button class="tab-link active" data-tab="home">HOME</button>
             <button class="tab-link" data-tab="gallery">GALLERY</button>
         </div>
-
         <div id="home" class="tab-content active">
             <div class="profile-section">
                 <div class="profile-avatar-container">
@@ -702,17 +614,13 @@
                 <p>Average Vietnamese dude.</p>
             </div>
         </div>
-
         <div id="gallery" class="tab-content">
             <div class="gallery-grid">
             </div>
         </div>
     </div>
-
-    <p class="copyright-text">© Red Sus's Profile V2</p>
-
+    <p class="copyright-text">© Red Sus's Profile V1.0.3</p>
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s" alt="Black Cat" class="black-cat" onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT05S0PLgLZcSn0efstxczG0L5UlIVmaU8oDw&s';">
-
     <div class="image-modal">
         <span class="close-modal">&times;</span>
         <div class="modal-content-wrapper">
@@ -725,306 +633,280 @@
             <button id="rotateRightBtn"><i class="fas fa-redo"></i></button>
         </div>
     </div>
-
     <script>
-        let videoUrls = [];
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('mainContent');
+            const minimizeBtn = document.getElementById('minimizeBtn');
+            const maximizeBtn = document.getElementById('maximizeBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const homeBtn = document.getElementById('homeBtn');
+            const maximizeIcon = maximizeBtn.querySelector('i');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsPanel = document.getElementById('settingsPanel');
+            const bgVideo = document.getElementById('bgVideo');
+            const blurSlider = document.getElementById('blurSlider');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const prevVideoBtn = document.getElementById('prevVideoBtn');
+            const nextVideoBtn = document.getElementById('nextVideoBtn');
+            const videoCounter = document.getElementById('videoCounter');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const tabs = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const modal = document.querySelector('.image-modal');
+            const modalImg = document.getElementById('modalImg');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+            const rotateRightBtn = document.getElementById('rotateRightBtn');
 
-        async function fetchContent(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            let videoUrls = [];
+            let currentVideoIndex = 0;
+            let isInteractable = true;
+            const COOLDOWN_PERIOD = 800;
+            let scale = 1, rotation = 0, translateX = 0, translateY = 0;
+            let isPanning = false, startX, startY;
+
+            async function fetchContent(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const text = await response.text();
+                    return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+                } catch (e) {
+                    console.error(`Failed to fetch content from ${url}:`, e);
+                    return [];
                 }
-                const text = await response.text();
-                return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            } catch (e) {
-                console.error(`Failed to fetch content from ${url}:`, e);
-                return [];
             }
-        }
 
-        async function populateGallery() {
-            const galleryGrid = document.querySelector('.gallery-grid');
-            galleryGrid.innerHTML = '';
-            const imageUrls = await fetchContent('https://sussydomain.eu.org/gallery.txt');
-            if (imageUrls.length === 0) {
-                galleryGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">No picture yet...</p>';
-                return;
+            async function populateGallery() {
+                const galleryGrid = document.querySelector('.gallery-grid');
+                galleryGrid.innerHTML = '';
+                const imageUrls = await fetchContent('https://sussydomain.eu.org/gallery.txt');
+                if (imageUrls.length === 0) {
+                    galleryGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">No picture yet...</p>';
+                    return;
+                }
+                imageUrls.forEach(src => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item loading-placeholder';
+                    const img = document.createElement('img');
+                    img.alt = 'Gallery Image';
+                    img.onload = () => {
+                        item.classList.remove('loading-placeholder');
+                        img.classList.add('loaded');
+                    };
+                    img.onerror = () => {
+                        item.classList.remove('loading-placeholder');
+                        item.style.backgroundColor = '#555';
+                    };
+                    img.src = src;
+                    img.addEventListener('click', () => openModal(src));
+                    item.appendChild(img);
+                    galleryGrid.appendChild(item);
+                });
             }
-            imageUrls.forEach(src => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                const img = document.createElement('img');
-                img.src = src;
-                img.alt = 'Gallery Image';
-                img.loading = 'lazy';
-                img.addEventListener('click', () => openModal(src));
-                item.appendChild(img);
-                galleryGrid.appendChild(item);
-            });
-        }
-
-        async function initializeApp() {
-            videoUrls = await fetchContent('https://sussydomain.eu.org/video.txt');
-            if (videoUrls.length > 0) {
-                 loadVideo(currentVideoIndex);
-            } else {
-                 console.error("No background.");
-                 videoCounter.textContent = '0 / 0';
-            }
-            populateGallery();
             
-            animateSnow();
-            animateBubbles();
-            bgVideo.volume = volumeSlider.value;
-        }
-
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
-
-        const mainContent = document.getElementById('mainContent');
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        const maximizeBtn = document.getElementById('maximizeBtn');
-        const closeBtn = document.getElementById('closeBtn');
-        const homeBtn = document.getElementById('homeBtn');
-        const maximizeIcon = maximizeBtn.querySelector('i');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const bgVideo = document.getElementById('bgVideo');
-        const blurSlider = document.getElementById('blurSlider');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const prevVideoBtn = document.getElementById('prevVideoBtn');
-        const nextVideoBtn = document.getElementById('nextVideoBtn');
-        const videoCounter = document.getElementById('videoCounter');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        let isInteractable = true;
-        const COOLDOWN_PERIOD = 800;
-
-        function setCooldown() {
-            isInteractable = false;
-            setTimeout(() => {
-                isInteractable = true;
-            }, COOLDOWN_PERIOD);
-        }
-        minimizeBtn.addEventListener('click', () => {
-            if (!isInteractable) return;
-            setCooldown();
-            mainContent.classList.add('minimized');
-            mainContent.classList.remove('maximized');
-            maximizeIcon.classList.remove('fa-window-restore');
-            maximizeIcon.classList.add('fa-square');
-        });
-        maximizeBtn.addEventListener('click', () => {
-            if (!isInteractable) return;
-            setCooldown();
-            if (mainContent.classList.contains('minimized')) {
-                mainContent.classList.remove('minimized');
+            function setCooldown() {
+                isInteractable = false;
+                setTimeout(() => { isInteractable = true; }, COOLDOWN_PERIOD);
             }
-            mainContent.classList.toggle('maximized');
-            if (mainContent.classList.contains('maximized')) {
-                maximizeIcon.classList.remove('fa-square');
-                maximizeIcon.classList.add('fa-window-restore');
-            } else {
+
+            function updateVideoCounter() {
+                if (videoUrls.length > 0) {
+                    videoCounter.textContent = `${currentVideoIndex + 1} / ${videoUrls.length}`;
+                }
+            }
+            
+            function loadVideo(index) {
+                if (videoUrls.length === 0) return;
+                bgVideo.style.opacity = '0';
+                setTimeout(() => {
+                    bgVideo.src = videoUrls[index];
+                    bgVideo.load();
+                    const playPromise = bgVideo.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            bgVideo.muted = true;
+                            bgVideo.play();
+                        });
+                    }
+                    const icon = playPauseBtn.querySelector('i');
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                    updateVideoCounter();
+                }, 800);
+            }
+            
+            function updateTransform() {
+                modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale}) rotate(${rotation}deg)`;
+            }
+
+            function resetTransform() {
+                scale = 1; rotation = 0; translateX = 0; translateY = 0;
+                updateTransform();
+            }
+
+            function openModal(src) {
+                resetTransform();
+                modalImg.src = src;
+                modal.style.display = 'flex';
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+
+            const startPan = (e) => {
+                e.preventDefault();
+                isPanning = true;
+                modalImg.classList.add('panning');
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                startX = clientX - translateX;
+                startY = clientY - translateY;
+                modalImg.style.cursor = 'grabbing';
+            };
+
+            const pan = (e) => {
+                if (!isPanning) return;
+                e.preventDefault();
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                translateX = clientX - startX;
+                translateY = clientY - startY;
+                updateTransform();
+            };
+            
+            const endPan = () => {
+                if (!isPanning) return;
+                isPanning = false;
+                modalImg.style.cursor = 'grab';
+                modalImg.classList.remove('panning');
+            };
+
+            async function initializeApp() {
+                videoUrls = await fetchContent('https://sussydomain.eu.org/video.txt');
+                if (videoUrls.length > 0) {
+                    loadVideo(currentVideoIndex);
+                } else {
+                    videoCounter.textContent = '0 / 0';
+                }
+                populateGallery();
+                animateSnow();
+                animateBubbles();
+                bgVideo.volume = volumeSlider.value;
+            }
+
+            minimizeBtn.addEventListener('click', () => {
+                if (!isInteractable) return;
+                setCooldown();
+                mainContent.classList.add('minimized');
+                mainContent.classList.remove('maximized');
                 maximizeIcon.classList.remove('fa-window-restore');
                 maximizeIcon.classList.add('fa-square');
-            }
-        });
-        closeBtn.addEventListener('click', () => {
-            if (!isInteractable || mainContent.classList.contains('minimized')) {
-                return;
-            }
-            setCooldown();
-            mainContent.classList.add('closing');
-            mainContent.addEventListener('animationend', () => {
-                mainContent.classList.add('minimized');
-                mainContent.classList.remove('closing');
-            }, {
-                once: true
             });
-        });
-        homeBtn.addEventListener('click', () => {
-            if (!isInteractable) return;
-            setCooldown();
-            mainContent.classList.remove('minimized', 'maximized', 'closing');
-            maximizeIcon.classList.remove('fa-window-restore');
-            maximizeIcon.classList.add('fa-square');
-        });
-        
-        let currentVideoIndex = 0;
 
-        function updateVideoCounter() {
-            if (videoUrls.length > 0) {
-                 videoCounter.textContent = `${currentVideoIndex + 1} / ${videoUrls.length}`;
-            }
-        }
-
-        function loadVideo(index) {
-            if(videoUrls.length === 0) return;
-            bgVideo.style.opacity = '0';
-            setTimeout(() => {
-                bgVideo.src = videoUrls[index];
-                bgVideo.load();
-                const playPromise = bgVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Autoplay was prevented by the browser.");
-                        bgVideo.muted = true;
-                        bgVideo.play();
-                    });
+            maximizeBtn.addEventListener('click', () => {
+                if (!isInteractable) return;
+                setCooldown();
+                if (mainContent.classList.contains('minimized')) {
+                    mainContent.classList.remove('minimized');
                 }
-                const icon = playPauseBtn.querySelector('i');
-                icon.classList.remove('fa-play');
-                icon.classList.add('fa-pause');
-                updateVideoCounter();
-            }, 800);
-        }
-        bgVideo.addEventListener('loadeddata', () => {
-            bgVideo.style.opacity = '1';
-        });
-        bgVideo.addEventListener('ended', () => {
-            currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-            loadVideo(currentVideoIndex);
-        });
-        settingsBtn.addEventListener('click', () => {
-            settingsPanel.classList.toggle('visible');
-        });
-        blurSlider.addEventListener('input', (e) => {
-            bgVideo.style.filter = `blur(${e.target.value}px)`;
-        });
-        volumeSlider.addEventListener('input', (e) => {
-            bgVideo.volume = e.target.value;
-            bgVideo.muted = e.target.value == 0;
-        });
-        nextVideoBtn.addEventListener('click', () => {
-            if (videoUrls.length === 0) return;
-            currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-            loadVideo(currentVideoIndex);
-        });
-        prevVideoBtn.addEventListener('click', () => {
-            if (videoUrls.length === 0) return;
-            currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
-            loadVideo(currentVideoIndex);
-        });
-        playPauseBtn.addEventListener('click', () => {
-            const icon = playPauseBtn.querySelector('i');
-            if (bgVideo.paused) {
-                bgVideo.play();
-                icon.classList.remove('fa-play');
-                icon.classList.add('fa-pause');
-            } else {
-                bgVideo.pause();
-                icon.classList.remove('fa-pause');
-                icon.classList.add('fa-play');
-            }
-        });
-        const tabs = document.querySelectorAll('.tab-link');
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = document.getElementById(tab.dataset.tab);
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                tabContents.forEach(c => c.classList.remove('active'));
-                target.classList.add('active');
+                mainContent.classList.toggle('maximized');
+                if (mainContent.classList.contains('maximized')) {
+                    maximizeIcon.classList.remove('fa-square');
+                    maximizeIcon.classList.add('fa-window-restore');
+                } else {
+                    maximizeIcon.classList.remove('fa-window-restore');
+                    maximizeIcon.classList.add('fa-square');
+                }
             });
-        });
-        const modal = document.querySelector('.image-modal');
-        const modalImg = document.getElementById('modalImg');
-        const closeModalBtn = document.querySelector('.close-modal');
-        const zoomInBtn = document.getElementById('zoomInBtn');
-        const zoomOutBtn = document.getElementById('zoomOutBtn');
-        const rotateLeftBtn = document.getElementById('rotateLeftBtn');
-        const rotateRightBtn = document.getElementById('rotateRightBtn');
-        let scale = 1,
-            rotation = 0,
-            translateX = 0,
-            translateY = 0;
 
-        function updateTransform() {
-            modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale}) rotate(${rotation}deg)`;
-        }
+            closeBtn.addEventListener('click', () => {
+                if (!isInteractable || mainContent.classList.contains('minimized')) return;
+                setCooldown();
+                mainContent.classList.add('closing');
+                mainContent.addEventListener('animationend', () => {
+                    mainContent.classList.add('minimized');
+                    mainContent.classList.remove('closing');
+                }, { once: true });
+            });
 
-        function resetTransform() {
-            scale = 1;
-            rotation = 0;
-            translateX = 0;
-            translateY = 0;
-            updateTransform();
-        }
+            homeBtn.addEventListener('click', () => {
+                if (!isInteractable) return;
+                setCooldown();
+                mainContent.classList.remove('minimized', 'maximized', 'closing');
+                maximizeIcon.classList.remove('fa-window-restore');
+                maximizeIcon.classList.add('fa-square');
+            });
 
-        function openModal(src) {
-            resetTransform();
-            modalImg.src = src;
-            modal.style.display = 'flex';
-        }
+            bgVideo.addEventListener('loadeddata', () => { bgVideo.style.opacity = '1'; });
+            bgVideo.addEventListener('ended', () => {
+                currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+                loadVideo(currentVideoIndex);
+            });
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
+            settingsBtn.addEventListener('click', () => { settingsPanel.classList.toggle('visible'); });
+            blurSlider.addEventListener('input', (e) => { bgVideo.style.filter = `blur(${e.target.value}px)`; });
+            volumeSlider.addEventListener('input', (e) => {
+                bgVideo.volume = e.target.value;
+                bgVideo.muted = e.target.value == 0;
+            });
+            nextVideoBtn.addEventListener('click', () => {
+                if (videoUrls.length === 0) return;
+                currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+                loadVideo(currentVideoIndex);
+            });
+            prevVideoBtn.addEventListener('click', () => {
+                if (videoUrls.length === 0) return;
+                currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
+                loadVideo(currentVideoIndex);
+            });
+            playPauseBtn.addEventListener('click', () => {
+                const icon = playPauseBtn.querySelector('i');
+                if (bgVideo.paused) {
+                    bgVideo.play();
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                } else {
+                    bgVideo.pause();
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                }
+            });
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = document.getElementById(tab.dataset.tab);
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    target.classList.add('active');
+                });
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            zoomInBtn.addEventListener('click', () => { scale *= 1.2; updateTransform(); });
+            zoomOutBtn.addEventListener('click', () => { scale /= 1.2; updateTransform(); });
+            rotateLeftBtn.addEventListener('click', () => { rotation -= 90; updateTransform(); });
+            rotateRightBtn.addEventListener('click', () => { rotation += 90; updateTransform(); });
+
+            modalImg.addEventListener('mousedown', startPan);
+            window.addEventListener('mousemove', pan);
+            window.addEventListener('mouseup', endPan);
+            modalImg.addEventListener('touchstart', startPan, { passive: false });
+            window.addEventListener('touchmove', pan, { passive: false });
+            window.addEventListener('touchend', endPan);
+
+            initializeApp();
         });
-        zoomInBtn.addEventListener('click', () => {
-            scale *= 1.2;
-            updateTransform();
-        });
-        zoomOutBtn.addEventListener('click', () => {
-            scale /= 1.2;
-            updateTransform();
-        });
-        rotateLeftBtn.addEventListener('click', () => {
-            rotation -= 90;
-            updateTransform();
-        });
-        rotateRightBtn.addEventListener('click', () => {
-            rotation += 90;
-            updateTransform();
-        });
-        let isPanning = false,
-            startX, startY;
-        const startPan = (e) => {
-            e.preventDefault();
-            if (scale <= 1) return;
-            isPanning = true;
-            modalImg.classList.add('panning');
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-            startX = clientX - translateX;
-            startY = clientY - translateY;
-            modalImg.style.cursor = 'grabbing';
-        };
-        const pan = (e) => {
-            if (!isPanning) return;
-            e.preventDefault();
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-            translateX = clientX - startX;
-            translateY = clientY - startY;
-            updateTransform();
-        };
-        const endPan = () => {
-            if (!isPanning) return;
-            isPanning = false;
-            modalImg.style.cursor = 'grab';
-            modalImg.classList.remove('panning');
-        };
-        modalImg.addEventListener('mousedown', startPan);
-        window.addEventListener('mousemove', pan);
-        window.addEventListener('mouseup', endPan);
-        modalImg.addEventListener('touchstart', startPan, {
-            passive: false
-        });
-        window.addEventListener('touchmove', pan, {
-            passive: false
-        });
-        window.addEventListener('touchend', endPan);
 
         function setupCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
             let width, height;
-
             function resizeCanvas() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
@@ -1032,25 +914,16 @@
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
             return {
-                canvas,
-                ctx,
-                get width() {
-                    return width;
-                },
-                get height() {
-                    return height;
-                }
+                canvas, ctx,
+                get width() { return width; },
+                get height() { return height; }
             };
         }
-        const {
-            ctx: snowCtx,
-            width: snowWidth,
-            height: snowHeight
-        } = setupCanvas('snowCanvas');
+
+        const { ctx: snowCtx, width: snowWidth, height: snowHeight } = setupCanvas('snowCanvas');
         const snowflakes = [];
         const maxSnowflakes = 150;
-        let mouseX = -100,
-            mouseY = -100;
+        let mouseX = -100, mouseY = -100;
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
@@ -1060,9 +933,7 @@
             mouseY = -100;
         });
         class Snowflake {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * snowWidth;
                 this.y = Math.random() * snowHeight;
@@ -1103,10 +974,7 @@
                 snowCtx.fill();
             }
         }
-        for (let i = 0; i < maxSnowflakes; i++) {
-            snowflakes.push(new Snowflake());
-        }
-
+        for (let i = 0; i < maxSnowflakes; i++) { snowflakes.push(new Snowflake()); }
         function animateSnow() {
             snowCtx.clearRect(0, 0, snowWidth, snowHeight);
             snowflakes.forEach(flake => {
@@ -1115,6 +983,7 @@
             });
             requestAnimationFrame(animateSnow);
         }
+
         const bubbles = document.querySelectorAll('.thought-bubble');
         const physicsBubbles = [];
         const friction = 0.95;
@@ -1145,20 +1014,14 @@
             bubble.style.left = `${initialX}px`;
             bubble.style.top = `${initialY}px`;
             physicsBubbles.push({
-                element: bubble,
-                x: initialX,
-                y: initialY,
+                element: bubble, x: initialX, y: initialY,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
-                isDragging: false,
-                offsetX: 0,
-                offsetY: 0,
-                width: rect.width,
-                height: rect.height
+                isDragging: false, offsetX: 0, offsetY: 0,
+                width: rect.width, height: rect.height
             });
         });
         let activeBubble = null;
-
         function handleDragStart(e) {
             const target = e.target;
             if (target && target.classList.contains('thought-bubble')) {
@@ -1176,7 +1039,6 @@
                 }
             }
         }
-
         function handleDragMove(e) {
             if (activeBubble && activeBubble.isDragging) {
                 const clientX = e.clientX || e.touches[0].clientX;
@@ -1190,7 +1052,6 @@
                 if (e.type === 'touchmove') e.preventDefault();
             }
         }
-
         function handleDragEnd() {
             if (activeBubble) {
                 activeBubble.isDragging = false;
@@ -1203,14 +1064,9 @@
         document.addEventListener('mousedown', handleDragStart);
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
-        document.addEventListener('touchstart', handleDragStart, {
-            passive: false
-        });
-        document.addEventListener('touchmove', handleDragMove, {
-            passive: false
-        });
+        document.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
-
         function animateBubbles() {
             physicsBubbles.forEach(bubble => {
                 if (!bubble.isDragging) {
@@ -1242,25 +1098,20 @@
             });
             requestAnimationFrame(animateBubbles);
         }
-        
+
         const trailCanvas = document.getElementById('trailCanvas');
         const ctxTrail = trailCanvas.getContext('2d');
         let trailParticles = [];
-        let mousePos = {
-            x: null,
-            y: null
-        };
+        let mousePos = { x: null, y: null };
         let mouseTrail = [];
         const trailLifetime = 150;
         const particleFrequency = 10;
-
         function resizeTrailCanvas() {
             trailCanvas.width = window.innerWidth;
             trailCanvas.height = window.innerHeight;
         }
         window.addEventListener('resize', resizeTrailCanvas);
         resizeTrailCanvas();
-
         function handleInteractionUpdate(x, y) {
             if (mousePos.x !== null && mousePos.y !== null) {
                 const distance = Math.sqrt(Math.pow(x - mousePos.x, 2) + Math.pow(y - mousePos.y, 2));
@@ -1270,61 +1121,39 @@
             }
             mousePos.x = x;
             mousePos.y = y;
-            mouseTrail.push({
-                x: mousePos.x,
-                y: mousePos.y,
-                timestamp: Date.now()
-            });
+            mouseTrail.push({ x: mousePos.x, y: mousePos.y, timestamp: Date.now() });
         }
-        window.addEventListener('mousemove', (e) => {
-            handleInteractionUpdate(e.clientX, e.clientY);
-        });
+        window.addEventListener('mousemove', (e) => { handleInteractionUpdate(e.clientX, e.clientY); });
         window.addEventListener('touchstart', (e) => {
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 mousePos.x = touch.clientX;
                 mousePos.y = touch.clientY;
-                mouseTrail.push({
-                    x: mousePos.x,
-                    y: mousePos.y,
-                    timestamp: Date.now()
-                });
+                mouseTrail.push({ x: mousePos.x, y: mousePos.y, timestamp: Date.now() });
             }
-        }, {
-            passive: false
-        });
+        }, { passive: false });
         window.addEventListener('touchmove', (e) => {
             e.preventDefault();
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 handleInteractionUpdate(touch.clientX, touch.clientY);
             }
-        }, {
-            passive: false
-        });
-        window.addEventListener('touchend', () => {
-            mousePos.x = null;
-            mousePos.y = null;
-        });
-
+        }, { passive: false });
+        window.addEventListener('touchend', () => { mousePos.x = null; mousePos.y = null; });
         function createHeartParticle(x, y) {
             trailParticles.push({
-                x: x,
-                y: y,
+                x: x, y: y,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
-                opacity: 1,
-                size: Math.random() * 10 + 5
+                opacity: 1, size: Math.random() * 10 + 5
             });
         }
-
         function drawHeartEmoji(x, y, opacity, size) {
             ctxTrail.font = `${size}px serif`;
             ctxTrail.globalAlpha = opacity;
             ctxTrail.fillText("❤️", x - size / 2, y + size / 2);
             ctxTrail.globalAlpha = 1;
         }
-
         function animateTrail() {
             ctxTrail.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
             const now = Date.now();
