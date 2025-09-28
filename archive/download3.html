@@ -1,0 +1,286 @@
+<html lang="en"><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/content/location/location.js" id="eppiocemhmnlbhjplcgkofciiegomcon"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script><style type="text/css" id="block-image-video"> svg {visibility: hidden !important; opacity: 0 !important}  img {visibility: hidden !important; opacity: 0 !important}  video {visibility: hidden !important; opacity: 0 !important}  canvas {visibility: hidden !important; opacity: 0 !important}  iframe [type="application/x-shockwave-flash"] {visibility: hidden !important; opacity: 0 !important}  [style*="background-image"] {visibility: hidden !important; opacity: 0 !important}  .hide {visibility: hidden !important; opacity: 0 !important} </style><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure File Download</title>
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --clr-main: #2b8a3e;
+      --clr-main-hover: #20622e;
+      --clr-bg: #eef3f7;
+      --clr-card: #ffffff;
+      --clr-text: #2c2c2c;
+      --clr-sub: #555555;
+      --clr-border: #d0d0d0;
+      --clr-pop-bg: #222222;
+      --clr-pop-text: #ffffff;
+      --clr-pass-bg: #e0f7ea;
+      --clr-pass-text: #2b8a3e;
+      --clr-box-bg: #fafafa;
+      --clr-ok: #3cb371;
+      --clr-bad: #e74c3c;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--clr-bg);
+      margin: 0;
+      padding: 0;
+      transition: background 0.6s ease;
+    }
+
+    .box-main {
+      max-width: 720px;
+      margin: 70px auto;
+      padding: 40px;
+      background: var(--clr-card);
+      border-radius: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .box-main h1 {
+      font-size: 30px;
+      margin-bottom: 35px;
+      color: var(--clr-text);
+    }
+
+    .info-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--clr-box-bg);
+      padding: 18px;
+      border: 1px solid var(--clr-border);
+      border-radius: 10px;
+      margin-bottom: 28px;
+    }
+
+    .file-meta {
+      display: flex;
+      align-items: center;
+    }
+
+    .file-meta strong {
+      font-size: 18px;
+      display: block;
+      color: var(--clr-text);
+    }
+
+    .file-meta span {
+      font-size: 15px;
+      color: var(--clr-sub);
+    }
+
+    .file-symbol {
+      font-size: 26px;
+      color: var(--clr-main);
+      margin-right: 12px;
+    }
+
+    .pass-box {
+      background: var(--clr-pass-bg);
+      padding: 14px 26px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--clr-pass-text);
+      position: relative;
+    }
+
+    .pass-box::after {
+      content: "Access Key";
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .link-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--clr-box-bg);
+      padding: 10px 18px;
+      border: 1px solid var(--clr-border);
+      border-radius: 10px;
+      margin-bottom: 22px;
+    }
+
+    .link-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      color: var(--clr-text);
+      outline: none;
+    }
+
+    .btn-copy {
+      background: var(--clr-main);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 10px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .btn-copy i {
+      margin-right: 6px;
+    }
+
+    .btn-copy:hover {
+      background: var(--clr-main-hover);
+    }
+
+    .hint-pop {
+      position: absolute;
+      top: 65%;
+      right: 4%;
+      background: var(--clr-pop-bg);
+      color: var(--clr-pop-text);
+      padding: 14px 20px;
+      border-radius: 7px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      animation: float 2s infinite;
+      white-space: nowrap;
+    }
+
+    .hint-pop i {
+      margin-left: 10px;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(-4px); }
+      50% { transform: translateY(4px); }
+      100% { transform: translateY(-4px); }
+    }
+
+    .note-msg {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--clr-sub);
+    }
+
+    .alert-msg {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 16px 24px;
+      border-radius: 7px;
+      color: #fff;
+      font-size: 16px;
+      display: none;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+
+    .alert-ok { background: var(--clr-ok); }
+    .alert-bad { background: var(--clr-bad); }
+
+    .alert-msg i { margin-right: 8px; }
+
+    .paste-hint {
+      position: fixed;
+      top: 12px;
+      left: 20%;
+      transform: translateX(-50%);
+      background: var(--clr-pop-bg);
+      color: var(--clr-pop-text);
+      padding: 18px 28px;
+      border-radius: 7px;
+      font-size: 15px;
+      display: none;
+      align-items: center;
+      animation: shake 2s infinite;
+      z-index: 1000;
+    }
+
+    .paste-hint i { margin-left: 10px; }
+
+    @keyframes shake {
+      0% { transform: translateX(-50%) translateY(-3px); }
+      50% { transform: translateX(-50%) translateY(3px); }
+      100% { transform: translateX(-50%) translateY(-3px); }
+    }
+
+    @media (max-width: 768px) {
+      .info-wrap { flex-direction: column; align-items: flex-start; }
+      .hint-pop { right: 2%; }
+      .alert-msg { width: 90%; font-size: 14px; }
+      .paste-hint { font-size: 14px; padding: 14px 20px; }
+    }
+  </style>
+<script bis_use="true" type="text/javascript" charset="utf-8" data-bis-config="[&quot;facebook.com/&quot;,&quot;twitter.com/&quot;,&quot;youtube-nocookie.com/embed/&quot;,&quot;//vk.com/&quot;,&quot;//www.vk.com/&quot;,&quot;linkedin.com/&quot;,&quot;//www.linkedin.com/&quot;,&quot;//instagram.com/&quot;,&quot;//www.instagram.com/&quot;,&quot;//www.google.com/recaptcha/api2/&quot;,&quot;//hangouts.google.com/webchat/&quot;,&quot;//www.google.com/calendar/&quot;,&quot;//www.google.com/maps/embed&quot;,&quot;spotify.com/&quot;,&quot;soundcloud.com/&quot;,&quot;//player.vimeo.com/&quot;,&quot;//disqus.com/&quot;,&quot;//tgwidget.com/&quot;,&quot;//js.driftt.com/&quot;,&quot;friends2follow.com&quot;,&quot;/widget&quot;,&quot;login&quot;,&quot;//video.bigmir.net/&quot;,&quot;blogger.com&quot;,&quot;//smartlock.google.com/&quot;,&quot;//keep.google.com/&quot;,&quot;/web.tolstoycomments.com/&quot;,&quot;moz-extension://&quot;,&quot;chrome-extension://&quot;,&quot;/auth/&quot;,&quot;//analytics.google.com/&quot;,&quot;adclarity.com&quot;,&quot;paddle.com/checkout&quot;,&quot;hcaptcha.com&quot;,&quot;recaptcha.net&quot;,&quot;2captcha.com&quot;,&quot;accounts.google.com&quot;,&quot;www.google.com/shopping/customerreviews&quot;,&quot;buy.tinypass.com&quot;,&quot;gstatic.com&quot;,&quot;secureir.ebaystatic.com&quot;,&quot;docs.google.com&quot;,&quot;contacts.google.com&quot;,&quot;github.com&quot;,&quot;mail.google.com&quot;,&quot;chat.google.com&quot;,&quot;audio.xpleer.com&quot;,&quot;keepa.com&quot;,&quot;static.xx.fbcdn.net&quot;,&quot;sas.selleramp.com&quot;,&quot;1plus1.video&quot;,&quot;console.googletagservices.com&quot;,&quot;//lnkd.demdex.net/&quot;,&quot;//radar.cedexis.com/&quot;,&quot;//li.protechts.net/&quot;,&quot;challenges.cloudflare.com/&quot;,&quot;ogs.google.com&quot;]" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/traffic.js"></script></head>
+<body __processed_1ec32f43-3947-46bf-a4f7-a5b31b5d993d__="true" style="background: rgb(79, 207, 192);" bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQiLCJUSUtUT0siOiJkaXNhYmxlZCIsIkxJTktFRElOIjoiZGlzYWJsZWQiLCJDT05GSUciOiJkaXNhYmxlZCJ9LCJ2ZXJzaW9uIjoiMi4wLjI2Iiwic2NvcmUiOjIwMDI2fV0=">
+  <div id="notifyOk" class="alert-msg alert-ok" bis_skin_checked="1"><i class="fas fa-check-circle"></i> Copied successfully!</div>
+  <div id="notifyFail" class="alert-msg alert-bad" bis_skin_checked="1"><i class="fas fa-exclamation-circle"></i> Copy failed!</div>
+
+  <div class="box-main" bis_skin_checked="1">
+    <h1>File Ready to Download</h1>
+    <div class="info-wrap" bis_skin_checked="1">
+      <div class="file-meta" bis_skin_checked="1">
+        <i class="fas fa-file-archive file-symbol"></i>
+        <div bis_skin_checked="1">
+          <strong>Adobe_Premiere_Pro_2025_[WiN-MAC].zip</strong>
+          <span>14.9 MB</span>
+        </div>
+      </div>
+      <div class="pass-box" bis_skin_checked="1">7115</div>
+    </div>
+
+    <div class="link-wrap" bis_skin_checked="1">
+      <input id="dlLink" type="text" value="https://arch.file1132host66.xyz/g/zip/HLoi42f83eEjs2bFEzfhVl1s/Adobe_Premiere_Pro_2025_%5BWiN-MAC%5D.zip" readonly="">
+      <button class="btn-copy" onclick="doCopy()"><i class="fas fa-copy"></i>Copy</button>
+    </div>
+
+    <div id="hintBubble" class="hint-pop" bis_skin_checked="1">Tap to copy <i class="fas fa-hand-pointer"></i></div>
+    <p class="note-msg">If the link doesn’t open, copy &amp; paste into your browser.</p>
+  </div>
+
+  <div id="pasteBubble" class="paste-hint" bis_skin_checked="1">Paste the link here <i class="fas fa-paste"></i></div>
+
+  <script>
+    function randColor() {
+      const h = Math.floor(Math.random() * 360);
+      const s = 40 + Math.floor(Math.random() * 30);
+      const l = 50 + Math.floor(Math.random() * 20);
+      return `hsl(${h}, ${s}%, ${l}%)`;
+    }
+    document.body.style.background = randColor();
+
+    function showNote(id, duration = 3000) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = "flex";
+      setTimeout(() => { el.style.display = "none"; }, duration);
+    }
+
+    function doCopy() {
+      const inp = document.getElementById("dlLink");
+      inp.select();
+      inp.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(inp.value).then(() => {
+        showNote("notifyOk");
+        showNote("pasteBubble", 5000);
+        document.getElementById("hintBubble").style.display = "none";
+        setTimeout(() => { document.getElementById("hintBubble").style.display = "flex"; }, 5000);
+      }).catch(() => {
+        showNote("notifyFail");
+      });
+    }
+  </script>
+<script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;4afe4e6f4eed462496e4b22958f7751b&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+
+</body></html>
