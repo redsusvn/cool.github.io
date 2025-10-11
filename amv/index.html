@@ -130,13 +130,11 @@
             background-color: #6a9ac4;
         }
         
-        .main-actions button {
-            background-color: #e94560;
-            font-size: 1.1em;
-            padding: 12px;
+        .main-actions .fullscreen-btn {
+            background-color: var(--highlight-color);
         }
-        .main-actions button:hover {
-            background-color: #f06a8a;
+        .main-actions .fullscreen-btn:hover {
+             background-color: #6a9ac4;
         }
         
         .color-input-group {
@@ -157,6 +155,94 @@
             text-align: right;
         }
 
+        /* --- New Media Player Styles --- */
+        .media-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background-color: var(--accent-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        #playPauseBtn {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            padding: 0;
+            margin: 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            background-color: var(--highlight-color);
+            border: none;
+        }
+
+        #playPauseBtn:hover {
+            background-color: #6a9ac4;
+        }
+
+        #playPauseBtn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--bg-color);
+            fill: var(--bg-color);
+        }
+
+        .seek-container {
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        #seekBar {
+            width: 100%;
+            margin: 0 0 5px 0;
+            padding: 0;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        #seekBar::-webkit-slider-runnable-track {
+            background: var(--input-bg);
+            height: 6px;
+            border-radius: 3px;
+        }
+        #seekBar::-moz-range-track {
+            background: var(--input-bg);
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        #seekBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -5px;
+            background-color: var(--highlight-color);
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--panel-bg);
+        }
+        #seekBar::-moz-range-thumb {
+            background-color: var(--highlight-color);
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--panel-bg);
+        }
+
+        .time-display {
+            font-size: 0.8em;
+            text-align: right;
+            opacity: 0.8;
+            padding-right: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -166,8 +252,16 @@
             <h2>Visualizer Controls</h2>
 
             <div class="control-group main-actions">
-                <button id="previewBtn">Start / Stop Preview</button>
-                <button id="fullscreenBtn">Full Screen</button>
+                <div class="media-player">
+                    <button id="playPauseBtn"></button>
+                    <div class="seek-container">
+                        <input type="range" id="seekBar" value="0" step="0.1">
+                        <div class="time-display">
+                            <span id="currentTime">00:00</span> / <span id="totalDuration">00:00</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="fullscreenBtn" class="fullscreen-btn">Full Screen</button>
                 <p id="status" style="text-align:center; font-style:italic; opacity: 0.7;">Upload audio to begin.</p>
             </div>
 
@@ -268,7 +362,7 @@
         </div>
         <div class="preview-area">
             <canvas id="visualizerCanvas" width="1280" height="720"></canvas>
-            <audio id="audioPlayer" controls style="display:none;"></audio>
+            <audio id="audioPlayer" style="display:none;"></audio>
             <video id="bgVideoPlayer" loop muted playsinline style="display:none;"></video>
         </div>
     </div>
@@ -300,10 +394,16 @@
         const zoomSensitivityInput = document.getElementById('zoomSensitivity');
         const zoomDecayInput = document.getElementById('zoomDecay');
         const maxZoomInput = document.getElementById('maxZoom');
-        const previewBtn = document.getElementById('previewBtn');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
         const statusEl = document.getElementById('status');
-        // config
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const seekBar = document.getElementById('seekBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const totalDurationEl = document.getElementById('totalDuration');
+
+        const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+        const pauseIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+
         const config = {
             mainText: 'WELCOME TO MY CHANNEL',
             textColor: '#FFFFFF',
@@ -311,42 +411,21 @@
             bgVideo: null,
             logoLeft: null,
             logoRight: null,
-            wave: {
-                color1: '#FFFFFF',
-                color2: '#FFFFFF',
-                sensitivity: 1,
-                maxHeight: 0.5,
-                numBars: 128,
-            },
-            disks: {
-                sensitivity: 30,
-                decay: 0.95,
-                rotation: 0,
-            },
-            frame: {
-                margin: 5,
-                radius: 25,
-            },
-            bgZoom: {
-                enabled: false,
-                sensitivity: 30,
-                decay: 0.95,
-                maxZoom: 1.2,
-                currentZoom: 1,
-            }
+            wave: { color1: '#FFFFFF', color2: '#FFFFFF', sensitivity: 1, maxHeight: 0.5, numBars: 128 },
+            disks: { sensitivity: 30, decay: 0.95, rotation: 0 },
+            frame: { margin: 5, radius: 25 },
+            bgZoom: { enabled: false, sensitivity: 30, decay: 0.95, maxZoom: 1.2, currentZoom: 1 }
         };
 
         let audioContext, analyser, source, dataArray;
         let isAudioSetup = false;
         let isPlaying = false;
         
-        function loadDefaults() { // default value in case the code decide to fk it up
+        function loadDefaults() {
             config.logoLeft = new Image();
-            config.logoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICAgICBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iNjAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPlJFRCBTVVM8L3RleHQ+Cjwvc3ZnPg==
-`;
+            config.logoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgZm9udC13ZWlnaHQ9ImJvbGQiPlJTPC90ZXh0PgoKICA8dGV4dCB4PSI1MCUiIHk9Ijg4JSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSI+UkVEIFNVUzwvdGV4dD4KPC9zdmc+`;
             config.logoRight = new Image();
-            config.logoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICAgICBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iNjAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPlJFRCBTVVM8L3RleHQ+Cjwvc3ZnPg==
-`;
+            config.logoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgZm9udC13ZWlnaHQ9ImJvbGQiPlJTPC90ZXh0PgoKICA8dGV4dCB4PSI1MCUiIHk9Ijg4JSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSI+UkVEIFNVUzwvdGV4dD4KPC9zdmc+`;
         }
         
         loadDefaults();
@@ -377,15 +456,23 @@
             zoomDecayInput.addEventListener('input', e => { config.bgZoom.decay = parseFloat(e.target.value); document.getElementById('zoomDecayValue').textContent = e.target.value; });
             maxZoomInput.addEventListener('input', e => { config.bgZoom.maxZoom = parseFloat(e.target.value); document.getElementById('maxZoomValue').textContent = e.target.value; });
             
-            previewBtn.addEventListener('click', togglePlayback);
             fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+            playPauseBtn.addEventListener('click', togglePlayback);
+            seekBar.addEventListener('input', () => audioPlayer.currentTime = seekBar.value);
+            audioPlayer.addEventListener('timeupdate', updateSeekBarDisplay);
+            audioPlayer.addEventListener('loadedmetadata', handleAudioMetadata);
+            audioPlayer.addEventListener('ended', () => {
+                isPlaying = false;
+                playPauseBtn.innerHTML = playIcon;
+            });
+
+            playPauseBtn.innerHTML = playIcon;
         }
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                canvas.requestFullscreen().catch(err => {
-                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                });
+                canvas.requestFullscreen().catch(err => alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
             } else {
                 document.exitFullscreen();
             }
@@ -415,7 +502,7 @@
             const url = URL.createObjectURL(file);
             bgVideoPlayer.src = url;
             config.bgVideo = bgVideoPlayer;
-            config.bgImage = null; // fk ts bitch is so fking bad it load like hell so laggy
+            config.bgImage = null;
             statusEl.textContent = "Video background loaded.";
         }
         
@@ -424,7 +511,7 @@
             if (file) {
                 audioPlayer.src = URL.createObjectURL(file);
                 if (!isAudioSetup) setupAudioContext();
-                statusEl.textContent = "Audio loaded. Press Preview to start.";
+                statusEl.textContent = "Audio loaded. Press play to start.";
             }
         }
         
@@ -452,14 +539,32 @@
                 audioPlayer.pause();
                 if (config.bgVideo) config.bgVideo.pause();
                 isPlaying = false;
-                previewBtn.textContent = 'Start Preview';
+                playPauseBtn.innerHTML = playIcon;
             } else {
                 audioPlayer.play();
                 if (config.bgVideo) config.bgVideo.play();
                 isPlaying = true;
-                previewBtn.textContent = 'Stop Preview';
+                playPauseBtn.innerHTML = pauseIcon;
                 animate();
             }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateSeekBarDisplay() {
+            if (audioPlayer.duration) {
+                seekBar.value = audioPlayer.currentTime;
+                currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
+        }
+
+        function handleAudioMetadata() {
+            totalDurationEl.textContent = formatTime(audioPlayer.duration);
+            seekBar.max = audioPlayer.duration;
         }
 
         function getResampledData(originalData, targetLength) {
@@ -480,7 +585,6 @@
             drawBackground();
             drawSoftFrame();
 
-            // frame
             ctx.save();
             const margin = config.frame.margin;
             const radius = config.frame.radius;
@@ -495,7 +599,6 @@
             }
 
             updateBeatReactions(bassEnergy);
-
             drawLogos();
             drawSoundWave();
             drawTextAndDisks();
@@ -583,8 +686,7 @@
                     sx = 0;
                     sy = (mediaHeight - sHeight) / 2;
                 }
-
-                // cool zoom eheh
+                
                 sx += (sWidth - sWidth / zoom) / 2;
                 sy += (sHeight - sHeight / zoom) / 2;
                 sWidth /= zoom;
@@ -613,7 +715,7 @@
             }
         }
 
-        function drawSoundWave() { //fking shit took me so many times to fix this goofy ahh bar
+        function drawSoundWave() {
             if (!isAudioSetup || !isPlaying) return;
             
             let waveData = getResampledData(dataArray, config.wave.numBars);
@@ -716,3 +818,4 @@
     </script>
 </body>
 </html>
+
