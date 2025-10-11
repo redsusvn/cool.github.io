@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Music Visualizer</title>
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --panel-bg: #16213e;
+            --text-color: #e0fbfc;
+            --accent-color: #0f3460;
+            --highlight-color: #537895;
+            --input-bg: #2e4a6b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            width: 350px;
+            background-color: var(--panel-bg);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 2px solid var(--accent-color);
+        }
+
+        .preview-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: repeating-linear-gradient(45deg, #1e1e3f, #1e1e3f 10px, #1a1a2e 10px, #1a1a2e 20px);
+        }
+
+        #visualizerCanvas {
+            border: 2px solid var(--highlight-color);
+            background-color: #000;
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 16 / 9;
+        }
+
+        h2, h3 {
+            color: var(--highlight-color);
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            background-color: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="color"],
+        input[type="range"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid var(--accent-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: var(--highlight-color);
+            color: var(--bg-color);
+            border-radius: 4px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        
+        .file-label:hover {
+            opacity: 0.9;
+        }
+
+        input[type="range"] {
+            padding: 0;
+        }
+        
+        button {
+            background-color: var(--highlight-color);
+            color: var(--bg-color);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #6a9ac4;
+        }
+        
+        .main-actions button {
+            background-color: #e94560;
+            font-size: 1.1em;
+            padding: 12px;
+        }
+        .main-actions button:hover {
+            background-color: #f06a8a;
+        }
+        
+        .color-input-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .color-input-group input[type="color"] {
+            width: 50px;
+            height: 35px;
+            padding: 2px;
+            margin-left: 10px;
+        }
+
+        .range-value {
+            font-size: 0.8em;
+            opacity: 0.8;
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="controls">
+            <h2>Visualizer Controls</h2>
+
+            <div class="control-group main-actions">
+                <button id="previewBtn">Start / Stop Preview</button>
+                <button id="fullscreenBtn">Full Screen</button>
+                <p id="status" style="text-align:center; font-style:italic; opacity: 0.7;">Upload audio to begin.</p>
+            </div>
+
+            <div class="control-group">
+                <h3>Assets</h3>
+                <label for="bgFile">Background Image</label>
+                <label class="file-label" for="bgFile">Choose Image</label>
+                <input type="file" id="bgFile" accept="image/*">
+                
+                <label for="bgVideoFile">Background Video</label>
+                <label class="file-label" for="bgVideoFile">Choose Video</label>
+                <input type="file" id="bgVideoFile" accept="video/*">
+
+                <label for="audioFile">Music</label>
+                <label class="file-label" for="audioFile">Choose Audio</label>
+                <input type="file" id="audioFile" accept="audio/*">
+                
+                <label for="logoLeftFile">Top-Left Logo</label>
+                <label class="file-label" for="logoLeftFile">Choose Left Logo</label>
+                <input type="file" id="logoLeftFile" accept="image/*">
+                
+                <label for="logoRightFile">Top-Right Logo</label>
+                <label class="file-label" for="logoRightFile">Choose Right Logo</label>
+                <input type="file" id="logoRightFile" accept="image/*">
+            </div>
+
+            <div class="control-group">
+                <h3>Text & Frame</h3>
+                <label for="mainText">Main Text</label>
+                <input type="text" id="mainText" value="WELCOME TO MY CHANNEL">
+                <div class="color-input-group">
+                    <label for="textColor">Text & Frame Color</label>
+                    <input type="color" id="textColor" value="#FFFFFF">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Frame</h3>
+                <label for="frameMargin">Margin (px)</label>
+                <input type="range" id="frameMargin" min="0" max="100" step="1" value="5">
+                <div class="range-value" id="frameMarginValue">5</div>
+                <label for="frameRadius">Corner Radius (px)</label>
+                <input type="range" id="frameRadius" min="0" max="200" step="1" value="25">
+                <div class="range-value" id="frameRadiusValue">25</div>
+            </div>
+
+            <div class="control-group">
+                <h3>Sound Wave</h3>
+                <div class="color-input-group">
+                    <label for="waveColor1">Gradient Start</label>
+                    <input type="color" id="waveColor1" value="#FFFFFF">
+                </div>
+                <div class="color-input-group">
+                    <label for="waveColor2">Gradient End</label>
+                    <input type="color" id="waveColor2" value="#FFFFFF">
+                </div>
+                <label for="waveSensitivity">Sensitivity</label>
+                <input type="range" id="waveSensitivity" min="0.1" max="2" step="0.1" value="1">
+                <div class="range-value" id="waveSensitivityValue">1.0</div>
+                
+                <label for="waveHeight">Max Height</label>
+                <input type="range" id="waveHeight" min="0.1" max="1" step="0.05" value="0.5">
+                <div class="range-value" id="waveHeightValue">0.5</div>
+
+                <label for="numBars">Number of Bars</label>
+                <input type="range" id="numBars" min="16" max="512" step="16" value="128">
+                <div class="range-value" id="numBarsValue">128</div>
+            </div>
+            
+             <div class="control-group">
+                <h3>Spinning Disks</h3>
+                <label for="diskSensitivity">Beat Sensitivity (Rotation)</label>
+                <input type="range" id="diskSensitivity" min="1" max="100" step="1" value="30">
+                <div class="range-value" id="diskSensitivityValue">30</div>
+                
+                 <label for="diskDecay">Spin Decay (How fast it returns)</label>
+                <input type="range" id="diskDecay" min="0.8" max="0.99" step="0.01" value="0.95">
+                <div class="range-value" id="diskDecayValue">0.95</div>
+            </div>
+
+            <div class="control-group">
+                <h3>Background Zoom</h3>
+                <label for="enableZoom">Enable Zoom on Beat</label>
+                <input type="checkbox" id="enableZoom">
+                <label for="zoomSensitivity">Beat Sensitivity (Zoom)</label>
+                <input type="range" id="zoomSensitivity" min="1" max="100" step="1" value="30">
+                <div class="range-value" id="zoomSensitivityValue">30</div>
+                
+                <label for="zoomDecay">Zoom Decay (How fast it returns)</label>
+                <input type="range" id="zoomDecay" min="0.8" max="0.99" step="0.01" value="0.95">
+                <div class="range-value" id="zoomDecayValue">0.95</div>
+
+                <label for="maxZoom">Max Zoom Factor</label>
+                <input type="range" id="maxZoom" min="1.05" max="2" step="0.05" value="1.2">
+                <div class="range-value" id="maxZoomValue">1.2</div>
+            </div>
+
+        </div>
+        <div class="preview-area">
+            <canvas id="visualizerCanvas" width="1280" height="720"></canvas>
+            <audio id="audioPlayer" controls style="display:none;"></audio>
+            <video id="bgVideoPlayer" loop muted playsinline style="display:none;"></video>
+        </div>
+    </div>
+
+    <script>
+        // if you can read this text, congrats on knowing how to press ctrl and u, so to use ts pile of shit first load it w/ some image, any kind or video but i dont recommend cuz i dont optimize the video loader so it run like shit, and then load some music, you can change the text color frame all kind of stuff just fking around to get the best setting that you like, the spinning disk you should put all the value to max, background zoom first one is 1, second one is 0.8 and the last one should be max (2) and there you go, click preview to see the result
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('visualizerCanvas');
+        const ctx = canvas.getContext('2d');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const bgVideoPlayer = document.getElementById('bgVideoPlayer');
+        const bgFileInput = document.getElementById('bgFile');
+        const bgVideoFileInput = document.getElementById('bgVideoFile');
+        const audioFileInput = document.getElementById('audioFile');
+        const logoLeftFileInput = document.getElementById('logoLeftFile');
+        const logoRightFileInput = document.getElementById('logoRightFile');
+        const mainTextInput = document.getElementById('mainText');
+        const textColorInput = document.getElementById('textColor');
+        const waveColor1Input = document.getElementById('waveColor1');
+        const waveColor2Input = document.getElementById('waveColor2');
+        const waveSensitivityInput = document.getElementById('waveSensitivity');
+        const waveHeightInput = document.getElementById('waveHeight');
+        const numBarsInput = document.getElementById('numBars');
+        const diskSensitivityInput = document.getElementById('diskSensitivity');
+        const diskDecayInput = document.getElementById('diskDecay');
+        const frameMarginInput = document.getElementById('frameMargin');
+        const frameRadiusInput = document.getElementById('frameRadius');
+        const enableZoomInput = document.getElementById('enableZoom');
+        const zoomSensitivityInput = document.getElementById('zoomSensitivity');
+        const zoomDecayInput = document.getElementById('zoomDecay');
+        const maxZoomInput = document.getElementById('maxZoom');
+        const previewBtn = document.getElementById('previewBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const statusEl = document.getElementById('status');
+        // config
+        const config = {
+            mainText: 'WELCOME TO MY CHANNEL',
+            textColor: '#FFFFFF',
+            bgImage: null,
+            bgVideo: null,
+            logoLeft: null,
+            logoRight: null,
+            wave: {
+                color1: '#FFFFFF',
+                color2: '#FFFFFF',
+                sensitivity: 1,
+                maxHeight: 0.5,
+                numBars: 128,
+            },
+            disks: {
+                sensitivity: 30,
+                decay: 0.95,
+                rotation: 0,
+            },
+            frame: {
+                margin: 5,
+                radius: 25,
+            },
+            bgZoom: {
+                enabled: false,
+                sensitivity: 30,
+                decay: 0.95,
+                maxZoom: 1.2,
+                currentZoom: 1,
+            }
+        };
+
+        let audioContext, analyser, source, dataArray;
+        let isAudioSetup = false;
+        let isPlaying = false;
+        
+        function loadDefaults() { // default value in case the code decide to fk it up
+            config.logoLeft = new Image();
+            config.logoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICAgICBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iNjAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPlJFRCBTVVM8L3RleHQ+Cjwvc3ZnPg==
+`;
+            config.logoRight = new Image();
+            config.logoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICAgICBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iNjAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiPlJFRCBTVVM8L3RleHQ+Cjwvc3ZnPg==
+`;
+        }
+        
+        loadDefaults();
+
+        function setupEventListeners() {
+            bgFileInput.addEventListener('change', e => handleFile(e, 'bgImage'));
+            bgVideoFileInput.addEventListener('change', handleVideoFile);
+            audioFileInput.addEventListener('change', handleAudioFile);
+            logoLeftFileInput.addEventListener('change', e => handleFile(e, 'logoLeft'));
+            logoRightFileInput.addEventListener('change', e => handleFile(e, 'logoRight'));
+            
+            mainTextInput.addEventListener('input', e => config.mainText = e.target.value);
+            textColorInput.addEventListener('input', e => config.textColor = e.target.value);
+            waveColor1Input.addEventListener('input', e => config.wave.color1 = e.target.value);
+            waveColor2Input.addEventListener('input', e => config.wave.color2 = e.target.value);
+            
+            waveSensitivityInput.addEventListener('input', e => { config.wave.sensitivity = parseFloat(e.target.value); document.getElementById('waveSensitivityValue').textContent = e.target.value; });
+            waveHeightInput.addEventListener('input', e => { config.wave.maxHeight = parseFloat(e.target.value); document.getElementById('waveHeightValue').textContent = e.target.value; });
+            numBarsInput.addEventListener('input', e => { config.wave.numBars = parseInt(e.target.value); document.getElementById('numBarsValue').textContent = e.target.value; });
+            diskSensitivityInput.addEventListener('input', e => { config.disks.sensitivity = parseFloat(e.target.value); document.getElementById('diskSensitivityValue').textContent = e.target.value; });
+            diskDecayInput.addEventListener('input', e => { config.disks.decay = parseFloat(e.target.value); document.getElementById('diskDecayValue').textContent = e.target.value; });
+            
+            frameMarginInput.addEventListener('input', e => { config.frame.margin = parseInt(e.target.value); document.getElementById('frameMarginValue').textContent = e.target.value; });
+            frameRadiusInput.addEventListener('input', e => { config.frame.radius = parseInt(e.target.value); document.getElementById('frameRadiusValue').textContent = e.target.value; });
+
+            enableZoomInput.addEventListener('change', e => config.bgZoom.enabled = e.target.checked);
+            zoomSensitivityInput.addEventListener('input', e => { config.bgZoom.sensitivity = parseFloat(e.target.value); document.getElementById('zoomSensitivityValue').textContent = e.target.value; });
+            zoomDecayInput.addEventListener('input', e => { config.bgZoom.decay = parseFloat(e.target.value); document.getElementById('zoomDecayValue').textContent = e.target.value; });
+            maxZoomInput.addEventListener('input', e => { config.bgZoom.maxZoom = parseFloat(e.target.value); document.getElementById('maxZoomValue').textContent = e.target.value; });
+            
+            previewBtn.addEventListener('click', togglePlayback);
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                canvas.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function handleFile(event, configKey) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    config[configKey] = img;
+                    if (configKey === 'bgImage') {
+                        config.bgVideo = null; 
+                        bgVideoPlayer.src = '';
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function handleVideoFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            bgVideoPlayer.src = url;
+            config.bgVideo = bgVideoPlayer;
+            config.bgImage = null; // fk ts bitch is so fking bad it load like hell so laggy
+            statusEl.textContent = "Video background loaded.";
+        }
+        
+        function handleAudioFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                audioPlayer.src = URL.createObjectURL(file);
+                if (!isAudioSetup) setupAudioContext();
+                statusEl.textContent = "Audio loaded. Press Preview to start.";
+            }
+        }
+        
+        function setupAudioContext() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                source = audioContext.createMediaElementSource(audioPlayer);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 1024;
+                analyser.smoothingTimeConstant = 0.85;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                source.connect(analyser);
+                source.connect(audioContext.destination);
+                isAudioSetup = true;
+            } catch (e) {
+                alert('Error setting up Web Audio API: ' + e.message);
+            }
+        }
+        
+        function togglePlayback() {
+            if (!isAudioSetup) return alert('Please upload an audio file first.');
+            if (audioContext.state === 'suspended') audioContext.resume();
+            
+            if (isPlaying) {
+                audioPlayer.pause();
+                if (config.bgVideo) config.bgVideo.pause();
+                isPlaying = false;
+                previewBtn.textContent = 'Start Preview';
+            } else {
+                audioPlayer.play();
+                if (config.bgVideo) config.bgVideo.play();
+                isPlaying = true;
+                previewBtn.textContent = 'Stop Preview';
+                animate();
+            }
+        }
+
+        function getResampledData(originalData, targetLength) {
+            const resampled = new Float32Array(targetLength);
+            const ratio = (originalData.length - 1) / (targetLength - 1 || 1);
+            for (let i = 0; i < targetLength; i++) {
+                const pos = i * ratio;
+                const low = Math.floor(pos);
+                const high = Math.min(low + 1, originalData.length - 1);
+                const frac = pos - low;
+                resampled[i] = originalData[low] * (1 - frac) + originalData[high] * frac;
+            }
+            return resampled;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground();
+            drawSoftFrame();
+
+            // frame
+            ctx.save();
+            const margin = config.frame.margin;
+            const radius = config.frame.radius;
+            createRoundedRectPath(margin, margin, canvas.width - margin * 2, canvas.height - margin * 2, radius);
+            ctx.clip();
+            
+            let bassEnergy = 0;
+            if (isAudioSetup && isPlaying) {
+                analyser.getByteFrequencyData(dataArray);
+                for (let i = 0; i < 5; i++) bassEnergy += dataArray[i];
+                bassEnergy /= 5;
+            }
+
+            updateBeatReactions(bassEnergy);
+
+            drawLogos();
+            drawSoundWave();
+            drawTextAndDisks();
+            ctx.restore(); 
+        }
+
+        function updateBeatReactions(bassEnergy) {
+            if (bassEnergy > 150) {
+                const energyFactor = bassEnergy / 255;
+                config.disks.rotation += energyFactor * (config.disks.sensitivity / 50);
+                if (config.bgZoom.enabled) {
+                    config.bgZoom.currentZoom += energyFactor * (config.bgZoom.sensitivity / 50);
+                }
+            }
+            config.disks.rotation *= config.disks.decay;
+            if (config.bgZoom.enabled) {
+                config.bgZoom.currentZoom = Math.min(config.bgZoom.maxZoom, config.bgZoom.currentZoom);
+                let excess = config.bgZoom.currentZoom - 1;
+                excess *= config.bgZoom.decay;
+                config.bgZoom.currentZoom = 1 + excess;
+                config.bgZoom.currentZoom = Math.max(1, config.bgZoom.currentZoom);
+            }
+        }
+        
+        function createRoundedRectPath(x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.arcTo(x + width, y, x + width, y + radius, radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+            ctx.lineTo(x + radius, y + height);
+            ctx.arcTo(x, y + height, x, y + height - radius, radius);
+            ctx.lineTo(x, y + radius);
+            ctx.arcTo(x, y, x + radius, y, radius);
+            ctx.closePath();
+        }
+
+        function drawSoftFrame() {
+            const margin = config.frame.margin;
+            const radius = config.frame.radius;
+            
+            ctx.save();
+            ctx.strokeStyle = config.textColor;
+            ctx.shadowColor = config.textColor;
+            ctx.shadowBlur = 15;
+            ctx.lineWidth = 2;
+            createRoundedRectPath(margin, margin, canvas.width - margin * 2, canvas.height - margin * 2, radius);
+            ctx.stroke();
+
+            ctx.shadowBlur = 0; 
+            ctx.globalAlpha = 0.7;
+            ctx.lineWidth = 1;
+            const innerMargin = margin + 4;
+            createRoundedRectPath(innerMargin, innerMargin, canvas.width - innerMargin * 2, canvas.height - innerMargin * 2, radius - 2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawBackground() {
+            let media = null;
+            if (config.bgVideo && bgVideoPlayer.readyState >= 3) {
+                media = config.bgVideo;
+            } else if (config.bgImage) {
+                media = config.bgImage;
+            }
+
+            if (media) {
+                const mediaWidth = media.videoWidth || media.width;
+                const mediaHeight = media.videoHeight || media.height;
+                const mediaAspect = mediaWidth / mediaHeight;
+                const canvasAspect = canvas.width / canvas.height;
+                let sx, sy, sWidth, sHeight;
+                const zoom = config.bgZoom.currentZoom;
+
+                if (mediaAspect > canvasAspect) {
+                    sHeight = mediaHeight;
+                    sWidth = sHeight * canvasAspect;
+                    sx = (mediaWidth - sWidth) / 2;
+                    sy = 0;
+                } else {
+                    sWidth = mediaWidth;
+                    sHeight = sWidth / canvasAspect;
+                    sx = 0;
+                    sy = (mediaHeight - sHeight) / 2;
+                }
+
+                // cool zoom eheh
+                sx += (sWidth - sWidth / zoom) / 2;
+                sy += (sHeight - sHeight / zoom) / 2;
+                sWidth /= zoom;
+                sHeight /= zoom;
+
+                ctx.drawImage(media, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+            } else {
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#16213e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function drawLogos() {
+            const logoHeight = canvas.height * 0.08;
+            const margin = config.frame.margin + 25;
+            if (config.logoLeft) {
+                const logoWidth = logoHeight * (config.logoLeft.width / config.logoLeft.height);
+                ctx.drawImage(config.logoLeft, margin, margin, logoWidth, logoHeight);
+            }
+            if (config.logoRight) {
+                 const logoWidth = logoHeight * (config.logoRight.width / config.logoRight.height);
+                ctx.drawImage(config.logoRight, canvas.width - logoWidth - margin, margin, logoWidth, logoHeight);
+            }
+        }
+
+        function drawSoundWave() { //fking shit took me so many times to fix this goofy ahh bar
+            if (!isAudioSetup || !isPlaying) return;
+            
+            let waveData = getResampledData(dataArray, config.wave.numBars);
+            const bufferLength = waveData.length;
+            const halfLength = Math.floor(bufferLength / 2);
+            const totalWidth = canvas.width * 0.7;
+            const barWidth = totalWidth / bufferLength;
+            const startX = (canvas.width - totalWidth) / 2;
+            let x = startX;
+
+            const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height * 0.8);
+            gradient.addColorStop(0, config.wave.color1);
+            gradient.addColorStop(1, config.wave.color2);
+            ctx.fillStyle = gradient;
+
+            for (let k = halfLength - 1; k >= 0; k--) {
+                const barHeight = waveData[k] * config.wave.sensitivity * config.wave.maxHeight;
+                const y = canvas.height * 0.88 - barHeight;
+                ctx.fillRect(x, y, barWidth - 1, barHeight);
+                x += barWidth;
+            }
+
+            if (bufferLength % 2 === 1) {
+                const barHeight = waveData[halfLength] * config.wave.sensitivity * config.wave.maxHeight;
+                const y = canvas.height * 0.88 - barHeight;
+                ctx.fillRect(x, y, barWidth - 1, barHeight);
+                x += barWidth;
+            }
+
+            for (let k = 0; k < halfLength; k++) {
+                const barHeight = waveData[k] * config.wave.sensitivity * config.wave.maxHeight;
+                const y = canvas.height * 0.88 - barHeight;
+                ctx.fillRect(x, y, barWidth - 1, barHeight);
+                x += barWidth;
+            }
+        }
+        
+        function drawTextAndDisks() {
+            const baseY = canvas.height * 0.93;
+            const diskRadius = canvas.height * 0.03;
+            const centerX = canvas.width / 2;
+            const fontSize = canvas.height * 0.04;
+            const textHeight = fontSize;
+
+            ctx.font = `bold ${fontSize}px 'Segoe UI', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const textWidth = ctx.measureText(config.mainText).width;
+
+            const lineYTop = baseY - textHeight / 2 - 10;
+            const lineYBottom = baseY + textHeight / 2 + 10;
+            ctx.strokeStyle = config.textColor;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(centerX - textWidth / 2 - 20, lineYTop);
+            ctx.lineTo(centerX + textWidth / 2 + 20, lineYTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(centerX - textWidth / 2 - 20, lineYBottom);
+            ctx.lineTo(centerX + textWidth / 2 + 20, lineYBottom);
+            ctx.stroke();
+
+            ctx.save();
+            ctx.shadowColor = config.textColor;
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = config.textColor;
+            ctx.fillText(config.mainText, centerX, baseY);
+            ctx.restore();
+            
+            const diskLeftX = centerX - (textWidth / 2) - diskRadius - 20;
+            const diskRightX = centerX + (textWidth / 2) + diskRadius + 20;
+
+            drawSpinnyDisk(diskLeftX, baseY, diskRadius, config.disks.rotation);
+            drawSpinnyDisk(diskRightX, baseY, diskRadius, config.disks.rotation);
+        }
+        
+        function drawSpinnyDisk(x, y, radius, rotation) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.strokeStyle = config.textColor;
+            ctx.fillStyle = config.textColor;
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, radius * 0.2, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(radius * 0.3, 0); ctx.lineTo(radius * 0.8, 0); ctx.stroke();
+            ctx.restore();
+        }
+
+        function animate() {
+            if (!isPlaying) return;
+            requestAnimationFrame(animate);
+            draw();
+        }
+
+        setupEventListeners();
+        draw();
+    });
+    </script>
+</body>
+</html>
