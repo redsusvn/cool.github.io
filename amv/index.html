@@ -279,6 +279,9 @@
                 <label class="file-label" for="audioFile">Choose Audio</label>
                 <input type="file" id="audioFile" accept="audio/*">
                 
+                <button id="captureAudioBtn">Capture Tab/Screen Audio</button>
+                <button id="stopCaptureBtn" style="display:none; background-color: #dc3545;">Stop Capture</button>
+
                 <label for="logoLeftFile">Top-Left Logo</label>
                 <label class="file-label" for="logoLeftFile">Choose Left Logo</label>
                 <input type="file" id="logoLeftFile" accept="image/*">
@@ -370,6 +373,8 @@
     <script>
         // if you can read this text, congrats on knowing how to press ctrl and u, so to use ts pile of shit first load it w/ some image, any kind or video but i dont recommend cuz i dont optimize the video loader so it run like shit, and then load some music, you can change the text color frame all kind of stuff just fking around to get the best setting that you like, the spinning disk you should put all the value to max, background zoom first one is 1, second one is 0.8 and the last one should be max (2) and there you go, click preview to see the result
     document.addEventListener('DOMContentLoaded', () => {
+        const captureAudioBtn = document.getElementById('captureAudioBtn');
+        const stopCaptureBtn = document.getElementById('stopCaptureBtn');
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
         const audioPlayer = document.getElementById('audioPlayer');
@@ -420,6 +425,8 @@
         let audioContext, analyser, source, dataArray;
         let isAudioSetup = false;
         let isPlaying = false;
+        let capturedStream = null;
+        let isCapturing = false;
         
         function loadDefaults() {
             config.logoLeft = new Image();
@@ -436,6 +443,9 @@
             audioFileInput.addEventListener('change', handleAudioFile);
             logoLeftFileInput.addEventListener('change', e => handleFile(e, 'logoLeft'));
             logoRightFileInput.addEventListener('change', e => handleFile(e, 'logoRight'));
+
+            captureAudioBtn.addEventListener('click', startAudioCapture);
+            stopCaptureBtn.addEventListener('click', stopAudioCapture);
             
             mainTextInput.addEventListener('input', e => config.mainText = e.target.value);
             textColorInput.addEventListener('input', e => config.textColor = e.target.value);
@@ -513,6 +523,74 @@
                 if (!isAudioSetup) setupAudioContext();
                 statusEl.textContent = "Audio loaded. Press play to start.";
             }
+        }
+        
+        async function startAudioCapture() {
+            try {
+                capturedStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    }
+                });
+
+                const audioTracks = capturedStream.getAudioTracks();
+                if (audioTracks.length === 0) {
+                    alert('No audio track. Check "Share audio" in the popup.');
+                    capturedStream.getTracks().forEach(track => track.stop());
+                    return;
+                }
+
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+
+                if (source) source.disconnect();
+
+                source = audioContext.createMediaStreamSource(capturedStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 1024;
+                analyser.smoothingTimeConstant = 0.85;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                source.connect(analyser);
+                
+                isAudioSetup = true;
+                isCapturing = true;
+                isPlaying = true;
+                
+                captureAudioBtn.style.display = 'none';
+                stopCaptureBtn.style.display = 'block';
+                playPauseBtn.style.display = 'none';
+                seekBar.style.display = 'none';
+                
+                statusEl.textContent = 'Capturing audio...';
+                animate();
+
+            } catch (err) {
+                alert('Failed: ' + err.message);
+            }
+        }
+
+        function stopAudioCapture() {
+            if (capturedStream) {
+                capturedStream.getTracks().forEach(track => track.stop());
+                capturedStream = null;
+            }
+            
+            if (source) source.disconnect();
+            
+            isCapturing = false;
+            isPlaying = false;
+            isAudioSetup = false;
+            
+            captureAudioBtn.style.display = 'block';
+            stopCaptureBtn.style.display = 'none';
+            playPauseBtn.style.display = 'block';
+            seekBar.style.display = 'block';
+            
+            statusEl.textContent = 'Capture stopped.';
         }
         
         function setupAudioContext() {
