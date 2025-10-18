@@ -410,7 +410,7 @@
         const pauseIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
 
         const config = {
-            mainText: 'WELCOME TO MY CHANNEL',
+            mainText: 'Music Visualizer',
             textColor: '#FFFFFF',
             bgImage: null,
             bgVideo: null,
@@ -429,24 +429,34 @@
         let isCapturing = false;
         
         function loadDefaults() {
-            const defaultBgImg = new Image();
-            defaultBgImg.crossOrigin = 'anonymous'; 
-            defaultBgImg.onload = () => {
-                config.bgImage = defaultBgImg;
+            const defaultBgImg = new Image();
+            defaultBgImg.crossOrigin = 'anonymous'; 
+            defaultBgImg.onload = () => {
+                config.bgImage = defaultBgImg;
                 draw(); 
-            };
+            };
 
             defaultBgImg.onerror = () => {
-                console.error("Failed to load default background image from URL.");
+                console.error("Failed to load default background image from URL. Using default background color.");
                 config.bgImage = null; 
             };
             
-            defaultBgImg.src = 'https://sussydomain.eu.org/file/Screenshot%202025-09-01%20081135.png';
-            config.logoLeft = new Image();
-            config.logoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
-            config.logoRight = new Image();
-            config.logoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
-        }
+            defaultBgImg.src = 'https://sussydomain.eu.org/file/Screenshot%202025-09-01%20081135.png';
+
+            const defaultLogoLeft = new Image();
+            defaultLogoLeft.onload = () => {
+                config.logoLeft = defaultLogoLeft;
+                draw(); 
+            };
+            defaultLogoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
+            
+            const defaultLogoRight = new Image();
+            defaultLogoRight.onload = () => {
+                config.logoRight = defaultLogoRight;
+                draw(); 
+            };
+            defaultLogoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
+        }
 
         function setupEventListeners() {
             bgFileInput.addEventListener('change', e => handleFile(e, 'bgImage'));
