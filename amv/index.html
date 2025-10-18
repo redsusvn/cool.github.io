@@ -373,7 +373,7 @@
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
         const audioPlayer = document.getElementById('audioPlayer');
-        const bgVideoPlayer = document.getElementById('bgVideoPlayer'); // địt mẹ lag như chó đéo biết fix ntn :))
+        const bgVideoPlayer = document.getElementById('bgVideoPlayer');
         const bgFileInput = document.getElementById('bgFile');
         const bgVideoFileInput = document.getElementById('bgVideoFile');
         const audioFileInput = document.getElementById('audioFile');
@@ -461,7 +461,7 @@
           config.bgImage.onload = () => {
             const bgLabel = document.querySelector('label[for="bgFile"]');
             if (bgLabel) {
-              bgLabel.nextElementSibling.textContent = 'Choose image';
+              bgLabel.nextElementSibling.textContent = 'Choose Image';
             }
           };
           config.logoLeft = new Image();
@@ -719,31 +719,37 @@
             for (let i = 0; i < 5; i++) bassEnergy += dataArray[i];
             bassEnergy /= 5;
           }
-          updateBeatReactions(bassEnergy);
+          const bassDiff = bassEnergy - previousBassEnergy;
+          updateDiskRotation(bassEnergy);
+          updateBackgroundZoom(bassEnergy, bassDiff);
+          previousBassEnergy = bassEnergy;
           drawLogos();
           drawSoundWave();
           drawTextAndDisks();
           ctx.restore();
         }
 
-        function updateBeatReactions(bassEnergy) {
-          const bassDiff = bassEnergy - previousBassEnergy;
-          if (bassDiff > 0) {
-            const beatStrength = bassDiff / 255;
-            config.disks.rotation += beatStrength * (config.disks.sensitivity / 10);
-            if (config.bgZoom.enabled && bassDiff > config.bgZoom.threshold) { 
-              config.bgZoom.currentZoom += beatStrength * (config.bgZoom.sensitivity / 10);
-            }
+        function updateDiskRotation(bassEnergy) {
+          if (bassEnergy > 150) { 
+            const energyFactor = bassEnergy / 255;
+            config.disks.rotation += energyFactor * (config.disks.sensitivity / 50);
           }
           config.disks.rotation *= config.disks.decay;
-          if (config.bgZoom.enabled) {
-            config.bgZoom.currentZoom = Math.min(config.bgZoom.maxZoom, config.bgZoom.currentZoom); 
-            let excess = config.bgZoom.currentZoom - 1;
-            excess *= config.bgZoom.decay; 
-            config.bgZoom.currentZoom = 1 + excess;
-            config.bgZoom.currentZoom = Math.max(1, config.bgZoom.currentZoom); 
+        }
+
+        function updateBackgroundZoom(bassEnergy, bassDiff) {
+          if (config.bgZoom.enabled && bassDiff > config.bgZoom.threshold) {
+            const beatStrength = bassDiff / 255;
+            config.bgZoom.currentZoom += beatStrength * (config.bgZoom.sensitivity / 10);
           }
-          previousBassEnergy = bassEnergy;
+
+          if (config.bgZoom.enabled) {
+            config.bgZoom.currentZoom = Math.min(config.bgZoom.maxZoom, config.bgZoom.currentZoom);
+            let excess = config.bgZoom.currentZoom - 1;
+            excess *= config.bgZoom.decay;
+            config.bgZoom.currentZoom = 1 + excess;
+            config.bgZoom.currentZoom = Math.max(1, config.bgZoom.currentZoom);
+          }
         }
 
         function createRoundedRectPath(x, y, width, height, radius) {
