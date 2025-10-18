@@ -429,17 +429,24 @@
         let isCapturing = false;
         
         function loadDefaults() {
-            config.bgImage = new Image();
-            config.bgImage.crossOrigin = 'anonymous';
-            config.bgImage.src = 'https://sussydomain.eu.org/file/Screenshot%202025-09-01%20081135.png';
-             
+            const defaultBgImg = new Image();
+            defaultBgImg.crossOrigin = 'anonymous'; 
+            defaultBgImg.onload = () => {
+                config.bgImage = defaultBgImg;
+                draw(); 
+            };
+
+            defaultBgImg.onerror = () => {
+                console.error("Failed to load default background image from URL.");
+                config.bgImage = null; 
+            };
+            
+            defaultBgImg.src = 'https://sussydomain.eu.org/file/Screenshot%202025-09-01%20081135.png';
             config.logoLeft = new Image();
             config.logoLeft.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
             config.logoRight = new Image();
             config.logoRight.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8dGV4dCB4PSI1MCUiIHk9IjYwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjYwIiBmb250LWZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+UlM8L3RleHQ+CgogIDx0ZXh0IHg9IjUwJSIgeT0iODglIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmlsbD0id2hpdGUiPlJFRCBTVVNPCjwvdnNnPg==`;
         }
-        
-        loadDefaults();
 
         function setupEventListeners() {
             bgFileInput.addEventListener('change', e => handleFile(e, 'bgImage'));
