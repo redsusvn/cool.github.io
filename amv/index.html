@@ -367,14 +367,13 @@
       </div>
     </div>
     <script>
-      // if you can read this text, congrats on knowing how to press ctrl and u, so to use ts pile of shit first load it w/ some image, any kind or video but i dont recommend cuz i dont optimize the video loader so it run like shit, and then load some music, you can change the text color frame all kind of stuff just fking around to get the best setting that you like, the spinning disk you should put all the value to max, background zoom first one is 1, second one is 0.8 and the last one should be max (2) and there you go, click preview to see the result
       document.addEventListener('DOMContentLoaded', () => {
         const captureAudioBtn = document.getElementById('captureAudioBtn');
         const stopCaptureBtn = document.getElementById('stopCaptureBtn');
         const canvas = document.getElementById('visualizerCanvas');
         const ctx = canvas.getContext('2d');
         const audioPlayer = document.getElementById('audioPlayer');
-        const bgVideoPlayer = document.getElementById('bgVideoPlayer');
+        const bgVideoPlayer = document.getElementById('bgVideoPlayer'); // địt mẹ lag như chó đéo biết fix ntn :))
         const bgFileInput = document.getElementById('bgFile');
         const bgVideoFileInput = document.getElementById('bgVideoFile');
         const audioFileInput = document.getElementById('audioFile');
@@ -453,7 +452,7 @@
         let capturedStream = null;
         let isCapturing = false;   
 
-        let previousBassEnergy = 0; ///////////////////
+        let previousBassEnergy = 0; 
 
         function loadDefaults() {
           config.bgImage = new Image();
@@ -728,35 +727,22 @@
         }
 
         function updateBeatReactions(bassEnergy) {
-          // 1. Calculate the *change* in bass energy since the last frame
           const bassDiff = bassEnergy - previousBassEnergy;
-
-          // 2. Only react if the bass energy *increased*
           if (bassDiff > 0) {
-            // Calculate how strong the *increase* was (0 to 1)
             const beatStrength = bassDiff / 255;
-
-            // Apply rotation (this still reacts to any small change)
             config.disks.rotation += beatStrength * (config.disks.sensitivity / 10);
-
-            // Apply zoom *ONLY IF* the beat is strong enough to pass the threshold
             if (config.bgZoom.enabled && bassDiff > config.bgZoom.threshold) { 
               config.bgZoom.currentZoom += beatStrength * (config.bgZoom.sensitivity / 10);
             }
           }
-
-          // 3. Apply decay to rotation and zoom
           config.disks.rotation *= config.disks.decay;
-          
           if (config.bgZoom.enabled) {
-            config.bgZoom.currentZoom = Math.min(config.bgZoom.maxZoom, config.bgZoom.currentZoom); // Clamp max
+            config.bgZoom.currentZoom = Math.min(config.bgZoom.maxZoom, config.bgZoom.currentZoom); 
             let excess = config.bgZoom.currentZoom - 1;
-            excess *= config.bgZoom.decay; // Apply decay
+            excess *= config.bgZoom.decay; 
             config.bgZoom.currentZoom = 1 + excess;
-            config.bgZoom.currentZoom = Math.max(1, config.bgZoom.currentZoom); // Clamp min
+            config.bgZoom.currentZoom = Math.max(1, config.bgZoom.currentZoom); 
           }
-
-          // 4. CRITICAL: Save the current energy for the *next* frame's comparison
           previousBassEnergy = bassEnergy;
         }
 
