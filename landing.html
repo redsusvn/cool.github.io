@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APIKey - Nền tảng Xác thực và Quản lý Key cho Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #0B0B0F;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: radial-gradient(circle at 50% 0, rgba(0, 150, 255, 0.1) 0%, transparent 40%);
+            z-index: -2;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 4rem 4rem;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .feature-card {
+            background-color: #1A1D2A;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0, 0.2);
+        }
+        
+        .glass-panel {
+            background: rgba(41, 45, 62, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .dark-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 999px;
+            padding: 0.625rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        .dark-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .text-primary { color: #FFFFFF; }
+        .text-secondary { color: #8A94A7; }
+        .text-accent { color: #00D1FF; }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.215, 0.610, 0.355, 1), 
+                        transform 0.6s cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+        .is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tag-text {
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #00D1FF;
+        }
+        
+        #particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticles 20s infinite linear;
+        }
+        
+        @keyframes floatParticles {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        .proactive-ai-stack {
+            position: relative;
+            height: 220px;
+            margin-top: 1rem;
+        }
+
+        .proactive-ai-stack .notification-card {
+            position: absolute;
+            left: 0;
+            right: 0;
+            background: rgba(41, 45, 62, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center top;
+        }
+
+        .proactive-ai-stack .notification-card:nth-child(1) {
+            z-index: 40;
+            top: 0;
+            transform: translateY(0) scale(1);
+        }
+        
+        .proactive-ai-stack .notification-card:nth-child(2) {
+            z-index: 30;
+            top: 8px;
+            transform: translateY(0) scale(0.98);
+            opacity: 0.8;
+        }
+        
+        .proactive-ai-stack .notification-card:nth-child(3) {
+            z-index: 20;
+            top: 16px;
+            transform: translateY(0) scale(0.96);
+            opacity: 0.6;
+        }
+        
+        .proactive-ai-stack .notification-card:nth-child(4) {
+            z-index: 10;
+            top: 24px;
+            transform: translateY(0) scale(0.94);
+            opacity: 0.4;
+        }
+
+        .feature-card:hover .proactive-ai-stack .notification-card:nth-child(1) {
+            transform: translateY(-20px) rotate(-8deg) scale(1);
+            opacity: 1;
+        }
+
+        .feature-card:hover .proactive-ai-stack .notification-card:nth-child(2) {
+            top: 40px;
+            transform: translateY(0) rotate(-3deg) scale(1);
+            opacity: 1;
+            transition-delay: 0.05s;
+        }
+
+        .feature-card:hover .proactive-ai-stack .notification-card:nth-child(3) {
+            top: 100px;
+            transform: translateY(0) rotate(3deg) scale(1);
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        .feature-card:hover .proactive-ai-stack .notification-card:nth-child(4) {
+            top: 160px;
+            transform: translateY(0) rotate(8deg) scale(1);
+            opacity: 1;
+            transition-delay: 0.15s;
+        }
+
+        .button-press-animation {
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        
+        .button-press-animation:active {
+            transform: translateY(4px);
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 24px;
+            background-color: #6B7280;
+            border-radius: 9999px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .toggle-switch.on {
+            background-color: #22C55E;
+        }
+
+        .toggle-switch .handle {
+            width: 20px;
+            height: 20px;
+            background-color: #FFFFFF;
+            border-radius: 9999px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .toggle-switch.on .handle {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="particles-container"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-50">
+        <nav class="container mx-auto px-6 lg:px-8 py-5 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://placehold.co/100x24/0B0B0F/FFFFFF?text=APIKey" alt="APIKey Logo" class="h-6 w-auto">
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://t.me/LDVQuang" class="text-sm font-semibold text-secondary hover:text-white transition-colors">Tham gia Telegram</a>
+                <a href="https://xyris.space/account/dang-ky.php" class="dark-button text-white">
+                    Bắt đầu ngay
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="relative z-10">
+
+        <section class="min-h-screen flex flex-col items-center justify-center pt-32 pb-16 overflow-hidden text-center">
+            <div class="container mx-auto px-6 lg:px-8">
+                
+                <h1 class="text-5xl md:text-6xl lg:text-8xl font-extrabold tracking-tighter mb-6 fade-in-up">
+                    Siêu hệ thống All-in-one
+                    <br>
+                    Quản lý key và tài nguyên
+                </h1>
+                
+                <p class="text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 fade-in-up" style="transition-delay: 100ms;">
+                    Giải pháp toàn diện giúp bạn tạo, phân phối và quản lý quyền truy cập cho phần mềm, game mods, và các công cụ của mình. Tập trung vào phát triển, để việc xác thực cho chúng tôi.
+                </p>
+                
+                <div class="fade-in-up" style="transition-delay: 200ms;">
+                    <a href="https://xyris.space/account/dang-ky.php" class="dark-button text-white text-base py-3 px-6">
+                        Bắt đầu ngay
+                    </a>
+                </div>
+
+                <div class="mt-12 flex flex-col items-center space-y-2 opacity-50 hover:opacity-100 transition-opacity cursor-pointer fade-in-up" style="transition-delay: 400ms;">
+                    <span class="text-sm text-secondary">Tìm hiểu thêm</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-bounce">
+                        <path d="M12 6L8 10L4 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 lg:py-32">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-start">
+                    <h2 class="text-4xl lg:text-5xl font-bold tracking-tight fade-in-up md:col-span-2">
+                        Tại sao lại chọn chúng tôi?
+                    </h2>
+                    <p class="text-lg text-secondary fade-in-up md:col-span-3 md:pt-2" style="transition-delay: 150ms;">
+                        Phải thử mới biết được 🗣️🦅🦅
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 lg:py-32">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-left max-w-xl mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold tracking-tight mb-4 fade-in-up">
+                        Sức mạnh trong tầm tay Developer
+                    </h2>
+                    <p class="text-lg text-secondary fade-in-up" style="transition-delay: 150ms;">
+                        Các tính năng được thiết kế đặc biệt cho nhà phát triển
+                        giúp bạn bảo vệ và thương mại hóa sản phẩm một cách hiệu quả.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <div class="feature-card flex flex-col justify-between fade-in-up">
+                        <img src="https://placehold.co/800x470/1A1D2A/8A94A7?text=Tạo+key+linh+hoạt" alt="Tạo Key linh hoạt" class="w-full h-auto rounded-t-2xl object-cover">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold mb-2">Tạo Key linh hoạt</h3>
+                            <p class="text-secondary">Tạo key theo thời gian cố định (tĩnh) hoặc theo thời gian sử dụng (động). Giới hạn thiết bị (UUID) trên mỗi key để chống chia sẻ.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card flex flex-col justify-between fade-in-up" style="transition-delay: 150ms;">
+                        <img src="https://placehold.co/800x470/1A1D2A/8A94A7?text=Dashboard+Quản+lý+Trực quan" alt="Dashboard Quản lý Trực quan" class="w-full h-auto rounded-t-2xl object-cover">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold mb-2">Dashboard Quản lý Trực quan</h3>
+                            <p class="text-secondary">Theo dõi, khóa, gia hạn hoặc reset UUID cho từng key một cách dễ dàng. Quản lý tất cả các "Package" ứng dụng của bạn ở một nơi.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card flex flex-col justify-between fade-in-up" style="transition-delay: 300ms;">
+                        <img src="https://placehold.co/800x470/1A1D2A/8A94A7?text=API Xác thực An toàn" alt="API Xác thực An toàn" class="w-full h-auto rounded-t-2xl object-cover">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold mb-2">API Xác thực An toàn</h3>
+                            <p class="text-secondary">Tích hợp API xác thực mạnh mẽ (Node.js) vào ứng dụng của bạn chỉ với vài dòng code. Hỗ trợ mã hóa và làm rối để tăng cường bảo mật.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card flex flex-col justify-between fade-in-up" style="transition-delay: 450ms;">
+                        <img src="https://placehold.co/800x470/1A1D2A/8A94A7?text=Quản lý Package hiệu quả" alt="Quản lý Package hiệu quả" class="w-full h-auto rounded-t-2xl object-cover">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold mb-2">Quản lý Package hiệu quả</h3>
+                            <p class="text-secondary">Dễ dàng quản lý tất cả Package của bạn tại 1 trang quản lý duy nhất. Đơn giản, dễ dàng, trực quan và hiệu quả.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card flex flex-col justify-between md:col-span-2 fade-in-up" style="transition-delay: 600ms;">
+                         <img src="https://placehold.co/1600x400/1A1D2A/8A94A7?text=App+Integrations+Icons+Mockup" alt="Tự động cập nhật" class="w-full h-auto rounded-t-2xl object-cover">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-semibold mb-2">Tự động cập nhật</h3>
+                            <p class="text-secondary">Các bản cập nhật được đẩy lên thường xuyên, giúp cho client của bạn luôn luôn hoạt động hiệu quả và mượt mà.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-20 lg:py-32">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-left max-w-2xl mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold tracking-tight mb-4 fade-in-up">
+                        Mọi thứ-trong-một
+                    </h2>
+                    <p class="text-lg text-secondary fade-in-up" style="transition-delay: 150ms;">
+                        Giải pháp quản lý Key và Package siêu tiện lợi và nhanh chóng
+                        Trực quan và dễ sử dụng, đầy đủ thông tin, dễ dàng nắm bắt
+                    </p>
+                </div> 
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <div class="feature-card p-8 fade-in-up">
+                        <p class="tag-text mb-2">Thông báo hệ thống</p>
+                        <h3 class="text-2xl font-semibold mb-4">Nhanh chóng và kịp thời</h3>
+                        
+                        <div class="proactive-ai-stack">
+                            <div class="notification-card flex items-start space-x-3 shadow-lg">
+                                <img src="https://placehold.co/40x40/00D1FF/FFFFFF?text=API" alt="API Icon" class="rounded-lg w-10 h-10 flex-shrink-0">
+                                <div>
+                                    <p class="font-semibold mb-1">APIKey</p>
+                                    <p class="text-sm text-secondary">Bạn đã mở rộng thêm <span class="text-white font-medium">1000 slot key</span> cho API của bạn. </p>
+                                </div>
+                            </div>
+
+                            <div class="notification-card flex items-start space-x-3 shadow-lg">
+                                <img src="https://placehold.co/40x40/8B5CF6/FFFFFF?text=%" alt="Percent Icon" class="rounded-lg w-10 h-10 flex-shrink-0">
+                                <div>
+                                    <p class="font-semibold mb-1">Quản lý API</p>
+                                    <p class="text-sm text-secondary">Hệ thống đã ghi nhận lượng người dùng tăng đột biến <span class="text-green-400 font-medium">82.3%</span> so với hôm qua đến API của bạn.</p>
+                                </div>
+                            </div>
+
+                            <div class="notification-card flex items-start space-x-3 shadow-lg">
+                                <img src="https://placehold.co/40x40/F59E0B/FFFFFF?text=!" alt="Warning Icon" class="rounded-lg w-10 h-10 flex-shrink-0">
+                                <div>
+                                    <p class="font-semibold mb-1">Thông báo đăng nhập</p>
+                                    <p class="text-sm text-secondary">Có ai đó vừa đăng nhập vào tài khoản của bạn từ <span class="text-yellow-400 font-medium">Hưng Yên</span>.</p>
+                                </div>
+                            </div>
+
+                            <div class="notification-card flex items-start space-x-3 shadow-lg">
+                                <img src="https://placehold.co/40x40/10B981/FFFFFF?text=✓" alt="Success Icon" class="rounded-lg w-10 h-10 flex-shrink-0">
+                                <div>
+                                    <p class="font-semibold mb-1">Gia hạn thành công</p>
+                                    <p class="text-sm text-secondary">Đã gia hạn thành công <span class="text-white font-medium">API của bạn.</span> </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card p-8 fade-in-up" style="transition-delay: 150ms;">
+                        <p class="tag-text mb-2">Thiết lập chỉ 1 click!</p>
+                        <h3 class="text-2xl font-semibold mb-4">Siêu dễ dàng</h3>
+                        <div class="glass-panel p-4 shadow-lg">
+                            <div class="flex justify-between items-center mb-4">
+                                <p class="font-semibold">Khởi tạo API</p>
+                                <div id="trading-bot-toggle" class="toggle-switch">
+                                    <div class="handle"></div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-secondary mb-4">Hệ thống sẽ tiến hành khởi tạo API cho bạn. Gói cơ bản sẽ là 1000 Key/API. Có thể nâng cấp.</p>
+                            <button id="start-bot-button" class="w-full text-center py-2 bg-white/90 hover:bg-white text-black font-semibold rounded-lg text-sm transition-colors button-press-animation">
+                                Tiến hành khởi tạo
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-20 lg:py-48 text-center">
+             <div class="container mx-auto px-6 lg:px-8">
+                <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tighter max-w-4xl mx-auto mb-6 fade-in-up">
+                    Sẵn sàng bảo vệ và thương mại hóa sản phẩm?
+                 
+                </h2>
+                <p class="text-lg md:text-xl text-secondary max-w-xl mx-auto mb-10 fade-in-up" style="transition-delay: 100ms;">
+                    Tham gia cộng đồng các nhà phát triển đang sử dụng APIKey để quản lý sản phẩm của họ một cách chuyên nghiệp.
+                </p>
+                <div class="fade-in-up" style="transition-delay: 200ms;">
+                    <a href="https://xyris.space/account/dang-ky.php" class="dark-button text-white text-base py-3 px-6">
+                        Tham gia ngay
+                    </a>
+                </div>
+             </div>
+        </section>
+
+    </main>
+
+    <footer class="py-12 border-t border-white/10">
+        <div class="container mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+                <div class="text-sm text-secondary space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <img src="https://placehold.co/18x18/0B0B0F/8A94A7?text=APIKey" alt="APIKey Logo Icon" class="opacity-50">
+                        <span>© 2025 APIKey - Siêu hệ thống quản lý Key và Package. All Rights Reserved.</span>
+                    </div>
+                    <div class="space-x-4">
+                        <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                        <a href="#" class="hover:text-white transition">Terms of Use</a>
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-secondary hover:text-white transition">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-secondary hover:text-white transition">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-secondary hover:text-white transition">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v2.385z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-8 pt-8 text-xs text-secondary/70 space-y-4">
+
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            const animatedElements = document.querySelectorAll('.fade-in-up');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+
+            const particleContainer = document.getElementById('particles-container');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 3 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}vw`;
+                
+                const duration = Math.random() * 10 + 15;
+                particle.style.animationDuration = `${duration}s`;
+                
+                const delay = Math.random() * 20;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particleContainer.appendChild(particle);
+            }
+
+            const toggleSwitch = document.getElementById('trading-bot-toggle');
+            if (toggleSwitch) {
+                toggleSwitch.addEventListener('click', () => {
+                    toggleSwitch.classList.toggle('on');
+                });
+            }
+
+            const startBotButton = document.getElementById('start-bot-button');
+            if (startBotButton) {
+                startBotButton.addEventListener('click', () => {
+                    startBotButton.classList.add('animate-press');
+                    setTimeout(() => {
+                        startBotButton.classList.remove('animate-press');
+                    }, 100);
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
