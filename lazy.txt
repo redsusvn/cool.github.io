@@ -1,0 +1,26 @@
+php
+
+<?php
+date_default_timezone_set('America/Chicago');
+if (isset($_POST['URL'])) {
+    $myfile = fopen("analytics.txt", "a") or die("file fked lol");
+    
+    $log_time = date('m/d/Y h:i:s a', time());
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN_IP'; 
+    $url = $_POST['URL'];
+    $txt = "The IP {$ip} opened the page {$url} at {$log_time}.\n";
+    
+    fwrite($myfile, $txt);
+    fclose($myfile);
+}
+echo 'script working maybe idk lol';
+?>
+
+js
+
+<script>
+$.ajax("https://twineee.rf.gd/analytics.php", {async: false, cache: false, data: {"URL": window.location.href}, method: "POST"});
+</script>
+
+idk give it a try
+
