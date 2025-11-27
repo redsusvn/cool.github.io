@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VNC Quick Launcher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'vnc-blue': '#1a73e8',
+                        'vnc-dark': '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for better focus and readability */
+        .input-field {
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+        .input-field:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-6 md:p-8 space-y-6">
+        <header class="text-center">
+            <h1 class="text-3xl font-extrabold text-vnc-dark">
+                VNC Quick Launch
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Paste your address (e.g., 192.168.1.1:5900) to generate a one-click link.
+            </p>
+        </header>
+
+        <div class="space-y-4">
+            <div>
+                <label for="fullAddress" class="block text-sm font-medium text-gray-700 mb-1">
+                    Full VNC Address (IP/Hostname:Port)
+                </label>
+                <input
+                    type="text"
+                    id="fullAddress"
+                    value=""
+                    placeholder="e.g., 192.168.1.1:5900 or hostname:5900"
+                    class="input-field w-full p-3 rounded-lg text-gray-900 focus:outline-none text-lg font-mono"
+                    oninput="generateLink()"
+                    onkeypress="handleEnter(event)" 
+                    autofocus 
+                >
+            </div>
+        </div>
+
+        <div id="linkContainer" class="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3">
+            <h2 class="text-lg font-semibold text-vnc-dark">
+                Generated VNC Link
+            </h2>
+
+            <a id="vncLink" href="#" class="block w-full text-center py-3 px-4 bg-vnc-blue hover:bg-blue-700 text-white font-bold rounded-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg disabled:opacity-50" target="_blank">
+                Click to Open VNC
+            </a>
+
+            <div class="relative">
+                <input
+                    type="text"
+                    id="rawUrlDisplay"
+                    readonly
+                    class="w-full p-2 pr-12 text-xs text-gray-600 bg-white border border-dashed border-gray-300 rounded-lg font-mono focus:outline-none"
+                    value="vnc://192.168.1.1:5900"
+                />
+                <button onclick="copyToClipboard()" class="absolute top-1/2 transform -translate-y-1/2 right-1 p-1 text-gray-500 hover:text-vnc-blue transition duration-150" aria-label="Copy URL">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="text-center text-sm font-medium h-6"></div>
+
+        <footer class="text-center text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
+            <p>This tool uses the standard VNC URL schema (`vnc://`) which requires a compatible VNC client installed on your system.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial generation on load
+            generateLink();
+            // The 'autofocus' attribute handles the focus, but we keep this for consistency if autofocus fails
+            document.getElementById('fullAddress').focus(); 
+        });
+        
+        // **NEW FUNCTION** to handle Enter key press
+        function handleEnter(event) {
+            // Check if the key pressed is the Enter key (key code 13 or key property 'Enter')
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                // Prevent the default action (e.g., form submission if it were a form)
+                event.preventDefault(); 
+                
+                const vncLinkElement = document.getElementById('vncLink');
+                
+                // Only "click" the link if it's not disabled
+                if (!vncLinkElement.classList.contains('pointer-events-none')) {
+                    // Navigate to the link's href
+                    window.open(vncLinkElement.href, '_blank');
+                    
+                    // Optional: Reset input after opening, if desired, but removed for simpler flow:
+                    // document.getElementById('fullAddress').value = '';
+                    // generateLink();
+                }
+            }
+        }
+
+        function generateLink() {
+            const fullAddressInput = document.getElementById('fullAddress');
+            const fullAddress = fullAddressInput.value.trim();
+            const vncLinkElement = document.getElementById('vncLink');
+            const rawUrlDisplay = document.getElementById('rawUrlDisplay');
+
+            // Default VNC port
+            const defaultPort = 5900;
+            let ip = '';
+            let port = '';
+            let displayAddress = '';
+            
+            if (fullAddress) {
+                // Split the address by the colon
+                const parts = fullAddress.split(':');
+                ip = parts[0];
+
+                if (parts.length > 1) {
+                    // If a port is specified, use it
+                    port = parts[1];
+                } else {
+                    // If no port is specified, use the default VNC port (5900)
+                    port = defaultPort;
+                }
+                
+                // Construct the address for display
+                displayAddress = `${ip}:${port}`;
+            }
+
+            if (ip && port) {
+                // Construct the final vnc:// URL
+                const url = `com.realvnc.vncviewer.connect://${ip}:${port}`;
+                
+                vncLinkElement.href = url;
+                rawUrlDisplay.value = url;
+                
+                // Enable the link button
+                vncLinkElement.classList.remove('disabled:opacity-50', 'pointer-events-none');
+                vncLinkElement.textContent = `Launch VNC to ${displayAddress}`;
+            } else {
+                // If input is invalid or empty
+                vncLinkElement.href = "#";
+                rawUrlDisplay.value = "Paste or enter your address (e.g., 192.168.1.1:5900)";
+                
+                // Disable the link button
+                vncLinkElement.classList.add('disabled:opacity-50', 'pointer-events-none');
+                vncLinkElement.textContent = "Enter a Valid VNC Address";
+            }
+        }
+
+        function copyToClipboard() {
+            const rawUrlDisplay = document.getElementById('rawUrlDisplay');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // Select the text field
+            rawUrlDisplay.select();
+            rawUrlDisplay.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                // Copy the text inside the text field
+                document.execCommand('copy');
+                statusMessage.textContent = 'Copied VNC URL to clipboard!';
+                statusMessage.classList.remove('text-red-500');
+                statusMessage.classList.add('text-green-600');
+            } catch (err) {
+                statusMessage.textContent = 'Error copying URL.';
+                statusMessage.classList.remove('text-green-600');
+                statusMessage.classList.add('text-red-500');
+            }
+
+            // Clear the status message after 3 seconds
+            setTimeout(() => {
+                statusMessage.textContent = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
