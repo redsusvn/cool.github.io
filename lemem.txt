@@ -5,6 +5,7 @@ user_passwd="$(echo "$HOSTNAME" | sed 's+-.*++g')"
 egg_mode=false
 alpine_hostname="lemem"
 proot="https://proot.gitlab.io/proot/bin/proot"
+
 get_arch() {
   case "$(uname -m)" in
     x86_64) echo "x86_64" ;;
@@ -12,6 +13,7 @@ get_arch() {
     *) echo "Unsupported architecture: $(uname -m)"; exit 1 ;;
   esac
 }
+
 get_latest_alpine_version() {
   curl -s "https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/$(get_arch)/" | \
     grep -oP 'alpine-minirootfs-\K[0-9]+\.[0-9]+\.[0-9]+(?=-'"$(get_arch)"')' | \
@@ -22,19 +24,23 @@ arch="$(get_arch)"
 alpine_version="$(get_latest_alpine_version)"
 mirror_alpine="https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/$arch/alpine-minirootfs-$alpine_version-$arch.tar.gz"
 
-if "$egg_mode"; then install_path=$HOME/; elif [ -n "$SERVER_PORT" ]; then install_path="$HOME/.cache/JNA/temp/$(echo "$HOSTNAME" | md5sum | sed 's+ .*++g')"; else install_path="./testing-arena"; fi
+if "$egg_mode"; then 
+    install_path=$HOME/
+elif [ -n "$SERVER_PORT" ]; then 
+    install_path="$HOME/.cache/JNA/temp/$(echo "$HOSTNAME" | md5sum | sed 's+ .*++g')"
+else 
+    install_path="./testing-arena"
+fi
+
 d.stat() { echo -ne "\033[1;37m \033[1;34m$@\033[0m\n"; }
 
 die() {
-  echo -ne "\n\033[41m               \033[1;37mA FATAL ERROR HAS OCCURED               \033[0m\n"
+  echo -ne "\n\033[41m                \033[1;37mA FATAL ERROR HAS OCCURED                \033[0m\n"
   sleep 5
   exit 1
 }
 
-# <dbgsym:bootstrap>
-check_link="curl --output /dev/null --silent --head --fail"
 bootstrap_system() {
-
   _CHECKPOINT=$PWD
 
   d.stat "Extracting the Alpine rootfs image..."
@@ -48,19 +54,19 @@ bootstrap_system() {
   d.stat "Bootstrapping system..."
   touch etc/{passwd,shadow,groups}
 
-  # coppy files
+  # Copy system files
   cp /etc/resolv.conf "$install_path/etc/resolv.conf" -v
   cp /etc/hosts "$install_path/etc/hosts" -v
   cp /etc/localtime "$install_path/etc/localtime" -v
-  cp /etc/passwd "$install_path"/etc/passwd -v
-  cp /etc/group "$install_path"/etc/group -v
-  cp /etc/nsswitch.conf "$install_path"/etc/nsswitch.conf -v
+  cp /etc/passwd "$install_path/etc/passwd" -v
+  cp /etc/group "$install_path/etc/group" -v
+  cp /etc/nsswitch.conf "$install_path/etc/nsswitch.conf" -v
   mkdir -p "$install_path/home/container"
-  echo "$alpine_hostname" >"$install_path"/etc/hostname
+  echo "$alpine_hostname" > "$install_path/etc/hostname"
 
   ./alpine -r . -b /dev -b /sys -b /proc -b /tmp \
     --kill-on-exit -w /home/container /bin/sh -c "apk update && apk add bash xorg-server git nano vim tmate konsole btop htop fastfetch neofetch thunar python3 py3-pip py3-numpy xterm chromium \
-  	xinit xvfb fakeroot firefox tigervnc dropbear icewm font-noto xfce4-terminal \
+    xinit xvfb fakeroot firefox tigervnc dropbear icewm font-noto xfce4-terminal \
     virtualgl mesa-dri-gallium \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community \
@@ -71,51 +77,49 @@ bootstrap_system() {
     ln -s /usr/bin/fakeroot /usr/bin/sudo && \
     pip install websockify --break-system-packages && \
     mkdir -p /home/container/.vnc && echo '$user_passwd' | vncpasswd -f > /home/container/.vnc/passwd" || die
-    curl -O https://raw.githubusercontent.com/h3l2f/lememStuff/refs/heads/main/lemem-wallpaper.png
-    mkdir -p "$install_path/home/container/.icewm"
+
+  # Create necessary config directories
+  mkdir -p "$install_path/home/container/.icewm"
+
   cat >"$install_path/home/container/.vnc/config" <<EOF
 session=icewm
 geometry=1280x720
 rfbport=5901
 EOF
-    cat >"$install_path/home/container/.icewm/preferences" <<EOF
-    DesktopBackgroundImage=/lemem-wallpaper.png
-EOF
 
-cat >"$install_path/home/container/.bashrc" <<EOF
-    echo "Wellcome to Lemem! powered by Alpine Linux"
+  cat >"$install_path/home/container/.bashrc" <<EOF
+echo "Welcome to Lemem! powered by Alpine Linux"
         
-    The Alpine Wiki contains a large amount of how-to guides and general
+The Alpine Wiki contains a large amount of how-to guides and general
 information about administrating Alpine systems.
 See https://wiki.alpinelinux.org/.
 
 Installing : apk add <pkg>
-Updating : apk update && apk upgrade
+Updating   : apk update && apk upgrade
 
 You can change this motd by editing the .bashrc file
-for support visit: https://discord.gg/AqrUvWkxU8"
-
+for support visit: https://discord.gg/AqrUvWkxU8
 EOF
 
-cat >"$install_path/etc/motd" <<EOF
-    echo "Wellcome to Lemem! powered by Alpine Linux"
+  cat >"$install_path/etc/motd" <<EOF
+Welcome to Lemem! powered by Alpine Linux"
         
-    The Alpine Wiki contains a large amount of how-to guides and general
+The Alpine Wiki contains a large amount of how-to guides and general
 information about administrating Alpine systems.
 See https://wiki.alpinelinux.org/.
 
 Installing : apk add <pkg>
-Updating : apk update && apk upgrade
+Updating   : apk update && apk upgrade
 
 You can change this motd by editing the /etc/motd file
-for support visit: https://discord.gg/AqrUvWkxU8"
+for support visit: https://discord.gg/AqrUvWkxU8
 EOF
-
 }
-# </dbgsym:bootstrap>
+
 DOCKER_RUN="env - \
     HOME=$install_path/home/container $install_path/alpine --kill-on-exit -r $install_path -b /dev -b /proc -b /sys -b /tmp \
     -b $install_path:$install_path -w $install_path/home/container /bin/sh -c"
+
 run_system() {
   if [ -f $HOME/.do-not-start ]; then
     rm -rf $HOME/.do-not-start
@@ -137,7 +141,7 @@ run_system() {
   "$egg_mode" || {
     sleep 1
     echo "loading desktop..."
-  }                             
+  }                     
   
   d.stat "Your server is now available at \033[1;32mhttp://$(curl --silent -L checkip.pterodactyl-installer.se):$SERVER_PORT"
   d.stat "vnc password: \033[1;32m$user_passwd\033[0m"
