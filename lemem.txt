@@ -102,18 +102,21 @@ for support visit: https://discord.gg/AqrUvWkxU8
 EOF
 
   cat >"$install_path/etc/motd" <<EOF
-Welcome to Lemem! powered by Alpine Linux"
+Welcome to Lemem! powered by Alpine Linux
         
 The Alpine Wiki contains a large amount of how-to guides and general
 information about administrating Alpine systems.
 See https://wiki.alpinelinux.org/.
 
 Installing : apk add <pkg>
-Updating   : apk update && apk upgrade
+Updating   : apk upgrade
 
 You can change this motd by editing the /etc/motd file
 for support visit: https://discord.gg/AqrUvWkxU8
 EOF
+
+  # Call run_system automatically after bootstrap finishes
+  run_system
 }
 
 DOCKER_RUN="env - \
@@ -130,29 +133,31 @@ run_system() {
  
   d.stat "Starting noVNC server..."
   $install_path/alpine --kill-on-exit -r $install_path -b /dev -b /proc -b /sys -b /tmp -w "/home/container/noVNC1" /bin/sh -c "./utils/novnc_proxy --vnc localhost:5901 --listen 0.0.0.0:$SERVER_PORT" &>/dev/null &
+  
   d.stat "Configuring desktop..."
   d.stat "Starting desktop..."
   chmod 0600 "$install_path/home/container/.vnc/passwd" 
-  echo "Done (7.802s)! For help, type help"
+  
+  echo "Done! The desktop is initializing in the background."
+  
   $DOCKER_RUN "export PATH=$install_path/bin:$install_path/usr/bin:$PATH HOME=$install_path/home/container LD_LIBRARY_PATH='$install_path/usr/lib:$install_path/lib:/usr/lib:/usr/lib64:/lib64:/lib'; \
     cd $install_path/home/container; \
     vglrun -d egl vncserver :0" &>/dev/null &
 
   "$egg_mode" || {
-    sleep 1
-    echo "loading desktop..."
+    sleep 2
+    echo "Loading shell environment..."
   }                     
   
   d.stat "Your server is now available at \033[1;32mhttp://$(curl --silent -L checkip.pterodactyl-installer.se):$SERVER_PORT"
-  d.stat "vnc password: \033[1;32m$user_passwd\033[0m"
-  d.stat "Starting bash shell..."
+  d.stat "VNC Password: \033[1;32m$user_passwd\033[0m"
+  d.stat "Opening Alpine shell (type 'exit' to stop the server)..."
   
   $DOCKER_RUN bash
 }
 
-cd "$install_path" || {
-  mkdir -p "$install_path"
-  cd "$install_path"
-}
+# Ensure directory exists before entering it
+mkdir -p "$install_path"
+cd "$install_path" || die
 
 [ -d "bin" ] && run_system || bootstrap_system
