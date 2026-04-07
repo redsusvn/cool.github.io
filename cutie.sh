@@ -20,7 +20,7 @@ dbus-daemon --session --fork --address=$DBUS_SESSION_BUS_ADDRESS
 # We unset the server variable first so it starts locally
 unset PULSE_SERVER
 pulseaudio --start --exit-idle-time=-1
-icewmbg --replace--image /home/container/.cache/JNA/temp/75f67eea08d8616402bc29a3809f4916/home/container/Downloads/kje907.png
+icewmbg --replace --image /home/container/.cache/JNA/temp/75f67eea08d8616402bc29a3809f4916/home/container/Downloads/kje907.png
 # Now create a speaker bridge
 pactl load-module module-null-sink sink_name=speaker 2>/dev/null
 pactl set-default-sink speaker
@@ -33,4 +33,4 @@ chromium-browser --no-sandbox \
                  --alsa-output-device=default \
                  --autoplay-policy=no-user-gesture-required \
                  "https://www.youtube.com" &
-# 111
+# 112
