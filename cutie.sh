@@ -1,42 +1,41 @@
 #!/bin/sh
 
-# --- 1. CLEANUP ---
-# Kill any stuck or ghost processes to prevent "Address already in use" errors
-echo "Cleaning up old processes..."
+# 1. FIX USER IDENTITY (Required for D-Bus)
+# This stops the "User ID 999 not found" error
+if ! grep -q "container" /etc/passwd; then
+    echo "container:x:999:999:container:/home/container:/bin/sh" | sudo tee -a /etc/passwd
+    echo "container:x:999:" | sudo tee -a /etc/group
+fi
+
+# 2. CLEANUP
 sudo killall -9 dbus-daemon pulseaudio chromium-browser 2>/dev/null
 sudo rm /run/dbus/dbus.pid 2>/dev/null
+sudo mkdir -p /run/dbus && sudo chown dbus:dbus /run/dbus
 
-# --- 2. USER & GROUP SETUP ---
-# Ensure the necessary system identities exist for sound and bus services
-echo "Verifying system users..."
-sudo addgroup -S dbus 2>/dev/null
-sudo adduser -S -D -H -h /run/dbus -s /sbin/nologin -G dbus -g dbus dbus 2>/dev/null
-sudo addgroup -S pulse 2>/dev/null
-sudo adduser -S -D -H -G pulse -g pulse pulse 2>/dev/null
-
-# --- 3. D-BUS INITIALIZATION ---
-# Setup the communication roadway for Chromium and PulseAudio
-echo "Starting D-Bus..."
-sudo mkdir -p /run/dbus
-sudo chown dbus:dbus /run/dbus
-sudo dbus-uuidgen --ensure
+# 3. START SYSTEM BUS
 sudo dbus-daemon --system --fork
 
-# --- 4. AUDIO SETUP ---
-# Start the sound server in the background
-echo "Starting PulseAudio..."
+# 4. START SESSION BUS (The Fix for your Error)
+# We use dbus-launch to create a valid address that Chromium understands
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval $(dbus-launch --sh-syntax)
+    export DBUS_SESSION_BUS_ADDRESS
+fi
+
+# 5. START PULSEAUDIO
 pulseaudio --start --exit-idle-time=-1
-icewmbg --replace--image /home/container/.cache/JNA/temp/75f67eea08d8616402bc29a3809f4916/home/container/Downloads/kje907.png
-# --- 5. BROWSER LAUNCH ---
-# Launch Chromium with stability, memory, and sound output flags
-echo "Launching Chromium..."
+pactl load-module module-null-sink sink_name=speaker 2>/dev/null
+pactl set-default-sink speaker
+
+# 6. LAUNCH CHROMIUM
+# We force the Pulse server to the native socket
+export PULSE_SERVER=unix:/tmp/pulse-$(dbus-uuidgen)/native
+
 chromium-browser --no-sandbox \
                  --disable-gpu \
                  --disable-dev-shm-usage \
+                 --remoting-force-ignore-dbus-errors \
                  --alsa-output-device=default \
-                 "https://google.vn/" &
+                 "https://www.youtube.com" &
 
-echo "------------------------------------------"
-echo "Everything is ready! Check YouTube for sound."
-echo "Note: You must click the page to enable audio."
-echo "------------------------------------------"
+# new
