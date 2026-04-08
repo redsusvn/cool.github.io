@@ -5,10 +5,11 @@
 grep -q "999" /etc/passwd || echo "container:x:999:999:container:/home/container:/bin/sh" | sudo tee -a /etc/passwd
 
 # 2. CLEANUP 
-# Kill hanging processes and clear lock files to prevent "Profile in use" errors
+# Kill hanging processes and clear lock files to prevent "Profile in use" or "D-Bus" errors
 sudo killall -9 dbus-daemon pulseaudio chromium-browser 2>/dev/null
 sudo rm -rf /run/dbus/dbus.pid /tmp/pulse-* /tmp/dbus-*
 rm -rf /home/container/.config/chromium/Singleton*
+rm -rf /home/container/.chromium-profile/Singleton*
 
 # 3. START SYSTEM BUS
 sudo mkdir -p /run/dbus && sudo chown dbus:dbus /run/dbus
@@ -22,15 +23,16 @@ dbus-daemon --session --fork --address=$DBUS_SESSION_BUS_ADDRESS
 unset PULSE_SERVER
 pulseaudio --start --exit-idle-time=-1
 
-# Set the background image (Wait a split second for IceWM if needed)
+# Set the background image (IceWM)
 icewmbg --replace --image /home/container/.cache/JNA/temp/75f67eea08d8616402bc29a3809f4916/home/container/Downloads/kje907.png &
 
 # Create a speaker bridge for audio routing
 pactl load-module module-null-sink sink_name=speaker 2>/dev/null
 pactl set-default-sink speaker
 
-# 6. LAUNCH CHROMIUM (Optimized for Alpine/Docker Stability)
-# We add a 2-second sleep to ensure D-Bus and PulseAudio are fully initialized
+# 6. LAUNCH CHROMIUM (Stability Overhaul)
+# We wait for the environment to settle, then launch with flags to bypass 
+# syscall restrictions and Vulkan driver errors seen in your logs.
 echo "Stabilizing environment..."
 sleep 2
 
@@ -40,12 +42,16 @@ chromium-browser --no-sandbox \
     --disable-gpu \
     --disable-software-rasterizer \
     --disable-dev-shm-usage \
-    --disable-features=VizDisplayCompositor \
-    --disable-gpu-sandbox \
+    --disable-vulkan \
+    --disable-3d-apis \
+    --disable-extensions \
+    --disable-seccomp-filter-sandbox \
+    --no-zygote \
+    --use-gl=swiftshader \
     --password-store=basic \
     --alsa-output-device=default \
     --autoplay-policy=no-user-gesture-required \
     --user-data-dir=/home/container/.chromium-profile \
     "https://www.youtube.com" > /home/container/chromium.log 2>&1 &
 
-echo "Script execution finished. Chromium is running in the background."
+echo "Script execution finished."
