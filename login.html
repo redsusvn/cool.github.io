@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vPanel Auto-Login Redirect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 text-center border border-slate-100">
+        <div class="mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-lg animate-pulse">
+                <i class="fas fa-key text-2xl"></i>
+            </div>
+        </div>
+
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">Authenticating...</h1>
+        <p id="status-text" class="text-slate-500 mb-6">Preparing secure connection to vPanel</p>
+
+        <!-- The Hidden Login Form -->
+        <form id="login-form" action="https://cpanel.infinityfree.com/login.php" method="post" class="hidden">
+            <input type="hidden" name="uname" id="form-username">
+            <input type="hidden" name="passwd" id="form-password">
+            <input type="hidden" name="login" value="Login">
+        </form>
+
+        <div id="error-box" class="hidden p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm text-left rounded-r-lg mb-4">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <p id="error-message"></p>
+            </div>
+        </div>
+
+        <div class="flex justify-center space-x-2">
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            
+            const user = params.get('username');
+            const pass = params.get('password');
+            const statusText = document.getElementById('status-text');
+            const errorBox = document.getElementById('error-box');
+            const errorMsg = document.getElementById('error-message');
+
+            if (user && pass) {
+                statusText.innerText = `Logging in as ${user}...`;
+                
+                document.getElementById('form-username').value = user;
+                document.getElementById('form-password').value = pass;
+                
+                // Small delay for visual feedback
+                setTimeout(() => {
+                    document.getElementById('login-form').submit();
+                }, 1000);
+            } else {
+                statusText.classList.add('hidden');
+                errorBox.classList.remove('hidden');
+                errorMsg.innerText = "Missing username or password in URL hash. Expected format: #username=if0_xxx&password=yyy";
+            }
+        };
+    </script>
+</body>
+</html>
