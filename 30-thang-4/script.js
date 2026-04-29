@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // KÊNH KIỂM TRA SESSION: Chỉ chạy 1 lần trên mỗi tab/phiên duyệt web.
+    // new
     if (window.sessionStorage && sessionStorage.getItem('gpmn_thongnhat_loaded')) {
         return;
     }
 
     // Đánh dấu là đã xem trong phiên này
-    if (window.sessionStorage) {a
+    if (window.sessionStorage) {
         sessionStorage.setItem('gpmn_thongnhat_loaded', 'true');
     }
 
