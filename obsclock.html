@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Handwriting Clock Overlay</title>
+    <!-- Nhập các font chữ dễ thương từ Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Mali:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: transparent; /* Nền trong suốt cho OBS */
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .clock-container {
+            /* Sử dụng font Gaegu cực kỳ dễ thương */
+            font-family: 'Gaegu', cursive;
+            font-weight: 700;
+            
+            /* Màu sắc: Gradient hồng/tím nhẹ hoặc trắng thuần tùy bạn chọn */
+            color: #ffffff; 
+            
+            font-size: 9rem; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            /* Đổ bóng dạng mềm mại để chữ trông nổi khối và dễ đọc */
+            text-shadow: 
+                4px 4px 0px rgba(255, 182, 193, 0.6), /* Đổ bóng hồng nhẹ */
+                0 0 15px rgba(0, 0, 0, 0.3);
+            
+            user-select: none;
+        }
+
+        /* Hiệu ứng nhịp thở cho toàn bộ đồng hồ để trông sinh động hơn */
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .clock-container {
+            animation: gentle-bounce 3s infinite ease-in-out;
+        }
+
+        .separator {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            position: relative;
+            top: -5px; /* Chỉnh dấu hai chấm cao lên một chút cho cân đối với font Gaegu */
+        }
+
+        .low-opacity {
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container" id="clock">
+        <span id="hours">00</span>
+        <span class="separator" id="sep1">:</span>
+        <span id="minutes">00</span>
+        <span class="separator" id="sep2">:</span>
+        <span id="seconds">00</span>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            let s = now.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById('hours').textContent = h;
+            document.getElementById('minutes').textContent = m;
+            document.getElementById('seconds').textContent = s;
+
+            // Hiệu ứng nhấp nháy dấu hai chấm mượt mà hơn
+            const separators = document.querySelectorAll('.separator');
+            separators.forEach(sep => {
+                if (now.getMilliseconds() < 500) {
+                    sep.classList.add('low-opacity');
+                } else {
+                    sep.classList.remove('low-opacity');
+                }
+            });
+        }
+
+        setInterval(updateClock, 100);
+        updateClock();
+    </script>
+</body>
+</html>
